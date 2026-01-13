@@ -361,40 +361,6 @@ a.value:hover {
     padding-bottom: 0;
 }
 
-.role-content {
-    display: flex;
-    gap: 25px;
-    align-items: flex-start;
-}
-
-.role-logo-link {
-    flex-shrink: 0;
-    display: block;
-    transition: transform 0.3s ease;
-}
-
-.role-logo-link:hover {
-    transform: scale(1.05);
-}
-
-.role-logo {
-    width: 80px;
-    height: 80px;
-    object-fit: contain;
-    border: 2px solid var(--border-color);
-    padding: 10px;
-    background-color: white;
-    transition: border-color 0.3s ease;
-}
-
-.role-logo-link:hover .role-logo {
-    border-color: var(--accent-color);
-}
-
-.role-info {
-    flex: 1;
-}
-
 .role-header {
     display: flex;
     flex-wrap: wrap;
@@ -421,10 +387,18 @@ a.value:hover {
     margin-left: auto;
 }
 
-.role-company {
+.role-company-link {
     color: var(--accent-color);
-    margin-bottom: 10px;
+    text-decoration: none;
     font-weight: bold;
+    display: inline-block;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
+
+.role-company-link:hover {
+    color: var(--accent-light);
+    text-decoration: underline;
 }
 
 .role-org-description {
@@ -786,16 +760,6 @@ a.value:hover {
     .info-grid,
     .contact-info {
         grid-template-columns: 1fr;
-    }
-
-    .role-content {
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .role-logo {
-        width: 60px;
-        height: 60px;
     }
 
     .role-header {
