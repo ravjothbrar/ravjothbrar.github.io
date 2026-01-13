@@ -8,12 +8,12 @@
 :root {
     --bg-color: #f5f5f5;
     --text-color: #1a1a1a;
-    --accent-color: #2d9596;
-    --accent-light: #40b4b5;
-    --border-color: #2d9596;
+    --accent-color: #7c3aed;
+    --accent-light: #a78bfa;
+    --border-color: #7c3aed;
     --card-bg: #ffffff;
     --muted-text: #666666;
-    --code-bg: #e8e8e8;
+    --code-bg: #ede9fe;
 }
 
 html {
@@ -147,8 +147,10 @@ body {
 /* Main Content */
 .main-content {
     margin-left: 200px;
-    padding: 80px 100px;
-    max-width: 1000px;
+    margin-right: auto;
+    padding: 80px 60px;
+    max-width: 900px;
+    width: calc(100% - 200px);
 }
 
 /* Sections */
@@ -693,7 +695,8 @@ a.value:hover {
 @media (max-width: 1024px) {
     .main-content {
         margin-left: 180px;
-        padding: 60px 60px;
+        padding: 60px 40px;
+        width: calc(100% - 180px);
     }
 
     .ascii-art pre {
