@@ -31,15 +31,9 @@
     <main class="main-content">
         <!-- Home Section -->
         <section id="home" class="section hero-section">
-            <!-- Interactive Portrait -->
-            <div class="interactive-portrait" id="interactivePortrait">
-                <canvas id="asciiCanvas" class="ascii-canvas"></canvas>
-                <canvas id="revealCanvas" class="reveal-canvas"></canvas>
-                <img src="images/profile.jpg" alt="Ravjoth Brar" class="portrait-image" id="portraitImage" crossorigin="anonymous">
-                <div class="portrait-hint">hover to reveal</div>
-            </div>
-
-            <div class="ascii-art">
+            <div class="hero-content">
+                <div class="hero-left">
+                    <div class="ascii-art">
 <pre>
 ██████╗  █████╗ ██╗   ██╗     ██╗ ██████╗ ████████╗██╗  ██╗
 ██╔══██╗██╔══██╗██║   ██║     ██║██╔═══██╗╚══██╔══╝██║  ██║
@@ -55,10 +49,21 @@
 ██████╔╝██║  ██║██║  ██║██║  ██║
 ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 </pre>
-            </div>
-            <h1 class="hero-name">Ravjoth Brar</h1>
-            <div class="hero-tagline">
-                <span class="prompt">></span> Student & AI Enthusiast
+                    </div>
+                    <h1 class="hero-name">Ravjoth Brar</h1>
+                    <div class="hero-tagline">
+                        <span class="prompt">></span> Student & AI Enthusiast
+                    </div>
+                </div>
+                <div class="hero-right">
+                    <!-- Interactive Portrait -->
+                    <div class="interactive-portrait" id="interactivePortrait">
+                        <canvas id="asciiCanvas" class="ascii-canvas"></canvas>
+                        <canvas id="revealCanvas" class="reveal-canvas"></canvas>
+                        <img src="images/profile.jpg" alt="Ravjoth Brar" class="portrait-image" id="portraitImage" crossorigin="anonymous">
+                        <div class="portrait-hint">hover to reveal</div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -129,7 +134,7 @@
                         <span class="role-type">Part-time</span>
                         <span class="role-date">Ongoing</span>
                     </div>
-                    <a href="https://www.yourprismaticstudios.com" target="_blank" class="role-company-link">Prismatic Studios</a>
+                    <a href="https://prismatic.studio/" target="_blank" class="role-company-link">Prismatic Studios</a>
                     <p class="role-description">Researching, developing, and writing content to shape raw founder ideas into sharp, impactful brands</p>
                 </div>
 
@@ -168,7 +173,7 @@
                         <span class="role-title">> Summer AI Intern</span>
                         <span class="role-date">July 2025</span>
                     </div>
-                    <a href="https://www.blankstate.ai" target="_blank" class="role-company-link">Blankstate</a>
+                    <a href="https://blankstate.ai/" target="_blank" class="role-company-link">Blankstate</a>
                     <ul class="role-bullets">
                         <li>Authored technical whitepaper on Intention Blended Framework (IBF), analysing how AI interprets organizational communication patterns for performance insights</li>
                         <li>Developed enterprise sales strategies across multiple channels</li>
