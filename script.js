@@ -242,10 +242,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const asciiCtx = asciiCanvas.getContext('2d');
         const revealCtx = revealCanvas.getContext('2d');
 
+        let canvasWidth, canvasHeight;
+
         // Set canvas dimensions
         function resizeCanvases() {
             const rect = portraitContainer.getBoundingClientRect();
             const dpr = window.devicePixelRatio || 1;
+
+            canvasWidth = rect.width;
+            canvasHeight = rect.height;
 
             asciiCanvas.width = rect.width * dpr;
             asciiCanvas.height = rect.height * dpr;
@@ -260,20 +265,21 @@ document.addEventListener('DOMContentLoaded', function() {
             asciiCtx.scale(dpr, dpr);
             revealCtx.scale(dpr, dpr);
 
+            // Draw ASCII art once
             drawAsciiArt();
         }
 
-        // Draw ASCII art on canvas
+        // Draw ASCII art on canvas (called once on init/resize)
         function drawAsciiArt() {
-            const rect = portraitContainer.getBoundingClientRect();
             const lines = ASCII_ART.split('\n');
 
+            // Clear and set background
             asciiCtx.fillStyle = '#f5f5f5';
-            asciiCtx.fillRect(0, 0, rect.width, rect.height);
+            asciiCtx.fillRect(0, 0, canvasWidth, canvasHeight);
 
             // Calculate font size to fit
-            const charWidth = rect.width / (lines[0] ? lines[0].length : 200);
-            const charHeight = rect.height / lines.length;
+            const charWidth = canvasWidth / (lines[0] ? lines[0].length : 200);
+            const charHeight = canvasHeight / lines.length;
             const fontSize = Math.min(charWidth * 1.8, charHeight * 1.2, 3);
 
             asciiCtx.font = `${fontSize}px monospace`;
@@ -299,12 +305,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        function drawRevealMask() {
-            const rect = portraitContainer.getBoundingClientRect();
+        function updateReveal() {
             const now = Date.now();
-
-            // Clear reveal canvas
-            revealCtx.clearRect(0, 0, rect.width, rect.height);
 
             // Filter out expired trails
             for (let i = revealTrails.length - 1; i >= 0; i--) {
@@ -313,17 +315,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
+            // Clear the reveal canvas (mask layer)
+            revealCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+
             if (revealTrails.length === 0) {
+                // No trails - show full ASCII, hide image
                 portraitImage.style.opacity = '0';
+                asciiCanvas.style.opacity = '1';
                 return;
             }
 
-            // Show image
+            // Show the image underneath
             portraitImage.style.opacity = '1';
 
-            // Create clipping mask for ASCII canvas
-            asciiCtx.save();
-            asciiCtx.globalCompositeOperation = 'destination-out';
+            // Draw reveal mask on reveal canvas
+            // This creates "holes" that let the image show through
+            revealCtx.fillStyle = '#f5f5f5';
+            revealCtx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+            // Cut out the revealed areas
+            revealCtx.globalCompositeOperation = 'destination-out';
 
             revealTrails.forEach(trail => {
                 const age = now - trail.timestamp;
@@ -331,75 +342,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 const opacity = 1 - fadeProgress;
 
                 if (opacity > 0) {
-                    // Draw on reveal canvas (shows the image)
+                    // Main circle
                     revealCtx.beginPath();
                     revealCtx.arc(trail.x, trail.y, trail.size, 0, Math.PI * 2);
-                    revealCtx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+                    revealCtx.fillStyle = `rgba(0, 0, 0, ${opacity})`;
                     revealCtx.fill();
 
-                    // Create jagged brush effect
+                    // Jagged brush edges
                     for (let j = 0; j < 8; j++) {
                         const angle = (j / 8) * Math.PI * 2;
-                        const jitter = (Math.random() - 0.5) * trail.size * 0.5;
-                        const px = trail.x + Math.cos(angle) * (trail.size * 0.7 + jitter);
-                        const py = trail.y + Math.sin(angle) * (trail.size * 0.7 + jitter);
+                        const jitter = (Math.random() - 0.5) * trail.size * 0.3;
+                        const px = trail.x + Math.cos(angle) * (trail.size * 0.6 + jitter);
+                        const py = trail.y + Math.sin(angle) * (trail.size * 0.6 + jitter);
 
                         revealCtx.beginPath();
-                        revealCtx.arc(px, py, trail.size * 0.3, 0, Math.PI * 2);
-                        revealCtx.fillStyle = `rgba(255, 255, 255, ${opacity * 0.7})`;
+                        revealCtx.arc(px, py, trail.size * 0.25, 0, Math.PI * 2);
+                        revealCtx.fillStyle = `rgba(0, 0, 0, ${opacity * 0.8})`;
                         revealCtx.fill();
                     }
                 }
             });
 
-            // Create mask effect - cut holes in ASCII canvas
-            asciiCtx.globalCompositeOperation = 'destination-out';
-            revealTrails.forEach(trail => {
-                const age = now - trail.timestamp;
-                const fadeProgress = age / TRAIL_LIFETIME;
-                const opacity = 1 - fadeProgress;
-
-                if (opacity > 0) {
-                    asciiCtx.beginPath();
-                    asciiCtx.arc(trail.x, trail.y, trail.size, 0, Math.PI * 2);
-                    asciiCtx.fillStyle = `rgba(0, 0, 0, ${opacity})`;
-                    asciiCtx.fill();
-
-                    // Jagged edges
-                    for (let j = 0; j < 8; j++) {
-                        const angle = (j / 8) * Math.PI * 2;
-                        const jitter = (Math.random() - 0.5) * trail.size * 0.5;
-                        const px = trail.x + Math.cos(angle) * (trail.size * 0.7 + jitter);
-                        const py = trail.y + Math.sin(angle) * (trail.size * 0.7 + jitter);
-
-                        asciiCtx.beginPath();
-                        asciiCtx.arc(px, py, trail.size * 0.3, 0, Math.PI * 2);
-                        asciiCtx.fillStyle = `rgba(0, 0, 0, ${opacity * 0.7})`;
-                        asciiCtx.fill();
-                    }
-                }
-            });
-            asciiCtx.restore();
-
-            // Redraw ASCII art then apply mask
-            drawAsciiArt();
-
-            // Apply the reveal mask
-            asciiCtx.save();
-            asciiCtx.globalCompositeOperation = 'destination-out';
-            revealTrails.forEach(trail => {
-                const age = now - trail.timestamp;
-                const fadeProgress = age / TRAIL_LIFETIME;
-                const opacity = 1 - fadeProgress;
-
-                if (opacity > 0) {
-                    asciiCtx.beginPath();
-                    asciiCtx.arc(trail.x, trail.y, trail.size, 0, Math.PI * 2);
-                    asciiCtx.fillStyle = `rgba(0, 0, 0, ${opacity})`;
-                    asciiCtx.fill();
-                }
-            });
-            asciiCtx.restore();
+            revealCtx.globalCompositeOperation = 'source-over';
         }
 
         // Mouse interaction
@@ -480,26 +444,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Animation loop
         function animate() {
-            drawRevealMask();
+            updateReveal();
             requestAnimationFrame(animate);
         }
 
         // Initialize
-        portraitImage.onload = () => {
-            resizeCanvases();
-            animate();
-        };
-
-        // Handle image already loaded
-        if (portraitImage.complete) {
+        function init() {
             resizeCanvases();
             animate();
         }
 
+        // Start when image loads
+        if (portraitImage.complete) {
+            init();
+        } else {
+            portraitImage.onload = init;
+        }
+
         // Handle resize
-        window.addEventListener('resize', () => {
-            resizeCanvases();
-        });
+        window.addEventListener('resize', resizeCanvases);
     }
 
     // Console message for visitors who check dev tools
