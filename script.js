@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(box);
     });
 
-    // Typing effect for hero tagline (optional enhancement)
+    // Typing effect for hero tagline
     const tagline = document.querySelector('.hero-tagline');
     if (tagline) {
         tagline.style.opacity = '0';
@@ -98,33 +98,42 @@ document.addEventListener('DOMContentLoaded', function() {
     // Interactive Portrait with Reveal Effect
     // ========================================
 
-    // Initialize Interactive Portrait
     const portraitContainer = document.getElementById('interactivePortrait');
-    const asciiCanvas = document.getElementById('asciiCanvas');
     const revealCanvas = document.getElementById('revealCanvas');
     const portraitImage = document.getElementById('portraitImage');
 
-    if (portraitContainer && asciiCanvas && revealCanvas && portraitImage) {
+    if (portraitContainer && revealCanvas && portraitImage) {
         initInteractivePortrait();
     }
 
     function initInteractivePortrait() {
-        const asciiCtx = asciiCanvas.getContext('2d');
         const revealCtx = revealCanvas.getContext('2d');
 
         let canvasWidth, canvasHeight;
         let dpr = window.devicePixelRatio || 1;
         let asciiImage = null;
+        let isInitialized = false;
 
         // Load the ASCII art image
         const asciiImg = new Image();
+        asciiImg.crossOrigin = 'anonymous';
         asciiImg.src = 'images/ascii-art.png';
         asciiImg.onload = function() {
             asciiImage = asciiImg;
-            drawAsciiArt();
+            if (isInitialized) {
+                drawFullAscii();
+            }
         };
 
-        // Set canvas dimensions
+        // Mask canvas for tracking revealed areas
+        const maskCanvas = document.createElement('canvas');
+        const maskCtx = maskCanvas.getContext('2d');
+
+        // Reveal trail management
+        const TRAIL_LIFETIME = 45000; // 45 seconds
+        const BRUSH_SIZE = 70;
+        const revealTrails = [];
+
         function resizeCanvases() {
             const rect = portraitContainer.getBoundingClientRect();
             dpr = window.devicePixelRatio || 1;
@@ -132,129 +141,102 @@ document.addEventListener('DOMContentLoaded', function() {
             canvasWidth = rect.width;
             canvasHeight = rect.height;
 
-            asciiCanvas.width = rect.width * dpr;
-            asciiCanvas.height = rect.height * dpr;
             revealCanvas.width = rect.width * dpr;
             revealCanvas.height = rect.height * dpr;
-
-            asciiCanvas.style.width = rect.width + 'px';
-            asciiCanvas.style.height = rect.height + 'px';
             revealCanvas.style.width = rect.width + 'px';
             revealCanvas.style.height = rect.height + 'px';
 
-            asciiCtx.setTransform(1, 0, 0, 1, 0, 0);
+            maskCanvas.width = rect.width * dpr;
+            maskCanvas.height = rect.height * dpr;
+
             revealCtx.setTransform(1, 0, 0, 1, 0, 0);
-            asciiCtx.scale(dpr, dpr);
             revealCtx.scale(dpr, dpr);
 
-            // Draw ASCII art
-            drawAsciiArt();
+            maskCtx.setTransform(1, 0, 0, 1, 0, 0);
+            maskCtx.scale(dpr, dpr);
+            maskCtx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-            // Initialize reveal canvas as fully opaque (covering the image)
-            revealCtx.fillStyle = '#f5f5f5';
-            revealCtx.fillRect(0, 0, canvasWidth, canvasHeight);
+            drawFullAscii();
         }
 
-        // Draw ASCII art on canvas using the loaded image
-        function drawAsciiArt() {
-            // Clear and set background
-            asciiCtx.fillStyle = '#f5f5f5';
-            asciiCtx.fillRect(0, 0, canvasWidth, canvasHeight);
+        function drawFullAscii() {
+            // Fill with background color first
+            revealCtx.fillStyle = '#f5f5f5';
+            revealCtx.fillRect(0, 0, canvasWidth, canvasHeight);
 
+            // Draw ASCII art image if loaded
             if (asciiImage) {
-                // Draw the ASCII art image scaled to fit
-                asciiCtx.drawImage(asciiImage, 0, 0, canvasWidth, canvasHeight);
+                revealCtx.drawImage(asciiImage, 0, 0, canvasWidth, canvasHeight);
             }
         }
 
-        // Reveal trail management - liquid effect simulation
-        const revealTrails = [];
-        const TRAIL_LIFETIME = 45000; // 45 seconds
-        const BRUSH_SIZE = 60;
-
-        // Mask canvas for accumulated reveal
-        const maskCanvas = document.createElement('canvas');
-        const maskCtx = maskCanvas.getContext('2d');
-
-        function initMaskCanvas() {
-            maskCanvas.width = canvasWidth * dpr;
-            maskCanvas.height = canvasHeight * dpr;
-            maskCtx.setTransform(1, 0, 0, 1, 0, 0);
-            maskCtx.scale(dpr, dpr);
-            // Start fully transparent (nothing revealed)
-            maskCtx.clearRect(0, 0, canvasWidth, canvasHeight);
-        }
-
         function addRevealPoint(x, y) {
-            // Add to trails for decay tracking
             revealTrails.push({
                 x: x,
                 y: y,
                 timestamp: Date.now(),
-                size: BRUSH_SIZE + Math.random() * 20,
-                opacity: 1
+                size: BRUSH_SIZE + Math.random() * 25
             });
 
-            // Draw on mask canvas with liquid effect
-            drawLiquidBrush(maskCtx, x, y, BRUSH_SIZE + Math.random() * 20);
+            // Draw on mask canvas
+            drawBrushOnMask(x, y, BRUSH_SIZE + Math.random() * 25);
         }
 
-        function drawLiquidBrush(ctx, x, y, size) {
-            // Main blob
-            const gradient = ctx.createRadialGradient(x, y, 0, x, y, size);
+        function drawBrushOnMask(x, y, size) {
+            // Create soft-edged brush
+            const gradient = maskCtx.createRadialGradient(x, y, 0, x, y, size);
             gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
-            gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.8)');
+            gradient.addColorStop(0.6, 'rgba(255, 255, 255, 0.7)');
             gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
-            ctx.globalCompositeOperation = 'source-over';
-            ctx.beginPath();
-            ctx.arc(x, y, size, 0, Math.PI * 2);
-            ctx.fillStyle = gradient;
-            ctx.fill();
+            maskCtx.globalCompositeOperation = 'source-over';
+            maskCtx.beginPath();
+            maskCtx.arc(x, y, size, 0, Math.PI * 2);
+            maskCtx.fillStyle = gradient;
+            maskCtx.fill();
 
-            // Add organic jagged edges
-            for (let i = 0; i < 8; i++) {
-                const angle = (i / 8) * Math.PI * 2 + Math.random() * 0.5;
-                const dist = size * (0.6 + Math.random() * 0.4);
+            // Add organic splatter around the brush
+            for (let i = 0; i < 6; i++) {
+                const angle = (i / 6) * Math.PI * 2 + Math.random() * 0.8;
+                const dist = size * (0.5 + Math.random() * 0.5);
                 const blobX = x + Math.cos(angle) * dist;
                 const blobY = y + Math.sin(angle) * dist;
-                const blobSize = size * (0.2 + Math.random() * 0.3);
+                const blobSize = size * (0.15 + Math.random() * 0.25);
 
-                const blobGradient = ctx.createRadialGradient(blobX, blobY, 0, blobX, blobY, blobSize);
-                blobGradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
-                blobGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                const blobGrad = maskCtx.createRadialGradient(blobX, blobY, 0, blobX, blobY, blobSize);
+                blobGrad.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
+                blobGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
-                ctx.beginPath();
-                ctx.arc(blobX, blobY, blobSize, 0, Math.PI * 2);
-                ctx.fillStyle = blobGradient;
-                ctx.fill();
+                maskCtx.beginPath();
+                maskCtx.arc(blobX, blobY, blobSize, 0, Math.PI * 2);
+                maskCtx.fillStyle = blobGrad;
+                maskCtx.fill();
             }
         }
 
         function updateReveal() {
             const now = Date.now();
 
-            // Gradually fade the mask (trails decay)
+            // Slowly fade the mask
             maskCtx.globalCompositeOperation = 'destination-out';
-            maskCtx.fillStyle = 'rgba(0, 0, 0, 0.0003)'; // Very slow fade
+            maskCtx.fillStyle = 'rgba(0, 0, 0, 0.0004)';
             maskCtx.fillRect(0, 0, canvasWidth, canvasHeight);
             maskCtx.globalCompositeOperation = 'source-over';
 
-            // Remove old trails from tracking array
+            // Remove expired trails
             for (let i = revealTrails.length - 1; i >= 0; i--) {
                 if (now - revealTrails[i].timestamp > TRAIL_LIFETIME) {
                     revealTrails.splice(i, 1);
                 }
             }
 
-            // Clear reveal canvas
+            // Redraw the reveal canvas
             revealCtx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-            // Draw the ASCII art background
+            // Draw ASCII art as the base layer
             revealCtx.fillStyle = '#f5f5f5';
             revealCtx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-            // Draw ASCII image on reveal canvas
             if (asciiImage) {
                 revealCtx.drawImage(asciiImage, 0, 0, canvasWidth, canvasHeight);
             }
@@ -265,33 +247,32 @@ document.addEventListener('DOMContentLoaded', function() {
             revealCtx.globalCompositeOperation = 'source-over';
         }
 
-        // Mouse interaction
-        let isMouseOver = false;
-        let lastX = 0;
-        let lastY = 0;
+        // Mouse events
+        let lastX = 0, lastY = 0;
+        let isHovering = false;
 
         portraitContainer.addEventListener('mouseenter', () => {
-            isMouseOver = true;
+            isHovering = true;
         });
 
         portraitContainer.addEventListener('mouseleave', () => {
-            isMouseOver = false;
+            isHovering = false;
         });
 
         portraitContainer.addEventListener('mousemove', (e) => {
-            if (!isMouseOver) return;
+            if (!isHovering) return;
 
             const rect = portraitContainer.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
 
-            // Add points along the path for smooth trail
+            // Interpolate for smooth strokes
             const dx = x - lastX;
             const dy = y - lastY;
-            const distance = Math.sqrt(dx * dx + dy * dy);
+            const dist = Math.sqrt(dx * dx + dy * dy);
 
-            if (distance > 5) {
-                const steps = Math.ceil(distance / 10);
+            if (dist > 5) {
+                const steps = Math.ceil(dist / 8);
                 for (let i = 0; i <= steps; i++) {
                     const t = i / steps;
                     addRevealPoint(lastX + dx * t, lastY + dy * t);
@@ -304,10 +285,10 @@ document.addEventListener('DOMContentLoaded', function() {
             lastY = y;
         });
 
-        // Touch support
+        // Touch events
         portraitContainer.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            isMouseOver = true;
+            isHovering = true;
             const touch = e.touches[0];
             const rect = portraitContainer.getBoundingClientRect();
             lastX = touch.clientX - rect.left;
@@ -323,10 +304,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const dx = x - lastX;
             const dy = y - lastY;
-            const distance = Math.sqrt(dx * dx + dy * dy);
+            const dist = Math.sqrt(dx * dx + dy * dy);
 
-            if (distance > 5) {
-                const steps = Math.ceil(distance / 10);
+            if (dist > 5) {
+                const steps = Math.ceil(dist / 8);
                 for (let i = 0; i <= steps; i++) {
                     const t = i / steps;
                     addRevealPoint(lastX + dx * t, lastY + dy * t);
@@ -340,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         portraitContainer.addEventListener('touchend', () => {
-            isMouseOver = false;
+            isHovering = false;
         });
 
         // Animation loop
@@ -351,18 +332,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Initialize
         function init() {
+            isInitialized = true;
             resizeCanvases();
-            initMaskCanvas();
             animate();
         }
 
-        // Start when image loads or immediately if already loaded
+        // Wait for portrait image to load
         if (portraitImage.complete && portraitImage.naturalHeight !== 0) {
             init();
         } else {
             portraitImage.onload = init;
             portraitImage.onerror = () => {
-                console.log('Portrait image failed to load, initializing anyway');
+                console.log('Portrait image failed to load');
                 init();
             };
         }
@@ -371,14 +352,11 @@ document.addEventListener('DOMContentLoaded', function() {
         let resizeTimeout;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                resizeCanvases();
-                initMaskCanvas();
-            }, 100);
+            resizeTimeout = setTimeout(resizeCanvases, 100);
         });
     }
 
-    // Console message for visitors who check dev tools
+    // Console message
     console.log('%c Welcome to my portfolio!', 'color: #7c3aed; font-size: 20px; font-weight: bold;');
     console.log('%c Thanks for checking out the code.', 'color: #666; font-size: 14px;');
 });
