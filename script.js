@@ -85,6 +85,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ========================================
+    // Hover Prompt Button - Disappear after 5 seconds
+    // ========================================
+    const hoverPromptBtn = document.getElementById('hoverPromptBtn');
+    if (hoverPromptBtn) {
+        setTimeout(() => {
+            hoverPromptBtn.classList.add('hidden');
+        }, 5000);
+    }
+
+    // ========================================
     // Interactive Portrait with Reveal Effect
     // ========================================
 
@@ -104,6 +114,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         let canvasWidth, canvasHeight;
         let dpr = window.devicePixelRatio || 1;
+        let asciiImage = null;
+
+        // Load the ASCII art image
+        const asciiImg = new Image();
+        asciiImg.src = 'images/ascii-art.png';
+        asciiImg.onload = function() {
+            asciiImage = asciiImg;
+            drawAsciiArt();
+        };
 
         // Set canvas dimensions
         function resizeCanvases() {
@@ -128,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
             asciiCtx.scale(dpr, dpr);
             revealCtx.scale(dpr, dpr);
 
-            // Draw ASCII art once
+            // Draw ASCII art
             drawAsciiArt();
 
             // Initialize reveal canvas as fully opaque (covering the image)
@@ -136,28 +155,15 @@ document.addEventListener('DOMContentLoaded', function() {
             revealCtx.fillRect(0, 0, canvasWidth, canvasHeight);
         }
 
-        // Draw ASCII art on canvas
+        // Draw ASCII art on canvas using the loaded image
         function drawAsciiArt() {
             // Clear and set background
             asciiCtx.fillStyle = '#f5f5f5';
             asciiCtx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-            // Draw a simple pattern or placeholder ASCII
-            asciiCtx.fillStyle = '#2596be';
-            asciiCtx.font = '10px monospace';
-            asciiCtx.textBaseline = 'top';
-
-            // Create a grid of characters
-            const chars = '*#%@&+=-:.';
-            const cellSize = 8;
-
-            for (let y = 0; y < canvasHeight; y += cellSize) {
-                for (let x = 0; x < canvasWidth; x += cellSize) {
-                    // Create a pattern based on position
-                    const charIndex = Math.floor((Math.sin(x * 0.05) + Math.cos(y * 0.05) + 2) / 4 * chars.length);
-                    const char = chars[charIndex % chars.length];
-                    asciiCtx.fillText(char, x, y);
-                }
+            if (asciiImage) {
+                // Draw the ASCII art image scaled to fit
+                asciiCtx.drawImage(asciiImage, 0, 0, canvasWidth, canvasHeight);
             }
         }
 
@@ -248,19 +254,9 @@ document.addEventListener('DOMContentLoaded', function() {
             revealCtx.fillStyle = '#f5f5f5';
             revealCtx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-            // Redraw ASCII pattern
-            revealCtx.fillStyle = '#2596be';
-            revealCtx.font = '10px monospace';
-            revealCtx.textBaseline = 'top';
-            const chars = '*#%@&+=-:.';
-            const cellSize = 8;
-
-            for (let y = 0; y < canvasHeight; y += cellSize) {
-                for (let x = 0; x < canvasWidth; x += cellSize) {
-                    const charIndex = Math.floor((Math.sin(x * 0.05) + Math.cos(y * 0.05) + 2) / 4 * chars.length);
-                    const char = chars[charIndex % chars.length];
-                    revealCtx.fillText(char, x, y);
-                }
+            // Draw ASCII image on reveal canvas
+            if (asciiImage) {
+                revealCtx.drawImage(asciiImage, 0, 0, canvasWidth, canvasHeight);
             }
 
             // Cut out revealed areas using the mask
