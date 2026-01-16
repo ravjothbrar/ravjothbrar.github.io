@@ -88,37 +88,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Interactive Portrait with Reveal Effect
     // ========================================
 
-    // New ASCII art provided by user
-    const ASCII_ART = `*-:=+==--=*%%#*=-+#%%#+=+*++==+***+++=-:::-+%%#=:::=#%###+++++**++++++++**+++++++++****#***##%%%%%######***##%%#*=-----=*#*+==-===----+*##*+=---=+*#*+=--====---=+***+===+***+==-:::--:::::::-+****###*+=----=+=--::--=++***#%##*=----=+*************************************************##+==+*######%%%##*+*#%%%%#***#%%%%%###%%%####%%@@@%####%%%%%%%%%%%%%
-#*+==+++==+++#%#++*##*++*+-:::=****-:--:::-==+##+-:=#%##*++++***+++++++++++++++++++*****####%%%%%%#############*+=-::--=+###*++++==--=*##*+=-::--=*###*========+*##*=--::--=+**+-:::::::::-=+*+-----+***+=-::---::::--=+=----=***+=----=*************************************************#*----=+***##%%%#*=---=*##+=--=+####*##%%%%#**##%%##*==+*%%%%####%%%%
-%%%#*##%%%####%%####%%##%%#*+++***#*-:-+***+=+*##***#%##*+++++++++++++++++++++++++*+++**###%%%%%%%#########*****=-::::--=++++*********+====-::::-=++****++**++*****+=-::::--=**#+-::--:::-=*#*-:::::-=+*#*=-:--:::::-=*=-:::::-=+**+===+*************************************************#*-----=+===+#%##*+----=+*=-----+****####*##****++++=-:-=*######*==+#
-%@@@%##%%%%%@@@@@@%%%%%%%%%%%%%#*#%%%##*#%@%%%%%%%%##%%##+++++++++++++++++++++++++++++*###%%%%%%%%######%%#*++++=:::::---===+*######*=-:::-:::::-----=+*****##*=-:::::::::::::-=*#****++++=---:::..::-=*###+==+=----==+=-::::::-+*###*************************************+*************##+-:::-=+--:--+*****+===++=-::--+**+=+**++++****+===-:::-=+***##+---=
-%%%%###**##%#%%%%#*+=*##*#%%@@@%*#%@@@%#####%%%@@@%%#%%##++++++++++++++++++++++++++++**##%%%%%%%%%######%%#*++++=::::::-=+++*########=-:::-::::::----=+#######*=::::::::::::::::-*######*=:::::......:---=********=::::::.....:-=+*#####*********************************+++******+*****##*=---*#*--::-=++**#%##***=--:--*#*=--=+**++*####*++=-::---=****#+==+
-####**#%%%###%#+=----=#%%%%%@@%#**###***##*####%##**#%%##+++++++++++++++++++++++++++***#####%%%%%########+=-=+*+-:::::--=+++++=++++==+++==-::::::-=+++**********=--::::...::::::=####**##+-:::.......::::-=*######*-::::......:::::-+*##********++++*********************+++*****+++++**###*==+*#*=----=++*##%%%##**++=+*##*=---+***++**#%##**+==-:::+****##*#
-*+****#%%*+++**=-----+#%%#+=+###*****==#%%%%###*===+#%%##++++++++++++++++++++++++++****+===+*#%%########+---:--+=-::::-=+++=--:-==-:::-=*+=::::::-++++=------:-=**=-:......::=++=--==-:-=+*+=:.......:------=+*++*#*+=-:......::::::=*##******+++++++***********++*******+++**++++++++**####*+++*+-:::-=+++*###%%%#*+**####*-::-=+*******#%%#**#*=-::+***+++*#
-*###*+**#****+-:--==+*++*##*+==+**++++=+#%%*+=++---=#%%##*++++++++++++++++++++++++++**+=====+###########+--::::-*+---=***=--:::---:::::::=+=:::-=**+=-:..:::...:-++=::....::-+=:....:....:=*+-:......:==-:...:::::-*##+:.......:=-:::-+*******++++++++*********+++++***+++++++++++++++**######**+=:::::-++===+#%##*+----=+*=-----+****####*##****++++=-:-=*######*==+#
-##%@@%%%%%%%%%#*+*#%%%##*####+=+***#%#***##***#*-::=*%%##*+++++++++++++++++++++++++*##*++++*############*---:--=##*++*#*+=--::-=++-:::.::-=*+==+##*=::...:::.....:=++=::::-==-:...........:-=+=:....:--:...........:-+*=:......:-:...:-+*****+++++++++++++****+++++++*++++++++++++++++**####%%%#*-::.::-+=-:::-+###*===+#%#+-:::=====++*##%#*=--=#%##*++-:..:+
-%%####%%%@@@%%####%%%%%@@@%%####*##%%%%###%%%%%#=-=#%%##*+++++++++++++++++++++++++*#%%%%%%%%%%##########*++++*#####*****++++++***+=-----=*###*###*+=----=++-:::::=+*#*+++*+-:.....:::......:=++=-:-=-:..............:-++=:..::::.....-+*****+++++++++++++****++++++++++++++++++++++++**##**##%#*=:::::-=-::.::-+*****##%##*-::-===-:::=*###*+===++*#*++=::.:-
-**#@@@%%*+****#%%########%%######*##%@@@%%%%%%%%%#**#%%##*++++++++++++++++++++++++++*##%%%%%%%%%#########%%%%%%#####*+*##%####################*########*******++**#########*+===--=+*+=:::::-+*###***=:......:--:....::=***===+-:.....-+*****+++++++++++++***+++++++++++++++++++++++++**#*----+***+-::-=+-:...:-++=---+###***===+**=::::=++***##+-::=***++=-=-
-+=+###*+==+*#%@@@@%%#*+++*+=--+****+#%#+---=****#%%##%%##*++++++++++++++++++++++++++**#####%%%%%#########+==+##*+=-::::-+##**++=+*****###**+=---=*###################*+++#############*****##########**++++++****=---=+***###**+-::::-=******++++++++++++++**+++++++++++++++++++++++++**#*-:::-+**##**+*+-::..:-+*+-::-=+***####*##+:::-===++***+-::-*#######*
-+=+*+-=+##%%##%@@%#*++****=---=***+=++--::-=**#%%@%%#%%##*++++++++++++++++++++++++++**#######%%%########*=-=+##*-:::::::=*#*=-::--:::-+**=::....::-+#**+======+*##*+=-::::-=*##**===+++*#####*+---=+*#**********####****+==+####*************++++++++++++++**+++++++++++++++++++++++++**##+-::-+***#####*=-:::-=****+===+***#######*----+*++*****+===*########
-+==*+=+#%@%#++*%#*--=**##+----=***+-==::-=*###*#%%%##%%##*++++++++++++++++++++++++++*##%####%%%%#########+*##%#+-::.:::-+##*-::::::::-*#+-:......:-+##+----:::-=*#+--:::::::-**=:..:::::=*##+:.....::=**=-:::----=##*+-:....:-=*#*+==+*******+++++++++++++++++++++++++++++++++++++++++**####*****+*##%%%%#**+*####**##########%%%%%#**+*#%##**###########%%%%%
-*+=*#%@@@@%#+=++=---+*#%%*=---=+**=:-=:=*%%%#*+**+==*%%##*++++++++++++++++++++++++++#%%%%##%%%%###########%%%%##*+---=*#####*+===+==+***+=-:...::-+*##*===----=+*#+=--::::::=*#=:...:::::=*#=:.....::-+*+:....::::-***-.......:=**=---+*****++++++++++++++++++++++++++++++++++++++++++**###%%#*=-::--+#%%######%%#*##%%###*++*#%%%%%###%%%%####%%%#####%%%%@%%
-*=-=#%@@@%#*==++=---+*#%%%#+=-=+**+==+*%%%%%#+++--:-*%%##*++++++++++++++++++++++++++*#******############**+++++*###***####*************###**+==+*####%##***++**####**+--:-=+*###+=-===--=+*#*=::::::-+*#*+-:::::::-+**=:......:-+#*+++******++++++++++++++++++++++++++++++++++++++++++**#######+:....:=*####**###***###***+:::=*#%############%%%#######%%%%%%
-##+-=*%@%%*+==++=---+#####*+=+++***=:-*%%%%#*+==-::-+#%##*++++++++++++++++++++++++++**++==++*##########*=------=**#*****=-::::-==+=--::--+*#######****###**++++++++*##****########*********###**===+*######*++++++***#*+=-::::=+*#####******++++++++++++++++++++++++++++++++++++++++++*####**##*=:....:-+**####*******+=+++::::+****##%###****##***##***#####%
-#%%%#++*#**+==++=---=*#*==+==***#**#*++*%%#*+====::-+#%##*++++++++++++++++++++++++++++++===+*##########+-------+**+=--==-::...::--:.....:-++++++**=-::-=++++=------=+***##*+-:::-=**+=-::::-=+####*****+++*##*+++++++*********#*+==+*##*****++++++++++++++++++++++++++++++++++++++++++*#########*+=-:::=***#####*******+++*+=-=+****##%%###***##****##***#****
-#%%@%*+++**+==+=----=*#+--*##%%%#*##%%*=++==+=-=-::-+#%##*+++++++++++++++++++++++++++**+++++*##########+-----+**+-:::::---:::.:::::....:-++=::.::==-:::-====--:::---====+*+-::::::-==::::.:::-+*####*+=-::--+=::..:::-=+++*###+-:::::-+*****++++++++++++++++++++++++++++++++++++++++++*#+--+#%%########***#%%%%#****#%%%%###########%%%%%##*##%%%%%%%####%###
-##*##*+++*#+==+=----=+*+++*%%%%%#*##%%#+====+----::-+#%##*+++++++++++++++++++++++++++*******###########+=--=*##*-:....::=+=-:::::::..:-+**=:.....:-+++=---=--:---===-::::-==-:::::--=----:::------=**++=-::---:...::::-----=*#+-:...::=+****++++++++++++++++++++++++++++++++++++++++++*#+::.:-****###%#*=:::=#%#*=:::-*####**###%##**#%%%%*=--+#%%%%#####%%%%%
-*++**===+*#*+=+=-::-=+###%%%%@%%#**+**=-=+***=---::-+#%##*++++++++++++++++++++++==++++++***#######*####****###*+:......:---:::::-----=***+-:......-+**+=====---=+*+=-:----=+++++++++++++++++++=-:::-++++=--:--:::::::--:::::-=+=:::::-=*****++++++++++++++++++++++++++++++++++++++++++*#=:...:==--=+#%#*-:..:-+*+-....=+*+++*##*##+===*###+-::-+#####****%%%##
-*+=+*=-==+#%*-:----=*%%%#%%@%%###*+-==-::-=*#*+=-::-+#%##*+++++++++++++++++++++++=++++++**#################*++++:.......::..::=+++++++=---:.......:::-+++++++++++*+++++++++++++++++++++++++++++++=--=++*+=-----::::-=+-::...::=++-:::-+****+++++++++++++++++++++++++++++++++++++++++++*#-:...:=-:..:=***+-::::=+=-....-++=::-=+++++===+***+::::=*****#*+==*###
-*+=+*=--=+#%#+-:--=*%%#+-=##*+=+**=::-:::--=*#*+-:::=#%##**++++++++++++++++++++++=+++++**####%%############*+===:......::...:-+*****+-:..::..........:-+*****++++++++++***###**##******************===++*+==-=-----=++-:::..::-+***+++*****++++++=++++++++++++++++++++++++++++++++++++*#=::::-+-:...:-+++*++==++=-...:=**-:..:=++=++******=::::-++*****+===###
-**====--==*#%%#*++*#%%*=:------+**+-:-:::--=*##*-:::=#%##**+++++++++++++++++++++===++++**####%###########*++=++=:......:::::-=++++==-::..::..........:-+***++++++++++**#********%%%##########*******=-:--+**+++++=-----:::::::-==+*********++++=====++++++++++++++++++++++++++++++++++*#*=::-+*-:....-++**###***+=-:-=*##-:..:=**+=-=+##**+=------=***##***##%
-*##*+++*******###**###+=----::-=***+-::::--=*###*=::=#%##**++++++++++++++++++++++==++++++==+*####**#####+=----==:......:-+++=::::::...::--:......::----:-+*******++**####***********##%%%%%%%#######*=:::-+******+-----::::::---:--=*******++++========+++++++++++++++==+++======++++**##=---=*-.....-+++*#####**+++*****-:..:++++===+#%##****=-::=*******###%
-#%%%%#*#%@%%###%%%%######%%*====***##+===++***++*#+=+#%##**+++++++*++**++*++++++=---==++*####***####*=-::::::.....:-=+=:...........:--:.....:-==-:..-*****************************++**#%%%%%#####*+-:::-=====*+==-::...::::::::=+******+++===========++++++++++++==============++**##*+++++:.....-+=--=+*###*+=++++**-:..:--=+****#%%#****+-::=***=---+###
-%##%%%%##%%%%%%%%%*+===*%%%%%#######%%%###%%#*++*%%%##%%##**+++++**++****+**+++++=-::::::-+###***###=-:::..::-:...:-+=:...............--:...:=+=:....-####***********######***##************##%%%%##*=:..::..::=**=.......::-::::-+****++===============+======++++==============+**######*+:....:-+=::::=+##+====+**+-:..:---=****##%#+==+*+==+***=:::+###
-%%%%%%%%%%%%####%%%%#+==+####%%##*####%%%##****##***##%##**++++++++*****++*****+++----:...:-*##****##=-::.:-++=-::::::-=+=-::::::...:::=-::....:-*###########################%#####%%%%%%%%%%%%####*****#######%%%%%%############%%%*-::=+***++=-----------====-------------------------==+*##*****=:...-++=---=*##**********+---=++++****####*+++*++++++++===+####
-#%%##%%@@@%%##**####*+****##*++*##*++*++****+++++*#%%%%%#########**###*************#####%%%%%%%####%%%###***#***##########***###**+*******++++%@@@%%%%######%%##%%@%%%%%%%%%%%%%%%%%%@@%%%%%%%%%%@@@@@@%%%%%%%###%%%@@@@%%%%######****+***+++++*******************+++++++++**#+--::--=--:--+**++++*##+=-----==----=*#+-:::-*%#*---=+##***#####+=-==*####***#`;
-
     // Initialize Interactive Portrait
     const portraitContainer = document.getElementById('interactivePortrait');
     const asciiCanvas = document.getElementById('asciiCanvas');
@@ -134,12 +103,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const revealCtx = revealCanvas.getContext('2d');
 
         let canvasWidth, canvasHeight;
-        let imageLoaded = false;
+        let dpr = window.devicePixelRatio || 1;
 
         // Set canvas dimensions
         function resizeCanvases() {
             const rect = portraitContainer.getBoundingClientRect();
-            const dpr = window.devicePixelRatio || 1;
+            dpr = window.devicePixelRatio || 1;
 
             canvasWidth = rect.width;
             canvasHeight = rect.height;
@@ -161,139 +130,142 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Draw ASCII art once
             drawAsciiArt();
+
+            // Initialize reveal canvas as fully opaque (covering the image)
+            revealCtx.fillStyle = '#f5f5f5';
+            revealCtx.fillRect(0, 0, canvasWidth, canvasHeight);
         }
 
-        // Draw ASCII art on canvas (called once on init/resize)
+        // Draw ASCII art on canvas
         function drawAsciiArt() {
-            const lines = ASCII_ART.split('\n');
-
             // Clear and set background
             asciiCtx.fillStyle = '#f5f5f5';
             asciiCtx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-            // Calculate font size to fit
-            const maxLineLength = Math.max(...lines.map(l => l.length));
-            const charWidth = canvasWidth / maxLineLength;
-            const charHeight = canvasHeight / lines.length;
-            const fontSize = Math.min(charWidth * 1.6, charHeight * 1.0, 4);
-
-            asciiCtx.font = `${fontSize}px monospace`;
+            // Draw a simple pattern or placeholder ASCII
             asciiCtx.fillStyle = '#2596be';
+            asciiCtx.font = '10px monospace';
             asciiCtx.textBaseline = 'top';
 
-            const lineHeight = canvasHeight / lines.length;
-            lines.forEach((line, i) => {
-                asciiCtx.fillText(line, 0, i * lineHeight);
-            });
+            // Create a grid of characters
+            const chars = '*#%@&+=-:.';
+            const cellSize = 8;
+
+            for (let y = 0; y < canvasHeight; y += cellSize) {
+                for (let x = 0; x < canvasWidth; x += cellSize) {
+                    // Create a pattern based on position
+                    const charIndex = Math.floor((Math.sin(x * 0.05) + Math.cos(y * 0.05) + 2) / 4 * chars.length);
+                    const char = chars[charIndex % chars.length];
+                    asciiCtx.fillText(char, x, y);
+                }
+            }
         }
 
         // Reveal trail management - liquid effect simulation
         const revealTrails = [];
         const TRAIL_LIFETIME = 45000; // 45 seconds
-        const BRUSH_SIZE = 50;
-        const DECAY_RATE = 0.00002; // Gradual decay
+        const BRUSH_SIZE = 60;
+
+        // Mask canvas for accumulated reveal
+        const maskCanvas = document.createElement('canvas');
+        const maskCtx = maskCanvas.getContext('2d');
+
+        function initMaskCanvas() {
+            maskCanvas.width = canvasWidth * dpr;
+            maskCanvas.height = canvasHeight * dpr;
+            maskCtx.setTransform(1, 0, 0, 1, 0, 0);
+            maskCtx.scale(dpr, dpr);
+            // Start fully transparent (nothing revealed)
+            maskCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+        }
 
         function addRevealPoint(x, y) {
-            // Add main point
+            // Add to trails for decay tracking
             revealTrails.push({
                 x: x,
                 y: y,
                 timestamp: Date.now(),
-                size: BRUSH_SIZE + Math.random() * 30,
-                velocityX: (Math.random() - 0.5) * 2,
-                velocityY: (Math.random() - 0.5) * 2
+                size: BRUSH_SIZE + Math.random() * 20,
+                opacity: 1
             });
 
-            // Add liquid spread effect - smaller particles around main point
-            for (let i = 0; i < 3; i++) {
-                const angle = Math.random() * Math.PI * 2;
-                const dist = Math.random() * BRUSH_SIZE * 0.5;
-                revealTrails.push({
-                    x: x + Math.cos(angle) * dist,
-                    y: y + Math.sin(angle) * dist,
-                    timestamp: Date.now(),
-                    size: BRUSH_SIZE * 0.3 + Math.random() * 15,
-                    velocityX: Math.cos(angle) * 0.5,
-                    velocityY: Math.sin(angle) * 0.5
-                });
+            // Draw on mask canvas with liquid effect
+            drawLiquidBrush(maskCtx, x, y, BRUSH_SIZE + Math.random() * 20);
+        }
+
+        function drawLiquidBrush(ctx, x, y, size) {
+            // Main blob
+            const gradient = ctx.createRadialGradient(x, y, 0, x, y, size);
+            gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+            gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.8)');
+            gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.beginPath();
+            ctx.arc(x, y, size, 0, Math.PI * 2);
+            ctx.fillStyle = gradient;
+            ctx.fill();
+
+            // Add organic jagged edges
+            for (let i = 0; i < 8; i++) {
+                const angle = (i / 8) * Math.PI * 2 + Math.random() * 0.5;
+                const dist = size * (0.6 + Math.random() * 0.4);
+                const blobX = x + Math.cos(angle) * dist;
+                const blobY = y + Math.sin(angle) * dist;
+                const blobSize = size * (0.2 + Math.random() * 0.3);
+
+                const blobGradient = ctx.createRadialGradient(blobX, blobY, 0, blobX, blobY, blobSize);
+                blobGradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
+                blobGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+                ctx.beginPath();
+                ctx.arc(blobX, blobY, blobSize, 0, Math.PI * 2);
+                ctx.fillStyle = blobGradient;
+                ctx.fill();
             }
         }
 
         function updateReveal() {
             const now = Date.now();
 
-            // Filter out expired trails and update positions (liquid simulation)
-            for (let i = revealTrails.length - 1; i >= 0; i--) {
-                const trail = revealTrails[i];
-                const age = now - trail.timestamp;
+            // Gradually fade the mask (trails decay)
+            maskCtx.globalCompositeOperation = 'destination-out';
+            maskCtx.fillStyle = 'rgba(0, 0, 0, 0.0003)'; // Very slow fade
+            maskCtx.fillRect(0, 0, canvasWidth, canvasHeight);
+            maskCtx.globalCompositeOperation = 'source-over';
 
-                if (age > TRAIL_LIFETIME) {
+            // Remove old trails from tracking array
+            for (let i = revealTrails.length - 1; i >= 0; i--) {
+                if (now - revealTrails[i].timestamp > TRAIL_LIFETIME) {
                     revealTrails.splice(i, 1);
-                } else {
-                    // Liquid movement decay
-                    trail.x += trail.velocityX * 0.1;
-                    trail.y += trail.velocityY * 0.1;
-                    trail.velocityX *= 0.98;
-                    trail.velocityY *= 0.98;
                 }
             }
 
-            // Clear the reveal canvas (mask layer)
+            // Clear reveal canvas
             revealCtx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-            if (revealTrails.length === 0) {
-                // No trails - show full ASCII, hide image
-                portraitImage.style.opacity = '0';
-                return;
-            }
-
-            // Show the image underneath
-            portraitImage.style.opacity = '1';
-
-            // Draw reveal mask on reveal canvas
-            // This creates "holes" that let the image show through
+            // Draw the ASCII art background
             revealCtx.fillStyle = '#f5f5f5';
             revealCtx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-            // Cut out the revealed areas with liquid effect
-            revealCtx.globalCompositeOperation = 'destination-out';
+            // Redraw ASCII pattern
+            revealCtx.fillStyle = '#2596be';
+            revealCtx.font = '10px monospace';
+            revealCtx.textBaseline = 'top';
+            const chars = '*#%@&+=-:.';
+            const cellSize = 8;
 
-            revealTrails.forEach(trail => {
-                const age = now - trail.timestamp;
-                const fadeProgress = age / TRAIL_LIFETIME;
-                // Non-linear fade for more natural decay
-                const opacity = Math.pow(1 - fadeProgress, 0.5);
-
-                if (opacity > 0) {
-                    // Main circle with soft edge
-                    const gradient = revealCtx.createRadialGradient(
-                        trail.x, trail.y, 0,
-                        trail.x, trail.y, trail.size
-                    );
-                    gradient.addColorStop(0, `rgba(0, 0, 0, ${opacity})`);
-                    gradient.addColorStop(0.7, `rgba(0, 0, 0, ${opacity * 0.8})`);
-                    gradient.addColorStop(1, `rgba(0, 0, 0, 0)`);
-
-                    revealCtx.beginPath();
-                    revealCtx.arc(trail.x, trail.y, trail.size, 0, Math.PI * 2);
-                    revealCtx.fillStyle = gradient;
-                    revealCtx.fill();
-
-                    // Jagged brush edges for "cleaning" effect
-                    for (let j = 0; j < 6; j++) {
-                        const angle = (j / 6) * Math.PI * 2 + (age * 0.0001);
-                        const jitter = (Math.random() - 0.5) * trail.size * 0.4;
-                        const px = trail.x + Math.cos(angle) * (trail.size * 0.7 + jitter);
-                        const py = trail.y + Math.sin(angle) * (trail.size * 0.7 + jitter);
-
-                        revealCtx.beginPath();
-                        revealCtx.arc(px, py, trail.size * 0.2, 0, Math.PI * 2);
-                        revealCtx.fillStyle = `rgba(0, 0, 0, ${opacity * 0.6})`;
-                        revealCtx.fill();
-                    }
+            for (let y = 0; y < canvasHeight; y += cellSize) {
+                for (let x = 0; x < canvasWidth; x += cellSize) {
+                    const charIndex = Math.floor((Math.sin(x * 0.05) + Math.cos(y * 0.05) + 2) / 4 * chars.length);
+                    const char = chars[charIndex % chars.length];
+                    revealCtx.fillText(char, x, y);
                 }
-            });
+            }
 
+            // Cut out revealed areas using the mask
+            revealCtx.globalCompositeOperation = 'destination-out';
+            revealCtx.drawImage(maskCanvas, 0, 0, canvasWidth, canvasHeight);
             revealCtx.globalCompositeOperation = 'source-over';
         }
 
@@ -322,15 +294,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const dy = y - lastY;
             const distance = Math.sqrt(dx * dx + dy * dy);
 
-            if (distance > 3) {
-                const steps = Math.ceil(distance / 8);
-                for (let i = 0; i < steps; i++) {
+            if (distance > 5) {
+                const steps = Math.ceil(distance / 10);
+                for (let i = 0; i <= steps; i++) {
                     const t = i / steps;
                     addRevealPoint(lastX + dx * t, lastY + dy * t);
                 }
+            } else {
+                addRevealPoint(x, y);
             }
 
-            addRevealPoint(x, y);
             lastX = x;
             lastY = y;
         });
@@ -356,15 +329,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const dy = y - lastY;
             const distance = Math.sqrt(dx * dx + dy * dy);
 
-            if (distance > 3) {
-                const steps = Math.ceil(distance / 8);
-                for (let i = 0; i < steps; i++) {
+            if (distance > 5) {
+                const steps = Math.ceil(distance / 10);
+                for (let i = 0; i <= steps; i++) {
                     const t = i / steps;
                     addRevealPoint(lastX + dx * t, lastY + dy * t);
                 }
+            } else {
+                addRevealPoint(x, y);
             }
 
-            addRevealPoint(x, y);
             lastX = x;
             lastY = y;
         });
@@ -381,18 +355,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Initialize
         function init() {
-            imageLoaded = true;
             resizeCanvases();
+            initMaskCanvas();
             animate();
         }
 
-        // Start when image loads
+        // Start when image loads or immediately if already loaded
         if (portraitImage.complete && portraitImage.naturalHeight !== 0) {
             init();
         } else {
             portraitImage.onload = init;
             portraitImage.onerror = () => {
-                console.log('Portrait image failed to load, initializing with placeholder');
+                console.log('Portrait image failed to load, initializing anyway');
                 init();
             };
         }
@@ -401,7 +375,10 @@ document.addEventListener('DOMContentLoaded', function() {
         let resizeTimeout;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(resizeCanvases, 100);
+            resizeTimeout = setTimeout(() => {
+                resizeCanvases();
+                initMaskCanvas();
+            }, 100);
         });
     }
 
