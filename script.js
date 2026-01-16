@@ -95,265 +95,336 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ========================================
-    // Interactive Portrait with Reveal Effect
+    // Interactive Portrait with WebGL Liquid Effect
     // ========================================
 
     const portraitContainer = document.getElementById('interactivePortrait');
-    const revealCanvas = document.getElementById('revealCanvas');
     const portraitImage = document.getElementById('portraitImage');
 
-    if (portraitContainer && revealCanvas && portraitImage) {
-        initInteractivePortrait();
+    if (portraitContainer && portraitImage && typeof THREE !== 'undefined') {
+        initWebGLPortrait();
     }
 
-    function initInteractivePortrait() {
-        const revealCtx = revealCanvas.getContext('2d');
+    function initWebGLPortrait() {
+        const container = portraitContainer;
+        const width = container.clientWidth;
+        const height = container.clientHeight;
 
-        let canvasWidth, canvasHeight;
-        let dpr = window.devicePixelRatio || 1;
-        let asciiImage = null;
-        let isInitialized = false;
-
-        // Load the ASCII art image
-        const asciiImg = new Image();
-        asciiImg.crossOrigin = 'anonymous';
-        asciiImg.src = 'images/ascii-art.png';
-        asciiImg.onload = function() {
-            asciiImage = asciiImg;
-            if (isInitialized) {
-                drawFullAscii();
-            }
+        // Global uniforms
+        const gu = {
+            time: { value: 0 },
+            dTime: { value: 0 },
+            aspect: { value: width / height }
         };
 
-        // Mask canvas for tracking revealed areas
-        const maskCanvas = document.createElement('canvas');
-        const maskCtx = maskCanvas.getContext('2d');
+        // Scene setup
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xf5f5f5);
 
-        // Reveal trail management
-        const TRAIL_LIFETIME = 45000; // 45 seconds
-        const BRUSH_SIZE = 70;
-        const revealTrails = [];
+        const camera = new THREE.OrthographicCamera(width / -2, width / 2, height / 2, height / -2, 0.1, 1000);
+        camera.position.z = 1;
 
-        function resizeCanvases() {
-            const rect = portraitContainer.getBoundingClientRect();
-            dpr = window.devicePixelRatio || 1;
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-            canvasWidth = rect.width;
-            canvasHeight = rect.height;
+        // Hide canvases and insert WebGL renderer
+        const asciiCanvas = document.getElementById('asciiCanvas');
+        const revealCanvas = document.getElementById('revealCanvas');
+        if (asciiCanvas) asciiCanvas.style.display = 'none';
+        if (revealCanvas) revealCanvas.style.display = 'none';
 
-            revealCanvas.width = rect.width * dpr;
-            revealCanvas.height = rect.height * dpr;
-            revealCanvas.style.width = rect.width + 'px';
-            revealCanvas.style.height = rect.height + 'px';
+        renderer.domElement.style.position = 'absolute';
+        renderer.domElement.style.top = '0';
+        renderer.domElement.style.left = '0';
+        renderer.domElement.style.zIndex = '2';
+        container.appendChild(renderer.domElement);
 
-            maskCanvas.width = rect.width * dpr;
-            maskCanvas.height = rect.height * dpr;
+        // Blob class for liquid mask effect
+        class Blob {
+            constructor(renderer) {
+                this.renderer = renderer;
+                this.fbTexture = { value: new THREE.FramebufferTexture(width, height) };
+                this.rtOutput = new THREE.WebGLRenderTarget(width, height);
+                this.uniforms = {
+                    pointer: { value: new THREE.Vector2().setScalar(10) },
+                    pointerDown: { value: 1 },
+                    pointerRadius: { value: 0.4 },
+                    pointerDuration: { value: 45.0 }
+                };
 
-            revealCtx.setTransform(1, 0, 0, 1, 0, 0);
-            revealCtx.scale(dpr, dpr);
+                // Mouse events
+                const handleMouseMove = (event) => {
+                    const rect = container.getBoundingClientRect();
+                    this.uniforms.pointer.value.x = ((event.clientX - rect.left) / width) * 2 - 1;
+                    this.uniforms.pointer.value.y = -((event.clientY - rect.top) / height) * 2 + 1;
+                };
 
-            maskCtx.setTransform(1, 0, 0, 1, 0, 0);
-            maskCtx.scale(dpr, dpr);
-            maskCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+                const handleMouseLeave = () => {
+                    this.uniforms.pointer.value.setScalar(10);
+                };
 
-            drawFullAscii();
-        }
+                container.addEventListener('mousemove', handleMouseMove);
+                container.addEventListener('mouseleave', handleMouseLeave);
 
-        function drawFullAscii() {
-            // Fill with background color first
-            revealCtx.fillStyle = '#f5f5f5';
-            revealCtx.fillRect(0, 0, canvasWidth, canvasHeight);
+                // Touch events
+                container.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    const rect = container.getBoundingClientRect();
+                    this.uniforms.pointer.value.x = ((touch.clientX - rect.left) / width) * 2 - 1;
+                    this.uniforms.pointer.value.y = -((touch.clientY - rect.top) / height) * 2 + 1;
+                });
 
-            // Draw ASCII art image if loaded
-            if (asciiImage) {
-                revealCtx.drawImage(asciiImage, 0, 0, canvasWidth, canvasHeight);
+                container.addEventListener('touchmove', (e) => {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    const rect = container.getBoundingClientRect();
+                    this.uniforms.pointer.value.x = ((touch.clientX - rect.left) / width) * 2 - 1;
+                    this.uniforms.pointer.value.y = -((touch.clientY - rect.top) / height) * 2 + 1;
+                });
+
+                container.addEventListener('touchend', () => {
+                    this.uniforms.pointer.value.setScalar(10);
+                });
+
+                // Create render target scene
+                this.rtScene = new THREE.Mesh(
+                    new THREE.PlaneGeometry(2, 2),
+                    new THREE.MeshBasicMaterial({
+                        color: 0x000000,
+                        onBeforeCompile: (shader) => {
+                            shader.uniforms.dTime = gu.dTime;
+                            shader.uniforms.aspect = gu.aspect;
+                            shader.uniforms.pointer = this.uniforms.pointer;
+                            shader.uniforms.pointerDown = this.uniforms.pointerDown;
+                            shader.uniforms.pointerRadius = this.uniforms.pointerRadius;
+                            shader.uniforms.pointerDuration = this.uniforms.pointerDuration;
+                            shader.uniforms.fbTexture = this.fbTexture;
+                            shader.uniforms.time = gu.time;
+                            shader.fragmentShader = `
+                                uniform float dTime, aspect, pointerDown, pointerRadius, pointerDuration, time;
+                                uniform vec2 pointer;
+                                uniform sampler2D fbTexture;
+
+                                float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
+                                float noise(vec2 p) {
+                                    vec2 i = floor(p); vec2 f = fract(p); f = f*f*(3.0-2.0*f);
+                                    float a = hash(i); float b = hash(i + vec2(1.,0.));
+                                    float c = hash(i + vec2(0.,1.)); float d = hash(i + vec2(1.,1.));
+                                    return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);
+                                }
+                                ${shader.fragmentShader}
+                            `.replace(
+                                `#include <color_fragment>`,
+                                `#include <color_fragment>
+                                float rVal = texture2D(fbTexture, vUv).r;
+                                rVal -= clamp(dTime / pointerDuration, 0., 0.02);
+                                rVal = clamp(rVal, 0., 1.);
+                                float f = 0.;
+                                if (pointerDown > 0.5) {
+                                    vec2 uv = (vUv - 0.5) * 2. * vec2(aspect, 1.);
+                                    vec2 mouse = pointer * vec2(aspect, 1.);
+                                    vec2 toMouse = uv - mouse;
+                                    float angle = atan(toMouse.y, toMouse.x);
+                                    float dist = length(toMouse);
+                                    float noiseVal = noise(vec2(angle*3. + time*0.5, dist*5.));
+                                    float noiseVal2 = noise(vec2(angle*5. - time*0.3, dist*3. + time));
+                                    float radiusVariation = 0.7 + noiseVal*0.5 + noiseVal2*0.3;
+                                    float organicRadius = pointerRadius * radiusVariation;
+                                    f = 1. - smoothstep(organicRadius*0.05, organicRadius*1.2, dist);
+                                    f *= 0.8 + noiseVal*0.2;
+                                }
+                                rVal += f * 0.3;
+                                rVal = clamp(rVal, 0., 1.);
+                                diffuseColor.rgb = vec3(rVal);
+                                `
+                            );
+                        }
+                    })
+                );
+                this.rtScene.material.defines = { USE_UV: "" };
+                this.rtCamera = new THREE.Camera();
+            }
+
+            render() {
+                this.renderer.setRenderTarget(this.rtOutput);
+                this.renderer.render(this.rtScene, this.rtCamera);
+                this.renderer.copyFramebufferToTexture(this.fbTexture.value);
+                this.renderer.setRenderTarget(null);
             }
         }
 
-        function addRevealPoint(x, y) {
-            revealTrails.push({
-                x: x,
-                y: y,
-                timestamp: Date.now(),
-                size: BRUSH_SIZE + Math.random() * 25
-            });
+        const blob = new Blob(renderer);
 
-            // Draw on mask canvas
-            drawBrushOnMask(x, y, BRUSH_SIZE + Math.random() * 25);
-        }
+        // Load textures
+        const textureLoader = new THREE.TextureLoader();
 
-        function drawBrushOnMask(x, y, size) {
-            // Create soft-edged brush
-            const gradient = maskCtx.createRadialGradient(x, y, 0, x, y, size);
-            gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
-            gradient.addColorStop(0.6, 'rgba(255, 255, 255, 0.7)');
-            gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        // Load ASCII art image (base layer - what shows when not revealed)
+        const asciiTexture = textureLoader.load('images/ascii-art.png');
+        asciiTexture.colorSpace = THREE.SRGBColorSpace;
 
-            maskCtx.globalCompositeOperation = 'source-over';
-            maskCtx.beginPath();
-            maskCtx.arc(x, y, size, 0, Math.PI * 2);
-            maskCtx.fillStyle = gradient;
-            maskCtx.fill();
+        // Load portrait image (revealed layer)
+        const portraitTexture = textureLoader.load('images/profile.jpg');
+        portraitTexture.colorSpace = THREE.SRGBColorSpace;
 
-            // Add organic splatter around the brush
-            for (let i = 0; i < 6; i++) {
-                const angle = (i / 6) * Math.PI * 2 + Math.random() * 0.8;
-                const dist = size * (0.5 + Math.random() * 0.5);
-                const blobX = x + Math.cos(angle) * dist;
-                const blobY = y + Math.sin(angle) * dist;
-                const blobSize = size * (0.15 + Math.random() * 0.25);
+        // Base image (ASCII art)
+        const baseImageMaterial = new THREE.MeshBasicMaterial({
+            map: asciiTexture,
+            transparent: true
+        });
+        const baseImage = new THREE.Mesh(new THREE.PlaneGeometry(width, height), baseImageMaterial);
+        scene.add(baseImage);
 
-                const blobGrad = maskCtx.createRadialGradient(blobX, blobY, 0, blobX, blobY, blobSize);
-                blobGrad.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
-                blobGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        // Liquid background pattern
+        const bgPlaneMaterial = new THREE.MeshBasicMaterial({
+            color: 0xf5f5f5,
+            transparent: true
+        });
+        bgPlaneMaterial.defines = { USE_UV: "" };
 
-                maskCtx.beginPath();
-                maskCtx.arc(blobX, blobY, blobSize, 0, Math.PI * 2);
-                maskCtx.fillStyle = blobGrad;
-                maskCtx.fill();
-            }
-        }
+        bgPlaneMaterial.onBeforeCompile = (shader) => {
+            shader.uniforms.texBlob = { value: blob.rtOutput.texture };
+            shader.uniforms.time = gu.time;
 
-        function updateReveal() {
-            const now = Date.now();
+            let vertexShader = shader.vertexShader;
+            vertexShader = vertexShader.replace("void main() {", "varying vec4 vPosProj;\nvoid main() {");
+            vertexShader = vertexShader.replace(
+                "#include <project_vertex>",
+                "#include <project_vertex>\nvPosProj = gl_Position;"
+            );
+            shader.vertexShader = vertexShader;
 
-            // Slowly fade the mask
-            maskCtx.globalCompositeOperation = 'destination-out';
-            maskCtx.fillStyle = 'rgba(0, 0, 0, 0.0004)';
-            maskCtx.fillRect(0, 0, canvasWidth, canvasHeight);
-            maskCtx.globalCompositeOperation = 'source-over';
+            shader.fragmentShader = `
+                uniform sampler2D texBlob;
+                uniform float time;
+                varying vec4 vPosProj;
 
-            // Remove expired trails
-            for (let i = revealTrails.length - 1; i >= 0; i--) {
-                if (now - revealTrails[i].timestamp > TRAIL_LIFETIME) {
-                    revealTrails.splice(i, 1);
+                float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453123);}
+                float noise(vec2 p){vec2 i=floor(p);vec2 f=fract(p);f=f*f*(3.-2.*f);float a=hash(i);float b=hash(i+vec2(1.,0.));float c=hash(i+vec2(0.,1.));float d=hash(i+vec2(1.,1.));return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);}
+
+                float fbm(vec2 p) {
+                    float value = 0.0;
+                    float amplitude = 0.5;
+                    for (int i = 0; i < 4; i++) {
+                        value += amplitude * noise(p);
+                        p *= 2.1;
+                        amplitude *= 0.3;
+                    }
+                    return value;
                 }
-            }
 
-            // Redraw the reveal canvas
-            revealCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+                ${shader.fragmentShader}
+            `.replace(
+                `#include <clipping_planes_fragment>`,
+                `
+                vec2 blobUV=((vPosProj.xy/vPosProj.w)+1.)*0.5;
+                vec4 blobData=texture2D(texBlob,blobUV);
+                if(blobData.r<0.02)discard;
 
-            // Draw ASCII art as the base layer
-            revealCtx.fillStyle = '#f5f5f5';
-            revealCtx.fillRect(0, 0, canvasWidth, canvasHeight);
+                vec3 colorBg = vec3(1.0);
+                vec3 colorSoftShape = vec3(0.92);
+                vec3 colorLine = vec3(0.8);
 
-            if (asciiImage) {
-                revealCtx.drawImage(asciiImage, 0, 0, canvasWidth, canvasHeight);
-            }
+                vec2 uv = vUv * 3.5;
+                vec2 distortionField = vUv * 2.0;
+                float distortion = fbm(distortionField + time * 0.15);
+                float distortionStrength = 0.5;
+                vec2 warpedUv = uv + (distortion - 0.5) * distortionStrength;
+                float n = fbm(warpedUv);
 
-            // Cut out revealed areas using the mask
-            revealCtx.globalCompositeOperation = 'destination-out';
-            revealCtx.drawImage(maskCanvas, 0, 0, canvasWidth, canvasHeight);
-            revealCtx.globalCompositeOperation = 'source-over';
-        }
+                float softShapeMix = smoothstep(0.1, 0.9, sin(n * 3.0));
+                vec3 baseColor = mix(colorBg, colorSoftShape, softShapeMix);
+                float linePattern = fract(n * 15.0);
+                float lineMix = 1.0 - smoothstep(0.49, 0.51, linePattern);
+                vec3 finalColor = mix(baseColor, colorLine, lineMix);
 
-        // Mouse events
-        let lastX = 0, lastY = 0;
-        let isHovering = false;
+                diffuseColor.rgb = finalColor;
+                #include <clipping_planes_fragment>
+                `
+            );
+        };
 
-        portraitContainer.addEventListener('mouseenter', () => {
-            isHovering = true;
+        const bgPlane = new THREE.Mesh(new THREE.PlaneGeometry(width, height), bgPlaneMaterial);
+        scene.add(bgPlane);
+
+        // Portrait image (revealed on hover)
+        const portraitMaterial = new THREE.MeshBasicMaterial({
+            map: portraitTexture,
+            transparent: true
         });
 
-        portraitContainer.addEventListener('mouseleave', () => {
-            isHovering = false;
-        });
+        portraitMaterial.onBeforeCompile = (shader) => {
+            shader.uniforms.texBlob = { value: blob.rtOutput.texture };
+            let vertexShader = shader.vertexShader;
+            vertexShader = vertexShader.replace("void main() {", "varying vec4 vPosProj;\nvoid main() {");
+            vertexShader = vertexShader.replace(
+                "#include <project_vertex>",
+                "#include <project_vertex>\nvPosProj = gl_Position;"
+            );
+            shader.vertexShader = vertexShader;
+            shader.fragmentShader = `
+                uniform sampler2D texBlob; varying vec4 vPosProj;
+                ${shader.fragmentShader}
+            `.replace(
+                `#include <clipping_planes_fragment>`,
+                `
+                vec2 blobUV=((vPosProj.xy/vPosProj.w)+1.)*0.5;
+                vec4 blobData=texture2D(texBlob,blobUV);
+                if(blobData.r<0.02)discard;
+                #include <clipping_planes_fragment>
+                `
+            );
+        };
 
-        portraitContainer.addEventListener('mousemove', (e) => {
-            if (!isHovering) return;
+        const portraitPlane = new THREE.Mesh(new THREE.PlaneGeometry(width, height), portraitMaterial);
+        scene.add(portraitPlane);
 
-            const rect = portraitContainer.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+        // Layer ordering
+        baseImage.position.z = 0.0;
+        bgPlane.position.z = 0.05;
+        portraitPlane.position.z = 0.1;
 
-            // Interpolate for smooth strokes
-            const dx = x - lastX;
-            const dy = y - lastY;
-            const dist = Math.sqrt(dx * dx + dy * dy);
+        // Animation
+        const clock = new THREE.Clock();
+        let t = 0;
 
-            if (dist > 5) {
-                const steps = Math.ceil(dist / 8);
-                for (let i = 0; i <= steps; i++) {
-                    const t = i / steps;
-                    addRevealPoint(lastX + dx * t, lastY + dy * t);
-                }
-            } else {
-                addRevealPoint(x, y);
-            }
-
-            lastX = x;
-            lastY = y;
-        });
-
-        // Touch events
-        portraitContainer.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            isHovering = true;
-            const touch = e.touches[0];
-            const rect = portraitContainer.getBoundingClientRect();
-            lastX = touch.clientX - rect.left;
-            lastY = touch.clientY - rect.top;
-        });
-
-        portraitContainer.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            const touch = e.touches[0];
-            const rect = portraitContainer.getBoundingClientRect();
-            const x = touch.clientX - rect.left;
-            const y = touch.clientY - rect.top;
-
-            const dx = x - lastX;
-            const dy = y - lastY;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-
-            if (dist > 5) {
-                const steps = Math.ceil(dist / 8);
-                for (let i = 0; i <= steps; i++) {
-                    const t = i / steps;
-                    addRevealPoint(lastX + dx * t, lastY + dy * t);
-                }
-            } else {
-                addRevealPoint(x, y);
-            }
-
-            lastX = x;
-            lastY = y;
-        });
-
-        portraitContainer.addEventListener('touchend', () => {
-            isHovering = false;
-        });
-
-        // Animation loop
         function animate() {
-            updateReveal();
+            const dt = clock.getDelta();
+            t += dt;
+            gu.time.value = t;
+            gu.dTime.value = dt;
+            blob.render();
+            renderer.render(scene, camera);
             requestAnimationFrame(animate);
         }
 
-        // Initialize
-        function init() {
-            isInitialized = true;
-            resizeCanvases();
-            animate();
-        }
-
-        // Wait for portrait image to load
-        if (portraitImage.complete && portraitImage.naturalHeight !== 0) {
-            init();
-        } else {
-            portraitImage.onload = init;
-            portraitImage.onerror = () => {
-                console.log('Portrait image failed to load');
-                init();
-            };
-        }
+        animate();
 
         // Handle resize
-        let resizeTimeout;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(resizeCanvases, 100);
-        });
+        const handleResize = () => {
+            const newWidth = container.clientWidth;
+            const newHeight = container.clientHeight;
+            camera.left = newWidth / -2;
+            camera.right = newWidth / 2;
+            camera.top = newHeight / 2;
+            camera.bottom = newHeight / -2;
+            camera.updateProjectionMatrix();
+            renderer.setSize(newWidth, newHeight);
+            gu.aspect.value = newWidth / newHeight;
+
+            baseImage.geometry.dispose();
+            baseImage.geometry = new THREE.PlaneGeometry(newWidth, newHeight);
+            bgPlane.geometry.dispose();
+            bgPlane.geometry = new THREE.PlaneGeometry(newWidth, newHeight);
+            portraitPlane.geometry.dispose();
+            portraitPlane.geometry = new THREE.PlaneGeometry(newWidth, newHeight);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        // Hide original portrait image
+        portraitImage.style.display = 'none';
     }
 
     // Console message

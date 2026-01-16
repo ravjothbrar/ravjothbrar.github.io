@@ -133,8 +133,8 @@ body {
 .nav-link {
     color: var(--text-color);
     text-decoration: none;
-    font-size: 28px;
-    font-weight: 600;
+    font-size: 24px;
+    font-weight: 550;
     transition: all 0.3s ease;
     display: block;
     padding: 8px 0;
@@ -159,8 +159,8 @@ body {
 
 /* Sections */
 .section {
-    margin-bottom: 100px;
-    min-height: 50vh;
+    margin-bottom: 80px;
+    min-height: auto;
 }
 
 /* Hero Section */
@@ -180,7 +180,7 @@ body {
     justify-content: space-between;
     width: 100%;
     gap: 40px;
-    margin-left: -80px;
+    margin-left: -120px;
     margin-right: -40px;
 }
 
