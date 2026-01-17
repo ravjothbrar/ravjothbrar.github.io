@@ -95,6 +95,49 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ========================================
+    // Scroll Down Indicator
+    // ========================================
+    const scrollIndicator = document.getElementById('scrollIndicator');
+    let hasScrolled = false;
+    let scrollIndicatorTimeout = null;
+
+    if (scrollIndicator) {
+        // Show scroll indicator after 4 seconds if user hasn't scrolled
+        scrollIndicatorTimeout = setTimeout(() => {
+            if (!hasScrolled && window.scrollY < 50) {
+                scrollIndicator.classList.add('visible');
+            }
+        }, 4000);
+
+        // Hide scroll indicator when user scrolls
+        function hideScrollIndicator() {
+            hasScrolled = true;
+            scrollIndicator.classList.remove('visible');
+            scrollIndicator.classList.add('hidden');
+            if (scrollIndicatorTimeout) {
+                clearTimeout(scrollIndicatorTimeout);
+            }
+            // Remove listeners after hiding
+            window.removeEventListener('scroll', hideScrollIndicator);
+            window.removeEventListener('wheel', hideScrollIndicator);
+            window.removeEventListener('touchmove', hideScrollIndicator);
+        }
+
+        window.addEventListener('scroll', hideScrollIndicator);
+        window.addEventListener('wheel', hideScrollIndicator);
+        window.addEventListener('touchmove', hideScrollIndicator);
+
+        // Click on indicator to scroll down
+        scrollIndicator.addEventListener('click', () => {
+            const aboutSection = document.getElementById('about');
+            if (aboutSection) {
+                aboutSection.scrollIntoView({ behavior: 'smooth' });
+            }
+            hideScrollIndicator();
+        });
+    }
+
+    // ========================================
     // Interactive Portrait with Liquid Metaball Reveal Effect
     // ========================================
 
@@ -123,10 +166,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Liquid metaball trail system - organic movement
         const metaballs = [];
-        const MAX_METABALLS = 24;
-        const METABALL_RADIUS = 53;
-        const METABALL_SPAWN_RATE = 3; // Spawn every 3 frames
-        const DECAY_SPEED = 0.0048; // 2.5x longer lasting
+        const MAX_METABALLS = 22;
+        const METABALL_RADIUS = 52;
+        const METABALL_SPAWN_RATE = 4; // Spawn every 4 frames
+        const DECAY_SPEED = 0.008;
         const THRESHOLD = 0.8;
 
         // Downscale factor for performance (process at lower resolution)
@@ -135,6 +178,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const scaledHeight = Math.ceil(height / SCALE);
 
         let frameCount = 0;
+
+        // Intro animation state
+        let introPhase = 'showing_portrait'; // 'showing_portrait', 'fading', 'complete'
+        let introFadeProgress = 0;
+        const INTRO_FADE_SPEED = 0.02;
 
         // Load images
         const asciiImg = new Image();
@@ -152,7 +200,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 asciiCanvas.style.display = 'block';
                 revealCanvas.style.display = 'block';
 
-                // Initial render - show ASCII art by default
+                // Start with portrait visible (intro animation)
+                introPhase = 'showing_portrait';
+                introFadeProgress = 0;
+
+                // After 1 second, start fading to ASCII
+                setTimeout(() => {
+                    introPhase = 'fading';
+                }, 1000);
+
+                // Initial render and start animation
                 drawFrame();
                 requestAnimationFrame(animate);
             }
@@ -316,10 +373,33 @@ document.addEventListener('DOMContentLoaded', function() {
             // Draw portrait on reveal canvas (bottom layer)
             revealCtx.drawImage(portraitImg, 0, 0, width, height);
 
-            // Draw ASCII art on ascii canvas (top layer - shown by default)
+            // Draw ASCII art on ascii canvas (top layer)
             asciiCtx.drawImage(asciiImg, 0, 0, width, height);
 
-            // Only process if there are metaballs
+            // Handle intro animation phases
+            if (introPhase === 'showing_portrait') {
+                // Make ASCII fully transparent to show portrait
+                asciiCtx.clearRect(0, 0, width, height);
+                return;
+            } else if (introPhase === 'fading') {
+                // Gradually fade in ASCII art
+                introFadeProgress += INTRO_FADE_SPEED;
+                if (introFadeProgress >= 1) {
+                    introFadeProgress = 1;
+                    introPhase = 'complete';
+                }
+                // Apply global alpha to fade in ASCII
+                const imageData = asciiCtx.getImageData(0, 0, width, height);
+                const data = imageData.data;
+                const alpha = introFadeProgress * introFadeProgress * (3 - 2 * introFadeProgress); // smoothstep
+                for (let i = 3; i < data.length; i += 4) {
+                    data[i] = Math.floor(data[i] * alpha);
+                }
+                asciiCtx.putImageData(imageData, 0, 0);
+                return;
+            }
+
+            // Normal mode - only process if there are metaballs
             if (metaballs.length === 0) return;
 
             // Calculate field at lower resolution for performance
