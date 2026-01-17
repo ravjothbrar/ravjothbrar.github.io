@@ -272,101 +272,30 @@ document.addEventListener('DOMContentLoaded', function() {
         // Load textures
         const textureLoader = new THREE.TextureLoader();
 
-        // Load ASCII art image (base layer - what shows when not revealed)
+        // Load ASCII art image (TOP layer - visible by default, erased on hover)
         const asciiTexture = textureLoader.load('images/ascii-art.png');
         asciiTexture.colorSpace = THREE.SRGBColorSpace;
 
-        // Load portrait image (revealed layer)
+        // Load portrait image (BOTTOM layer - revealed when ASCII is erased)
         const portraitTexture = textureLoader.load('images/profile.jpg');
         portraitTexture.colorSpace = THREE.SRGBColorSpace;
 
-        // Base image (ASCII art)
-        const baseImageMaterial = new THREE.MeshBasicMaterial({
-            map: asciiTexture,
-            transparent: true
-        });
-        const baseImage = new THREE.Mesh(new THREE.PlaneGeometry(width, height), baseImageMaterial);
-        scene.add(baseImage);
-
-        // Liquid background pattern
-        const bgPlaneMaterial = new THREE.MeshBasicMaterial({
-            color: 0xf5f5f5,
-            transparent: true
-        });
-        bgPlaneMaterial.defines = { USE_UV: "" };
-
-        bgPlaneMaterial.onBeforeCompile = (shader) => {
-            shader.uniforms.texBlob = { value: blob.rtOutput.texture };
-            shader.uniforms.time = gu.time;
-
-            let vertexShader = shader.vertexShader;
-            vertexShader = vertexShader.replace("void main() {", "varying vec4 vPosProj;\nvoid main() {");
-            vertexShader = vertexShader.replace(
-                "#include <project_vertex>",
-                "#include <project_vertex>\nvPosProj = gl_Position;"
-            );
-            shader.vertexShader = vertexShader;
-
-            shader.fragmentShader = `
-                uniform sampler2D texBlob;
-                uniform float time;
-                varying vec4 vPosProj;
-
-                float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453123);}
-                float noise(vec2 p){vec2 i=floor(p);vec2 f=fract(p);f=f*f*(3.-2.*f);float a=hash(i);float b=hash(i+vec2(1.,0.));float c=hash(i+vec2(0.,1.));float d=hash(i+vec2(1.,1.));return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);}
-
-                float fbm(vec2 p) {
-                    float value = 0.0;
-                    float amplitude = 0.5;
-                    for (int i = 0; i < 4; i++) {
-                        value += amplitude * noise(p);
-                        p *= 2.1;
-                        amplitude *= 0.3;
-                    }
-                    return value;
-                }
-
-                ${shader.fragmentShader}
-            `.replace(
-                `#include <clipping_planes_fragment>`,
-                `
-                vec2 blobUV=((vPosProj.xy/vPosProj.w)+1.)*0.5;
-                vec4 blobData=texture2D(texBlob,blobUV);
-                if(blobData.r<0.02)discard;
-
-                vec3 colorBg = vec3(1.0);
-                vec3 colorSoftShape = vec3(0.92);
-                vec3 colorLine = vec3(0.8);
-
-                vec2 uv = vUv * 3.5;
-                vec2 distortionField = vUv * 2.0;
-                float distortion = fbm(distortionField + time * 0.15);
-                float distortionStrength = 0.5;
-                vec2 warpedUv = uv + (distortion - 0.5) * distortionStrength;
-                float n = fbm(warpedUv);
-
-                float softShapeMix = smoothstep(0.1, 0.9, sin(n * 3.0));
-                vec3 baseColor = mix(colorBg, colorSoftShape, softShapeMix);
-                float linePattern = fract(n * 15.0);
-                float lineMix = 1.0 - smoothstep(0.49, 0.51, linePattern);
-                vec3 finalColor = mix(baseColor, colorLine, lineMix);
-
-                diffuseColor.rgb = finalColor;
-                #include <clipping_planes_fragment>
-                `
-            );
-        };
-
-        const bgPlane = new THREE.Mesh(new THREE.PlaneGeometry(width, height), bgPlaneMaterial);
-        scene.add(bgPlane);
-
-        // Portrait image (revealed on hover)
+        // Portrait image at BOTTOM (revealed when ASCII art is erased)
         const portraitMaterial = new THREE.MeshBasicMaterial({
             map: portraitTexture,
             transparent: true
         });
+        const portraitPlane = new THREE.Mesh(new THREE.PlaneGeometry(width, height), portraitMaterial);
+        scene.add(portraitPlane);
+        portraitPlane.position.z = 0.0; // Bottom layer
 
-        portraitMaterial.onBeforeCompile = (shader) => {
+        // ASCII art on TOP - gets "erased" to reveal portrait
+        const asciiMaterial = new THREE.MeshBasicMaterial({
+            map: asciiTexture,
+            transparent: true
+        });
+
+        asciiMaterial.onBeforeCompile = (shader) => {
             shader.uniforms.texBlob = { value: blob.rtOutput.texture };
             let vertexShader = shader.vertexShader;
             vertexShader = vertexShader.replace("void main() {", "varying vec4 vPosProj;\nvoid main() {");
@@ -383,19 +312,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 `
                 vec2 blobUV=((vPosProj.xy/vPosProj.w)+1.)*0.5;
                 vec4 blobData=texture2D(texBlob,blobUV);
-                if(blobData.r<0.02)discard;
+                // DISCARD where blob has been painted (reveal portrait underneath)
+                if(blobData.r > 0.02) discard;
                 #include <clipping_planes_fragment>
                 `
             );
         };
 
-        const portraitPlane = new THREE.Mesh(new THREE.PlaneGeometry(width, height), portraitMaterial);
-        scene.add(portraitPlane);
-
-        // Layer ordering
-        baseImage.position.z = 0.0;
-        bgPlane.position.z = 0.05;
-        portraitPlane.position.z = 0.1;
+        const asciiPlane = new THREE.Mesh(new THREE.PlaneGeometry(width, height), asciiMaterial);
+        scene.add(asciiPlane);
+        asciiPlane.position.z = 0.1; // Top layer
 
         // Animation
         const clock = new THREE.Clock();
@@ -425,12 +351,10 @@ document.addEventListener('DOMContentLoaded', function() {
             renderer.setSize(newWidth, newHeight);
             gu.aspect.value = newWidth / newHeight;
 
-            baseImage.geometry.dispose();
-            baseImage.geometry = new THREE.PlaneGeometry(newWidth, newHeight);
-            bgPlane.geometry.dispose();
-            bgPlane.geometry = new THREE.PlaneGeometry(newWidth, newHeight);
             portraitPlane.geometry.dispose();
             portraitPlane.geometry = new THREE.PlaneGeometry(newWidth, newHeight);
+            asciiPlane.geometry.dispose();
+            asciiPlane.geometry = new THREE.PlaneGeometry(newWidth, newHeight);
         };
 
         window.addEventListener('resize', handleResize);
