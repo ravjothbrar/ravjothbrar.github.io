@@ -85,14 +85,44 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ========================================
-    // Hover Prompt Button - Disappear after 5 seconds
+    // Hover Prompt Button - Show after intro animation, then hide after 5 seconds
     // ========================================
     const hoverPromptBtn = document.getElementById('hoverPromptBtn');
     if (hoverPromptBtn) {
+        // Hide initially
+        hoverPromptBtn.style.opacity = '0';
+        hoverPromptBtn.style.visibility = 'hidden';
+
+        // Show after intro animation completes (1s portrait + ~1.5s fade = 2.5s)
         setTimeout(() => {
-            hoverPromptBtn.classList.add('hidden');
-        }, 5000);
+            hoverPromptBtn.style.transition = 'opacity 0.5s ease, visibility 0.5s ease';
+            hoverPromptBtn.style.opacity = '1';
+            hoverPromptBtn.style.visibility = 'visible';
+
+            // Then hide after 5 more seconds
+            setTimeout(() => {
+                hoverPromptBtn.classList.add('hidden');
+            }, 5000);
+        }, 2500);
     }
+
+    // ========================================
+    // Scroll Progress Bar
+    // ========================================
+    const scrollProgress = document.getElementById('scrollProgress');
+
+    function updateScrollProgress() {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPercent = (scrollTop / docHeight) * 100;
+
+        if (scrollProgress) {
+            scrollProgress.style.height = scrollPercent + '%';
+        }
+    }
+
+    window.addEventListener('scroll', updateScrollProgress);
+    updateScrollProgress(); // Initial call
 
     // ========================================
     // Scroll Down Indicator
