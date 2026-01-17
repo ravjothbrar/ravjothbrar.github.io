@@ -121,13 +121,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const asciiCtx = asciiCanvas.getContext('2d');
         const revealCtx = revealCanvas.getContext('2d');
 
-        // Liquid metaball trail system - optimized for smooth performance
+        // Liquid metaball trail system - organic movement
         const metaballs = [];
-        const MAX_METABALLS = 40;
-        const METABALL_RADIUS = 70;
-        const METABALL_SPAWN_RATE = 1; // Spawn every frame for smoother trail
-        const DECAY_SPEED = 0.008; // Slower decay for longer-lasting liquid trail
-        const THRESHOLD = 0.8; // Lower threshold for smoother edges
+        const MAX_METABALLS = 20;
+        const METABALL_RADIUS = 45;
+        const METABALL_SPAWN_RATE = 5; // Spawn every 5 frames
+        const DECAY_SPEED = 0.012;
+        const THRESHOLD = 0.8;
 
         // Downscale factor for performance (process at lower resolution)
         const SCALE = 4;
@@ -208,20 +208,45 @@ document.addEventListener('DOMContentLoaded', function() {
             isHovering = false;
         });
 
-        // Metaball class for liquid effect
+        // Metaball class for liquid effect with organic movement
         class Metaball {
             constructor(x, y, radius) {
                 this.x = x;
                 this.y = y;
                 this.radius = radius;
                 this.strength = 1.0;
-                this.decayRate = DECAY_SPEED + Math.random() * 0.005;
+                this.decayRate = DECAY_SPEED + Math.random() * 0.008;
+                // Add random velocity for organic wandering movement
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 0.8 + Math.random() * 1.2;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+                // Add wobble parameters for organic pulsing
+                this.wobblePhase = Math.random() * Math.PI * 2;
+                this.wobbleSpeed = 0.05 + Math.random() * 0.08;
             }
 
             update() {
                 this.strength -= this.decayRate;
-                // Radius shrinks as strength decreases for organic feel
-                this.radius = METABALL_RADIUS * Math.pow(this.strength, 0.3);
+
+                // Move organically - wandering motion
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Add slight random direction changes for more organic feel
+                this.vx += (Math.random() - 0.5) * 0.3;
+                this.vy += (Math.random() - 0.5) * 0.3;
+
+                // Dampen velocity slightly
+                this.vx *= 0.98;
+                this.vy *= 0.98;
+
+                // Update wobble phase
+                this.wobblePhase += this.wobbleSpeed;
+
+                // Radius shrinks with wobble for organic pulsing
+                const wobble = 1 + Math.sin(this.wobblePhase) * 0.15;
+                this.radius = METABALL_RADIUS * Math.pow(this.strength, 0.4) * wobble;
             }
 
             isDead() {
@@ -246,22 +271,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 const dy = mouseY - lastMouseY;
                 const dist = Math.sqrt(dx * dx + dy * dy);
 
-                if (dist > 5 || metaballs.length === 0) {
-                    // Spawn metaball at current position
-                    const ball = new Metaball(mouseX, mouseY, METABALL_RADIUS);
+                if (dist > 8 || metaballs.length === 0) {
+                    // Spawn metaball with slight random offset for organic placement
+                    const offsetX = (Math.random() - 0.5) * 20;
+                    const offsetY = (Math.random() - 0.5) * 20;
+                    const ball = new Metaball(mouseX + offsetX, mouseY + offsetY, METABALL_RADIUS);
                     metaballs.push(ball);
-
-                    // Spawn additional balls along the path for smoother trail
-                    if (dist > 15 && lastMouseX > 0) {
-                        const steps = Math.floor(dist / 15);
-                        for (let i = 1; i < steps; i++) {
-                            const t = i / steps;
-                            const interpX = lastMouseX + dx * t;
-                            const interpY = lastMouseY + dy * t;
-                            const interpBall = new Metaball(interpX, interpY, METABALL_RADIUS * 0.8);
-                            metaballs.push(interpBall);
-                        }
-                    }
 
                     lastMouseX = mouseX;
                     lastMouseY = mouseY;
