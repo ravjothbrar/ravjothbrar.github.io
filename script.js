@@ -245,6 +245,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 );
                 this.rtScene.material.defines = { USE_UV: "" };
                 this.rtCamera = new THREE.Camera();
+
+                // Initialize render target to black (no reveal)
+                this.clearRenderTarget();
+            }
+
+            clearRenderTarget() {
+                const clearScene = new THREE.Scene();
+                clearScene.background = new THREE.Color(0x000000);
+                this.renderer.setRenderTarget(this.rtOutput);
+                this.renderer.render(clearScene, this.rtCamera);
+                this.renderer.copyFramebufferToTexture(this.fbTexture.value);
+                this.renderer.setRenderTarget(null);
             }
 
             render() {
