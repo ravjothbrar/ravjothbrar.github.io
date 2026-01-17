@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ========================================
-    // Interactive Portrait with Canvas 2D Reveal Effect
+    // Interactive Portrait with Liquid Metaball Reveal Effect
     // ========================================
 
     const portraitContainer = document.getElementById('interactivePortrait');
@@ -121,11 +121,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const asciiCtx = asciiCanvas.getContext('2d');
         const revealCtx = revealCanvas.getContext('2d');
 
-        // Track revealed areas with gradual decay
-        const revealData = new Float32Array(width * height);
-        const DECAY_RATE = 0.0004; // How fast the reveal fades (per frame)
-        const BRUSH_RADIUS = 35;
-        const BRUSH_STRENGTH = 0.15;
+        // Liquid metaball trail system
+        const metaballs = [];
+        const MAX_METABALLS = 25;
+        const METABALL_RADIUS = 60;
+        const METABALL_SPAWN_RATE = 3; // Spawn every N frames
+        const DECAY_SPEED = 0.012;
+        const THRESHOLD = 1.0; // Metaball threshold for liquid effect
+
+        let frameCount = 0;
 
         // Load images
         const asciiImg = new Image();
@@ -143,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 asciiCanvas.style.display = 'block';
                 revealCanvas.style.display = 'block';
 
-                // Initial render - show ASCII art
+                // Initial render - show ASCII art by default
                 drawFrame();
                 requestAnimationFrame(animate);
             }
@@ -159,6 +163,8 @@ document.addEventListener('DOMContentLoaded', function() {
         let mouseX = -1000;
         let mouseY = -1000;
         let isHovering = false;
+        let lastMouseX = -1000;
+        let lastMouseY = -1000;
 
         container.addEventListener('mousemove', (e) => {
             const rect = container.getBoundingClientRect();
@@ -197,37 +203,89 @@ document.addEventListener('DOMContentLoaded', function() {
             isHovering = false;
         });
 
-        function updateRevealData() {
-            // Apply decay to all revealed areas
-            for (let i = 0; i < revealData.length; i++) {
-                if (revealData[i] > 0) {
-                    revealData[i] = Math.max(0, revealData[i] - DECAY_RATE);
-                }
+        // Metaball class for liquid effect
+        class Metaball {
+            constructor(x, y, radius) {
+                this.x = x;
+                this.y = y;
+                this.radius = radius;
+                this.strength = 1.0;
+                this.decayRate = DECAY_SPEED + Math.random() * 0.005;
             }
 
-            // Paint reveal area at mouse position
+            update() {
+                this.strength -= this.decayRate;
+                // Radius shrinks as strength decreases for organic feel
+                this.radius = METABALL_RADIUS * Math.pow(this.strength, 0.3);
+            }
+
+            isDead() {
+                return this.strength <= 0;
+            }
+
+            // Calculate metaball field contribution at point (px, py)
+            fieldAt(px, py) {
+                const dx = px - this.x;
+                const dy = py - this.y;
+                const distSq = dx * dx + dy * dy;
+                if (distSq === 0) return this.strength * 10;
+                // Inverse square falloff creates liquid-like merging
+                return (this.radius * this.radius * this.strength) / distSq;
+            }
+        }
+
+        function spawnMetaball() {
             if (isHovering && mouseX >= 0 && mouseX < width && mouseY >= 0 && mouseY < height) {
-                const centerX = Math.floor(mouseX);
-                const centerY = Math.floor(mouseY);
+                // Check if mouse has moved enough to spawn new metaball
+                const dx = mouseX - lastMouseX;
+                const dy = mouseY - lastMouseY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
 
-                for (let dy = -BRUSH_RADIUS; dy <= BRUSH_RADIUS; dy++) {
-                    for (let dx = -BRUSH_RADIUS; dx <= BRUSH_RADIUS; dx++) {
-                        const px = centerX + dx;
-                        const py = centerY + dy;
+                if (dist > 5 || metaballs.length === 0) {
+                    // Spawn metaball at current position
+                    const ball = new Metaball(mouseX, mouseY, METABALL_RADIUS);
+                    metaballs.push(ball);
 
-                        if (px >= 0 && px < width && py >= 0 && py < height) {
-                            const dist = Math.sqrt(dx * dx + dy * dy);
-                            if (dist <= BRUSH_RADIUS) {
-                                // Smooth falloff from center
-                                const falloff = 1 - (dist / BRUSH_RADIUS);
-                                const strength = falloff * falloff * BRUSH_STRENGTH;
-                                const idx = py * width + px;
-                                revealData[idx] = Math.min(1, revealData[idx] + strength);
-                            }
+                    // Spawn additional balls along the path for smoother trail
+                    if (dist > 15 && lastMouseX > 0) {
+                        const steps = Math.floor(dist / 15);
+                        for (let i = 1; i < steps; i++) {
+                            const t = i / steps;
+                            const interpX = lastMouseX + dx * t;
+                            const interpY = lastMouseY + dy * t;
+                            const interpBall = new Metaball(interpX, interpY, METABALL_RADIUS * 0.8);
+                            metaballs.push(interpBall);
                         }
+                    }
+
+                    lastMouseX = mouseX;
+                    lastMouseY = mouseY;
+
+                    // Limit number of metaballs
+                    while (metaballs.length > MAX_METABALLS) {
+                        metaballs.shift();
                     }
                 }
             }
+        }
+
+        function updateMetaballs() {
+            // Update all metaballs
+            for (let i = metaballs.length - 1; i >= 0; i--) {
+                metaballs[i].update();
+                if (metaballs[i].isDead()) {
+                    metaballs.splice(i, 1);
+                }
+            }
+        }
+
+        // Calculate combined metaball field at a point
+        function getFieldAt(px, py) {
+            let field = 0;
+            for (const ball of metaballs) {
+                field += ball.fieldAt(px, py);
+            }
+            return field;
         }
 
         function drawFrame() {
@@ -235,24 +293,48 @@ document.addEventListener('DOMContentLoaded', function() {
             asciiCtx.clearRect(0, 0, width, height);
             revealCtx.clearRect(0, 0, width, height);
 
-            // Draw portrait on reveal canvas (bottom layer, always visible)
+            // Draw portrait on reveal canvas (bottom layer)
             revealCtx.drawImage(portraitImg, 0, 0, width, height);
 
-            // Draw ASCII art on ascii canvas
+            // Draw ASCII art on ascii canvas (top layer - shown by default)
             asciiCtx.drawImage(asciiImg, 0, 0, width, height);
 
-            // Get the ASCII image data and make pixels transparent where revealed
+            // Only process if there are metaballs
+            if (metaballs.length === 0) return;
+
+            // Get the ASCII image data and make pixels transparent based on liquid field
             const imageData = asciiCtx.getImageData(0, 0, width, height);
             const data = imageData.data;
 
-            for (let y = 0; y < height; y++) {
-                for (let x = 0; x < width; x++) {
-                    const idx = y * width + x;
-                    const pixelIdx = idx * 4;
-                    const revealAmount = revealData[idx];
+            // Optimization: only process pixels near metaballs
+            const margin = METABALL_RADIUS * 2.5;
+            let minX = width, maxX = 0, minY = height, maxY = 0;
 
-                    if (revealAmount > 0) {
-                        // Make ASCII pixel transparent based on reveal amount
+            for (const ball of metaballs) {
+                minX = Math.min(minX, ball.x - margin);
+                maxX = Math.max(maxX, ball.x + margin);
+                minY = Math.min(minY, ball.y - margin);
+                maxY = Math.max(maxY, ball.y + margin);
+            }
+
+            minX = Math.max(0, Math.floor(minX));
+            maxX = Math.min(width, Math.ceil(maxX));
+            minY = Math.max(0, Math.floor(minY));
+            maxY = Math.min(height, Math.ceil(maxY));
+
+            // Process pixels in the affected region
+            for (let y = minY; y < maxY; y++) {
+                for (let x = minX; x < maxX; x++) {
+                    const field = getFieldAt(x, y);
+
+                    if (field > THRESHOLD * 0.3) {
+                        const pixelIdx = (y * width + x) * 4;
+                        // Smooth transition using smoothstep-like function
+                        let revealAmount = (field - THRESHOLD * 0.3) / (THRESHOLD * 1.5);
+                        revealAmount = Math.min(1, Math.max(0, revealAmount));
+                        // Apply easing for liquid-like smooth edges
+                        revealAmount = revealAmount * revealAmount * (3 - 2 * revealAmount);
+                        // Make ASCII pixel transparent to reveal portrait underneath
                         data[pixelIdx + 3] = Math.floor(data[pixelIdx + 3] * (1 - revealAmount));
                     }
                 }
@@ -262,7 +344,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         function animate() {
-            updateRevealData();
+            frameCount++;
+
+            // Spawn new metaballs periodically
+            if (frameCount % METABALL_SPAWN_RATE === 0) {
+                spawnMetaball();
+            }
+
+            updateMetaballs();
             drawFrame();
             requestAnimationFrame(animate);
         }
@@ -273,8 +362,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const newHeight = container.clientHeight;
 
             if (newWidth !== width || newHeight !== height) {
-                // For simplicity, just reload the page on resize
-                // A more sophisticated solution would resize the canvases and revealData
                 location.reload();
             }
         });
