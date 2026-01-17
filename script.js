@@ -123,10 +123,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Liquid metaball trail system - organic movement
         const metaballs = [];
-        const MAX_METABALLS = 20;
-        const METABALL_RADIUS = 45;
-        const METABALL_SPAWN_RATE = 5; // Spawn every 5 frames
-        const DECAY_SPEED = 0.012;
+        const MAX_METABALLS = 24;
+        const METABALL_RADIUS = 53;
+        const METABALL_SPAWN_RATE = 3; // Spawn every 3 frames
+        const DECAY_SPEED = 0.0048; // 2.5x longer lasting
         const THRESHOLD = 0.8;
 
         // Downscale factor for performance (process at lower resolution)
