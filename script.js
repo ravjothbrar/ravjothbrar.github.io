@@ -95,272 +95,189 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ========================================
-    // Interactive Portrait with WebGL Liquid Effect
+    // Interactive Portrait with Canvas 2D Reveal Effect
     // ========================================
 
     const portraitContainer = document.getElementById('interactivePortrait');
     const portraitImage = document.getElementById('portraitImage');
+    const asciiCanvas = document.getElementById('asciiCanvas');
+    const revealCanvas = document.getElementById('revealCanvas');
 
-    if (portraitContainer && portraitImage && typeof THREE !== 'undefined') {
-        initWebGLPortrait();
+    if (portraitContainer && portraitImage && asciiCanvas && revealCanvas) {
+        initCanvasPortrait();
     }
 
-    function initWebGLPortrait() {
+    function initCanvasPortrait() {
         const container = portraitContainer;
         const width = container.clientWidth;
         const height = container.clientHeight;
 
-        // Global uniforms
-        const gu = {
-            time: { value: 0 },
-            dTime: { value: 0 },
-            aspect: { value: width / height }
-        };
+        // Set up canvases
+        asciiCanvas.width = width;
+        asciiCanvas.height = height;
+        revealCanvas.width = width;
+        revealCanvas.height = height;
 
-        // Scene setup
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0xf5f5f5);
+        const asciiCtx = asciiCanvas.getContext('2d');
+        const revealCtx = revealCanvas.getContext('2d');
 
-        const camera = new THREE.OrthographicCamera(width / -2, width / 2, height / 2, height / -2, 0.1, 1000);
-        camera.position.z = 1;
+        // Track revealed areas with gradual decay
+        const revealData = new Float32Array(width * height);
+        const DECAY_RATE = 0.0004; // How fast the reveal fades (per frame)
+        const BRUSH_RADIUS = 35;
+        const BRUSH_STRENGTH = 0.15;
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(width, height);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        // Load images
+        const asciiImg = new Image();
+        const portraitImg = new Image();
+        let imagesLoaded = 0;
 
-        // Hide canvases and insert WebGL renderer
-        const asciiCanvas = document.getElementById('asciiCanvas');
-        const revealCanvas = document.getElementById('revealCanvas');
-        if (asciiCanvas) asciiCanvas.style.display = 'none';
-        if (revealCanvas) revealCanvas.style.display = 'none';
+        asciiImg.crossOrigin = 'anonymous';
+        portraitImg.crossOrigin = 'anonymous';
 
-        renderer.domElement.style.position = 'absolute';
-        renderer.domElement.style.top = '0';
-        renderer.domElement.style.left = '0';
-        renderer.domElement.style.zIndex = '2';
-        container.appendChild(renderer.domElement);
+        function onImageLoad() {
+            imagesLoaded++;
+            if (imagesLoaded === 2) {
+                // Both images loaded, start the effect
+                portraitImage.style.display = 'none';
+                asciiCanvas.style.display = 'block';
+                revealCanvas.style.display = 'block';
 
-        // Blob class for liquid mask effect
-        class Blob {
-            constructor(renderer) {
-                this.renderer = renderer;
-                this.fbTexture = { value: new THREE.FramebufferTexture(width, height) };
-                this.rtOutput = new THREE.WebGLRenderTarget(width, height);
-                this.uniforms = {
-                    pointer: { value: new THREE.Vector2().setScalar(10) },
-                    pointerDown: { value: 1 },
-                    pointerRadius: { value: 0.4 },
-                    pointerDuration: { value: 45.0 }
-                };
-
-                // Mouse events
-                const handleMouseMove = (event) => {
-                    const rect = container.getBoundingClientRect();
-                    this.uniforms.pointer.value.x = ((event.clientX - rect.left) / width) * 2 - 1;
-                    this.uniforms.pointer.value.y = -((event.clientY - rect.top) / height) * 2 + 1;
-                };
-
-                const handleMouseLeave = () => {
-                    this.uniforms.pointer.value.setScalar(10);
-                };
-
-                container.addEventListener('mousemove', handleMouseMove);
-                container.addEventListener('mouseleave', handleMouseLeave);
-
-                // Touch events
-                container.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    const touch = e.touches[0];
-                    const rect = container.getBoundingClientRect();
-                    this.uniforms.pointer.value.x = ((touch.clientX - rect.left) / width) * 2 - 1;
-                    this.uniforms.pointer.value.y = -((touch.clientY - rect.top) / height) * 2 + 1;
-                });
-
-                container.addEventListener('touchmove', (e) => {
-                    e.preventDefault();
-                    const touch = e.touches[0];
-                    const rect = container.getBoundingClientRect();
-                    this.uniforms.pointer.value.x = ((touch.clientX - rect.left) / width) * 2 - 1;
-                    this.uniforms.pointer.value.y = -((touch.clientY - rect.top) / height) * 2 + 1;
-                });
-
-                container.addEventListener('touchend', () => {
-                    this.uniforms.pointer.value.setScalar(10);
-                });
-
-                // Create render target scene
-                this.rtScene = new THREE.Mesh(
-                    new THREE.PlaneGeometry(2, 2),
-                    new THREE.MeshBasicMaterial({
-                        color: 0x000000,
-                        onBeforeCompile: (shader) => {
-                            shader.uniforms.dTime = gu.dTime;
-                            shader.uniforms.aspect = gu.aspect;
-                            shader.uniforms.pointer = this.uniforms.pointer;
-                            shader.uniforms.pointerDown = this.uniforms.pointerDown;
-                            shader.uniforms.pointerRadius = this.uniforms.pointerRadius;
-                            shader.uniforms.pointerDuration = this.uniforms.pointerDuration;
-                            shader.uniforms.fbTexture = this.fbTexture;
-                            shader.uniforms.time = gu.time;
-                            shader.fragmentShader = `
-                                uniform float dTime, aspect, pointerDown, pointerRadius, pointerDuration, time;
-                                uniform vec2 pointer;
-                                uniform sampler2D fbTexture;
-
-                                float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
-                                float noise(vec2 p) {
-                                    vec2 i = floor(p); vec2 f = fract(p); f = f*f*(3.0-2.0*f);
-                                    float a = hash(i); float b = hash(i + vec2(1.,0.));
-                                    float c = hash(i + vec2(0.,1.)); float d = hash(i + vec2(1.,1.));
-                                    return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);
-                                }
-                                ${shader.fragmentShader}
-                            `.replace(
-                                `#include <color_fragment>`,
-                                `#include <color_fragment>
-                                float rVal = texture2D(fbTexture, vUv).r;
-                                rVal -= clamp(dTime / pointerDuration, 0., 0.02);
-                                rVal = clamp(rVal, 0., 1.);
-                                float f = 0.;
-                                if (pointerDown > 0.5) {
-                                    vec2 uv = (vUv - 0.5) * 2. * vec2(aspect, 1.);
-                                    vec2 mouse = pointer * vec2(aspect, 1.);
-                                    vec2 toMouse = uv - mouse;
-                                    float angle = atan(toMouse.y, toMouse.x);
-                                    float dist = length(toMouse);
-                                    float noiseVal = noise(vec2(angle*3. + time*0.5, dist*5.));
-                                    float noiseVal2 = noise(vec2(angle*5. - time*0.3, dist*3. + time));
-                                    float radiusVariation = 0.7 + noiseVal*0.5 + noiseVal2*0.3;
-                                    float organicRadius = pointerRadius * radiusVariation;
-                                    f = 1. - smoothstep(organicRadius*0.05, organicRadius*1.2, dist);
-                                    f *= 0.8 + noiseVal*0.2;
-                                }
-                                rVal += f * 0.3;
-                                rVal = clamp(rVal, 0., 1.);
-                                diffuseColor.rgb = vec3(rVal);
-                                `
-                            );
-                        }
-                    })
-                );
-                this.rtScene.material.defines = { USE_UV: "" };
-                this.rtCamera = new THREE.Camera();
-
-                // Initialize render target to black (no reveal)
-                this.clearRenderTarget();
-            }
-
-            clearRenderTarget() {
-                const clearScene = new THREE.Scene();
-                clearScene.background = new THREE.Color(0x000000);
-                this.renderer.setRenderTarget(this.rtOutput);
-                this.renderer.render(clearScene, this.rtCamera);
-                this.renderer.copyFramebufferToTexture(this.fbTexture.value);
-                this.renderer.setRenderTarget(null);
-            }
-
-            render() {
-                this.renderer.setRenderTarget(this.rtOutput);
-                this.renderer.render(this.rtScene, this.rtCamera);
-                this.renderer.copyFramebufferToTexture(this.fbTexture.value);
-                this.renderer.setRenderTarget(null);
+                // Initial render - show ASCII art
+                drawFrame();
+                requestAnimationFrame(animate);
             }
         }
 
-        const blob = new Blob(renderer);
+        asciiImg.onload = onImageLoad;
+        portraitImg.onload = onImageLoad;
 
-        // Load textures
-        const textureLoader = new THREE.TextureLoader();
+        asciiImg.src = 'images/ascii-art.png';
+        portraitImg.src = 'images/profile.jpg';
 
-        // Load ASCII art image (TOP layer - visible by default, erased on hover)
-        const asciiTexture = textureLoader.load('images/ascii-art.png');
-        asciiTexture.colorSpace = THREE.SRGBColorSpace;
+        // Mouse tracking
+        let mouseX = -1000;
+        let mouseY = -1000;
+        let isHovering = false;
 
-        // Load portrait image (BOTTOM layer - revealed when ASCII is erased)
-        const portraitTexture = textureLoader.load('images/profile.jpg');
-        portraitTexture.colorSpace = THREE.SRGBColorSpace;
-
-        // Portrait image at BOTTOM (revealed when ASCII art is erased)
-        const portraitMaterial = new THREE.MeshBasicMaterial({
-            map: portraitTexture,
-            transparent: true
-        });
-        const portraitPlane = new THREE.Mesh(new THREE.PlaneGeometry(width, height), portraitMaterial);
-        scene.add(portraitPlane);
-        portraitPlane.position.z = 0.0; // Bottom layer
-
-        // ASCII art on TOP - gets "erased" to reveal portrait
-        const asciiMaterial = new THREE.MeshBasicMaterial({
-            map: asciiTexture,
-            transparent: true
+        container.addEventListener('mousemove', (e) => {
+            const rect = container.getBoundingClientRect();
+            mouseX = e.clientX - rect.left;
+            mouseY = e.clientY - rect.top;
+            isHovering = true;
         });
 
-        asciiMaterial.onBeforeCompile = (shader) => {
-            shader.uniforms.texBlob = { value: blob.rtOutput.texture };
-            let vertexShader = shader.vertexShader;
-            vertexShader = vertexShader.replace("void main() {", "varying vec4 vPosProj;\nvoid main() {");
-            vertexShader = vertexShader.replace(
-                "#include <project_vertex>",
-                "#include <project_vertex>\nvPosProj = gl_Position;"
-            );
-            shader.vertexShader = vertexShader;
-            shader.fragmentShader = `
-                uniform sampler2D texBlob; varying vec4 vPosProj;
-                ${shader.fragmentShader}
-            `.replace(
-                `#include <clipping_planes_fragment>`,
-                `
-                vec2 blobUV=((vPosProj.xy/vPosProj.w)+1.)*0.5;
-                vec4 blobData=texture2D(texBlob,blobUV);
-                // DISCARD where blob has been painted (reveal portrait underneath)
-                if(blobData.r > 0.02) discard;
-                #include <clipping_planes_fragment>
-                `
-            );
-        };
+        container.addEventListener('mouseleave', () => {
+            mouseX = -1000;
+            mouseY = -1000;
+            isHovering = false;
+        });
 
-        const asciiPlane = new THREE.Mesh(new THREE.PlaneGeometry(width, height), asciiMaterial);
-        scene.add(asciiPlane);
-        asciiPlane.position.z = 0.1; // Top layer
+        // Touch support
+        container.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const rect = container.getBoundingClientRect();
+            const touch = e.touches[0];
+            mouseX = touch.clientX - rect.left;
+            mouseY = touch.clientY - rect.top;
+            isHovering = true;
+        });
 
-        // Animation
-        const clock = new THREE.Clock();
-        let t = 0;
+        container.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const rect = container.getBoundingClientRect();
+            const touch = e.touches[0];
+            mouseX = touch.clientX - rect.left;
+            mouseY = touch.clientY - rect.top;
+        });
+
+        container.addEventListener('touchend', () => {
+            mouseX = -1000;
+            mouseY = -1000;
+            isHovering = false;
+        });
+
+        function updateRevealData() {
+            // Apply decay to all revealed areas
+            for (let i = 0; i < revealData.length; i++) {
+                if (revealData[i] > 0) {
+                    revealData[i] = Math.max(0, revealData[i] - DECAY_RATE);
+                }
+            }
+
+            // Paint reveal area at mouse position
+            if (isHovering && mouseX >= 0 && mouseX < width && mouseY >= 0 && mouseY < height) {
+                const centerX = Math.floor(mouseX);
+                const centerY = Math.floor(mouseY);
+
+                for (let dy = -BRUSH_RADIUS; dy <= BRUSH_RADIUS; dy++) {
+                    for (let dx = -BRUSH_RADIUS; dx <= BRUSH_RADIUS; dx++) {
+                        const px = centerX + dx;
+                        const py = centerY + dy;
+
+                        if (px >= 0 && px < width && py >= 0 && py < height) {
+                            const dist = Math.sqrt(dx * dx + dy * dy);
+                            if (dist <= BRUSH_RADIUS) {
+                                // Smooth falloff from center
+                                const falloff = 1 - (dist / BRUSH_RADIUS);
+                                const strength = falloff * falloff * BRUSH_STRENGTH;
+                                const idx = py * width + px;
+                                revealData[idx] = Math.min(1, revealData[idx] + strength);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function drawFrame() {
+            // Clear canvases
+            asciiCtx.clearRect(0, 0, width, height);
+            revealCtx.clearRect(0, 0, width, height);
+
+            // Draw portrait on reveal canvas (bottom layer, always visible)
+            revealCtx.drawImage(portraitImg, 0, 0, width, height);
+
+            // Draw ASCII art on ascii canvas
+            asciiCtx.drawImage(asciiImg, 0, 0, width, height);
+
+            // Get the ASCII image data and make pixels transparent where revealed
+            const imageData = asciiCtx.getImageData(0, 0, width, height);
+            const data = imageData.data;
+
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const idx = y * width + x;
+                    const pixelIdx = idx * 4;
+                    const revealAmount = revealData[idx];
+
+                    if (revealAmount > 0) {
+                        // Make ASCII pixel transparent based on reveal amount
+                        data[pixelIdx + 3] = Math.floor(data[pixelIdx + 3] * (1 - revealAmount));
+                    }
+                }
+            }
+
+            asciiCtx.putImageData(imageData, 0, 0);
+        }
 
         function animate() {
-            const dt = clock.getDelta();
-            t += dt;
-            gu.time.value = t;
-            gu.dTime.value = dt;
-            blob.render();
-            renderer.render(scene, camera);
+            updateRevealData();
+            drawFrame();
             requestAnimationFrame(animate);
         }
 
-        animate();
-
         // Handle resize
-        const handleResize = () => {
+        window.addEventListener('resize', () => {
             const newWidth = container.clientWidth;
             const newHeight = container.clientHeight;
-            camera.left = newWidth / -2;
-            camera.right = newWidth / 2;
-            camera.top = newHeight / 2;
-            camera.bottom = newHeight / -2;
-            camera.updateProjectionMatrix();
-            renderer.setSize(newWidth, newHeight);
-            gu.aspect.value = newWidth / newHeight;
 
-            portraitPlane.geometry.dispose();
-            portraitPlane.geometry = new THREE.PlaneGeometry(newWidth, newHeight);
-            asciiPlane.geometry.dispose();
-            asciiPlane.geometry = new THREE.PlaneGeometry(newWidth, newHeight);
-        };
-
-        window.addEventListener('resize', handleResize);
-
-        // Hide original portrait image
-        portraitImage.style.display = 'none';
+            if (newWidth !== width || newHeight !== height) {
+                // For simplicity, just reload the page on resize
+                // A more sophisticated solution would resize the canvases and revealData
+                location.reload();
+            }
+        });
     }
 
     // Console message
