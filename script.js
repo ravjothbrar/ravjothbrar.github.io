@@ -121,13 +121,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const asciiCtx = asciiCanvas.getContext('2d');
         const revealCtx = revealCanvas.getContext('2d');
 
-        // Liquid metaball trail system
+        // Liquid metaball trail system - optimized for smooth performance
         const metaballs = [];
-        const MAX_METABALLS = 25;
-        const METABALL_RADIUS = 60;
-        const METABALL_SPAWN_RATE = 3; // Spawn every N frames
-        const DECAY_SPEED = 0.012;
-        const THRESHOLD = 1.0; // Metaball threshold for liquid effect
+        const MAX_METABALLS = 40;
+        const METABALL_RADIUS = 70;
+        const METABALL_SPAWN_RATE = 1; // Spawn every frame for smoother trail
+        const DECAY_SPEED = 0.008; // Slower decay for longer-lasting liquid trail
+        const THRESHOLD = 0.8; // Lower threshold for smoother edges
+
+        // Downscale factor for performance (process at lower resolution)
+        const SCALE = 4;
+        const scaledWidth = Math.ceil(width / SCALE);
+        const scaledHeight = Math.ceil(height / SCALE);
 
         let frameCount = 0;
 
@@ -302,37 +307,75 @@ document.addEventListener('DOMContentLoaded', function() {
             // Only process if there are metaballs
             if (metaballs.length === 0) return;
 
-            // Get the ASCII image data and make pixels transparent based on liquid field
+            // Calculate field at lower resolution for performance
+            const fieldMap = new Float32Array(scaledWidth * scaledHeight);
+
+            // Compute bounding box of active metaballs at scaled coordinates
+            const margin = METABALL_RADIUS * 2.5 / SCALE;
+            let minSX = scaledWidth, maxSX = 0, minSY = scaledHeight, maxSY = 0;
+
+            for (const ball of metaballs) {
+                const sx = ball.x / SCALE;
+                const sy = ball.y / SCALE;
+                minSX = Math.min(minSX, sx - margin);
+                maxSX = Math.max(maxSX, sx + margin);
+                minSY = Math.min(minSY, sy - margin);
+                maxSY = Math.max(maxSY, sy + margin);
+            }
+
+            minSX = Math.max(0, Math.floor(minSX));
+            maxSX = Math.min(scaledWidth, Math.ceil(maxSX));
+            minSY = Math.max(0, Math.floor(minSY));
+            maxSY = Math.min(scaledHeight, Math.ceil(maxSY));
+
+            // Compute field at scaled resolution
+            for (let sy = minSY; sy < maxSY; sy++) {
+                for (let sx = minSX; sx < maxSX; sx++) {
+                    const px = sx * SCALE;
+                    const py = sy * SCALE;
+                    fieldMap[sy * scaledWidth + sx] = getFieldAt(px, py);
+                }
+            }
+
+            // Get the ASCII image data
             const imageData = asciiCtx.getImageData(0, 0, width, height);
             const data = imageData.data;
 
-            // Optimization: only process pixels near metaballs
-            const margin = METABALL_RADIUS * 2.5;
-            let minX = width, maxX = 0, minY = height, maxY = 0;
+            // Apply reveal with bilinear interpolation for smooth edges
+            const minX = minSX * SCALE;
+            const maxX = Math.min(width, maxSX * SCALE);
+            const minY = minSY * SCALE;
+            const maxY = Math.min(height, maxSY * SCALE);
 
-            for (const ball of metaballs) {
-                minX = Math.min(minX, ball.x - margin);
-                maxX = Math.max(maxX, ball.x + margin);
-                minY = Math.min(minY, ball.y - margin);
-                maxY = Math.max(maxY, ball.y + margin);
-            }
-
-            minX = Math.max(0, Math.floor(minX));
-            maxX = Math.min(width, Math.ceil(maxX));
-            minY = Math.max(0, Math.floor(minY));
-            maxY = Math.min(height, Math.ceil(maxY));
-
-            // Process pixels in the affected region
             for (let y = minY; y < maxY; y++) {
                 for (let x = minX; x < maxX; x++) {
-                    const field = getFieldAt(x, y);
+                    // Bilinear interpolation from scaled field map
+                    const fx = x / SCALE;
+                    const fy = y / SCALE;
+                    const x0 = Math.floor(fx);
+                    const y0 = Math.floor(fy);
+                    const x1 = Math.min(x0 + 1, scaledWidth - 1);
+                    const y1 = Math.min(y0 + 1, scaledHeight - 1);
+                    const dx = fx - x0;
+                    const dy = fy - y0;
 
-                    if (field > THRESHOLD * 0.3) {
+                    const f00 = fieldMap[y0 * scaledWidth + x0];
+                    const f10 = fieldMap[y0 * scaledWidth + x1];
+                    const f01 = fieldMap[y1 * scaledWidth + x0];
+                    const f11 = fieldMap[y1 * scaledWidth + x1];
+
+                    const field = f00 * (1 - dx) * (1 - dy) +
+                                  f10 * dx * (1 - dy) +
+                                  f01 * (1 - dx) * dy +
+                                  f11 * dx * dy;
+
+                    if (field > THRESHOLD * 0.2) {
                         const pixelIdx = (y * width + x) * 4;
-                        // Smooth transition using smoothstep-like function
-                        let revealAmount = (field - THRESHOLD * 0.3) / (THRESHOLD * 1.5);
+                        // Smooth transition using smoothstep
+                        let revealAmount = (field - THRESHOLD * 0.2) / (THRESHOLD * 1.8);
                         revealAmount = Math.min(1, Math.max(0, revealAmount));
-                        // Apply easing for liquid-like smooth edges
+                        // Double smoothstep for extra-smooth liquid edges
+                        revealAmount = revealAmount * revealAmount * (3 - 2 * revealAmount);
                         revealAmount = revealAmount * revealAmount * (3 - 2 * revealAmount);
                         // Make ASCII pixel transparent to reveal portrait underneath
                         data[pixelIdx + 3] = Math.floor(data[pixelIdx + 3] * (1 - revealAmount));
