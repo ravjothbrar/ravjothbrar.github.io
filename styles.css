@@ -773,10 +773,44 @@ a.value:hover {
     font-style: italic;
     margin-bottom: 8px;
     font-size: 14px;
+    position: relative;
+    padding-left: 20px;
+}
+
+.role-org-description::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: var(--accent-color);
+    font-weight: bold;
+    font-style: normal;
 }
 
 .role-description {
     color: var(--muted-text);
+    position: relative;
+    padding-left: 20px;
+}
+
+.role-description::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+.role-company-link {
+    position: relative;
+    padding-left: 20px;
+}
+
+.role-company-link::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: var(--accent-color);
+    font-weight: bold;
 }
 
 .role-bullets {
