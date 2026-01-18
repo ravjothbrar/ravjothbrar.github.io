@@ -704,7 +704,7 @@ a.value:hover {
     content: '→';
     position: absolute;
     left: -70px;
-    top: 8px;
+    top: -7px;
     color: var(--accent-color);
     font-size: 60px;
     font-weight: bold;
@@ -773,10 +773,31 @@ a.value:hover {
     font-style: italic;
     margin-bottom: 8px;
     font-size: 14px;
+    position: relative;
+    padding-left: 20px;
+}
+
+.role-org-description::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: var(--accent-color);
+    font-weight: bold;
+    font-style: normal;
 }
 
 .role-description {
     color: var(--muted-text);
+    position: relative;
+    padding-left: 20px;
+}
+
+.role-description::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: var(--accent-color);
+    font-weight: bold;
 }
 
 .role-bullets {
