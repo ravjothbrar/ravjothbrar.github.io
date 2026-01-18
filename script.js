@@ -74,6 +74,30 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(box);
     });
 
+    // Animate clickable project links when scrolling into view
+    const linkItems = document.querySelectorAll('.role-item.has-link');
+    const linkObserverOptions = {
+        threshold: 0.5,
+        rootMargin: '0px 0px -100px 0px'
+    };
+
+    const linkObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
+                entry.target.classList.add('animated');
+                entry.target.classList.add('animate-in');
+                // Remove animation class after it completes
+                setTimeout(() => {
+                    entry.target.classList.remove('animate-in');
+                }, 600);
+            }
+        });
+    }, linkObserverOptions);
+
+    linkItems.forEach(item => {
+        linkObserver.observe(item);
+    });
+
     // Typing effect for hero tagline
     const tagline = document.querySelector('.hero-tagline');
     if (tagline) {
