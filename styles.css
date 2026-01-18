@@ -800,19 +800,6 @@ a.value:hover {
     font-weight: bold;
 }
 
-.role-company-link {
-    position: relative;
-    padding-left: 20px;
-}
-
-.role-company-link::before {
-    content: '>';
-    position: absolute;
-    left: 0;
-    color: var(--accent-color);
-    font-weight: bold;
-}
-
 .role-bullets {
     color: var(--muted-text);
     margin-top: 10px;
