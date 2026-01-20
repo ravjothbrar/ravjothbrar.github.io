@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How can we deal with algorithmic bias and opacity? | Ravjoth Brar</title>
+    <meta name="description" content="Exploring the challenges of algorithmic bias and opacity in AI systems, and how regulatory frameworks can address these critical issues.">
+    <link rel="canonical" href="https://ravjothbrar.com/blog/algorithmic-bias.html" />
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <!-- Corner Decorations -->
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
+
+    <!-- Side Navigation -->
+    <nav class="side-nav">
+        <ul>
+            <li><a href="../index.html#home" class="nav-link">> Home</a></li>
+            <li><a href="../index.html#about" class="nav-link">> About Me</a></li>
+            <li><a href="../index.html#links" class="nav-link">> Links</a></li>
+            <li><a href="../index.html#roles" class="nav-link">> Roles</a></li>
+            <li><a href="../index.html#projects" class="nav-link">> Projects</a></li>
+            <li><a href="../blog.html" class="nav-link active">> Blog</a></li>
+            <li><a href="../index.html#publications" class="nav-link">> Publications</a></li>
+            <li><a href="../index.html#cv" class="nav-link">> CV</a></li>
+            <li><a href="../index.html#contact" class="nav-link">> Contact Me</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content blog-article-page">
+        <!-- Article Header -->
+        <article class="section">
+            <div class="article-header">
+                <div class="article-meta">
+                    <a href="../blog.html" class="back-link">&larr; Back to Blog</a>
+                    <span class="article-date">06/05/2025</span>
+                </div>
+                <h1 class="article-title">> How can we deal with algorithmic bias and opacity?</h1>
+            </div>
+
+            <div class="terminal-box article-content">
+                <p>Artificial Intelligence (AI), more specifically Machine Learning (ML), is becoming increasingly integrated into our daily lives. With Google AI overviews reaching over a billion users to the infamous ChatGPT becoming so ubiquitous it has risen to a verb in German, AI's prowess is profound and undeniable. As ML systems begin to govern critical infrastructure across healthcare, law, and finance, two inextricably linked challenges threaten their future: algorithmic bias and opacity. Algorithmic bias refers to systematic errors in machine learning algorithms that produce unfair or discriminatory outcomes, often reflecting existing societal biases. Opacity refers to the "black box" nature of some AI systems, where the decision-making processes are often shrouded in uncertainty or darkness. Both components are not merely technical concerns but vital components that require careful and deliberate governance to maintain a coherent and equitable society.</p>
+
+                <h2>The Origins of Algorithmic Bias</h2>
+
+                <p>The majority of ML systems currently rely on probabilistic architecture, with the Transformer architecture introduced by Google in the infamous research paper "Attention Is All You Need". These systems essentially reproduce and regurgitate patterns found in their training data, inadvertently containing biases depending on the content of the training data. Most ML systems, including frontier AI systems such as ChatGPT, Gemini 2.0, and Claude 3.5 Sonnet all utilise training data directly from the Internet. As the Internet is not a validated source, there is no way to check that the information is true – this begins to pose a significant problem to the majority of AI systems. They're being taught on incorrect data and, as such, can produce incorrect responses. This culmination can influence the AI system outputs, re-enforcing current social stereotypes and marginalising underrepresented views. In an experiment, as detailed in Figure 1, I investigated which jobs, according to image generators, were more or less likely for men and women to do. This clearly conveyed how the AI assigns typical gender roles to certain job occupations, resulting in profound gender bias. By running this experiment, I noticed that gender differences, on some roles, were becoming significantly more pronounced: to the extent that it even started producing sexualised photos of people if they specify that they are a woman. On the other hand, if they say they are a man, the photos typically displayed confident and proud men in high-paying jobs such as aerospace engineers as shown in Figure 1.</p>
+
+                <h2>Programmer-Introduced Bias</h2>
+
+                <p>Another way algorithmic bias can arise is due to the programmers themselves. These programmers, usually accidentally, could implement unconscious bias in the programming of these AI systems: whether this arises in the design of the algorithm itself, the choice of parameters of the selection of data. A well-known case study of this was a ML system implemented by the NHS to monitor blood oxygen levels using Covid. Valbuena et al. (2022) states that, "a known design flaw of the pulse oximeter is that patients with darker skin (compared with lighter skin) are more likely to experience occult hypoxemia". This is a type of blood oxygen deficiency which is more prominent in people with darker skin colour, when tested on patients with darker skin it gave mostly incorrect readings as the product has been predominantly calibrated on white males. More often than not the resulting biases of ML systems are unintended however, some corporations and organisations do aim to combat this issue much more prominently than others. A vital issue, especially for the future, is the usage and collection of public data. As every ML and generative AI system, like ChatGPT, relies on vast datasets cumulating to petabytes of data, data is a resource of the utmost importance for the future. However, it is concerning to note that many large corporations unknowingly collect user data and additionally make it very difficult for users to deny permissions to collect and store such data.</p>
+
+                <h2>Data Ownership and Governance</h2>
+
+                <p>A phenomenal example of an ML project where data collection and usage were at the forefront of development is a recent exhibition called 'The Call', displayed in the Serpentine Gallery. In 'The Call' each choir who provided training data was given a token which they can use to validate the dataset, which is owned by an intermediary. This ensures that no external corporation can use the dataset without the specific consent of all choirs and the executive decision of the intermediary. This is a perfect example of how we, as the public, should own our own data and how we should govern our own data rights, as opposed to being shackled by the Terms of Service by large Multi-National Corporations (MNCs). A common real-world application of algorithms is in hiring applications, where ML systems are used to select CVs to determine who would be most applicable for that role. Unfortunately, women and those from deprived backgrounds suffer huge consequences as such ML systems can reject these demographics, even if they are suitable, if they have been trained on predominantly stereotypically male CVs. This not only has short-term impact of denying people an opportunity they may deserve but also has detrimental long-term implications such as limiting access to certain professions and effectively getting 'stuck' in a cycle of low-income. Therefore, hindering the advancement of an egalitarian society – whilst this is, of course, unintended it is still crucial to consider the ethical aspects of algorithmic bias and the potential it has in society to re-enforce societal stereotypes. A potential way to solve this could be curating a diversified dataset which represents marginalised minorities more equitably – thereby reducing the prevalence of algorithmic bias and reducing the likelihood of its arrival.</p>
+
+                <h2>Open vs Closed-Source AI Development</h2>
+
+                <p>The growing divide between open and closed-source AI development presents us with valuable insights into what could transform into a potential solution for algorithmic bias and opacity. Over the last few months, two Chinese companies have released incredibly impressive AI models trained at a fraction of the cost to OpenAI's o1. DeepSeek, the famed AI system developed by High-Flyer, a company specialising in quantitative trading, represents a promising example of the competency and tremendous success of open-source AI development. DeepSeek's model architecture and training methods are both publicly available and clearly outlined in the extensive research papers they publicly published. This transparency not only enables developers all around the world to experiment with it but enables them to suggest improvements and adaptations for different applications. When combined with the digitised world we live in, open-source AI transcends into a powerful tool democratising AI access and principles for all – although, it also temporarily caused NVIDIA's market cap to reduce by $598 billion, the largest ever stock marked decreased in 24 hours, vividly illustrating the severe economic disruption that increased transparency can cultivate.</p>
+
+                <p>Comparatively, other AI systems are extremely closed-source, choosing instead to gatekeep their training practises and architectural decisions. A key examples of an AI system, which is closed-source and facing legal action, is Perplexity. They've established a prominent AI-powered search engine which many flock to for all related inquiries. Perplexity is primarily closed-source and does not disclose its training data nor the internal architecture of its models. Additionally, Perplexity has a search dataset of over a billion searches, a key and valuable source of high-quality data. As such, it is clear why Perplexity intend to keep this private. However, Perplexity's most pressing issue is associated with its data usage; in October 2024, Perplexity was sued by Don Jones and the New York Post for their usage of data from the NYT (New York Times) without their consent. The blatant disregard for the rights of data clearly demonstrates not only the need for regulatory framework associated with the usage of data but also the need for opacity from large corporations. Opacity, in itself, fundamentally exacerbates amplifies societal biases through the limited distribution of knowledge and data. Some have raised concerns that large MNCs are effectively 'gate-keeping' the higher quality research and knowledge, thereby withholding key AI knowledge and therefore stifling innovation globally. This is only further amplified by the insidious nature of feedback loops, influencing future data collection and resulting in a self-perpetuating cycle of discrimination, particularly detrimental in areas like hiring and criminal justice.</p>
+
+                <h2>The Role of Regulatory Frameworks</h2>
+
+                <p>Regulatory framework is paramount to navigate the increasingly complex landscape of AI, we need to balance harnessing its benefits with mitigating the risks of bias, opacity and potential malicious usage. The EU AI Act stands as a landmark example of a public sector approach which delves with these issues: categorising levels of impact and risk. This legislation categorises systems on a spectrum from minimal/low risk to unacceptable risk – with prominent AI systems having to go through multiple rounds of scrutiny and testing before being implemented and publicly released to the public. Crucially, regulatory frameworks must balance both transparency and traceability – two key concepts ensuring AI safety. Transparency refers to how we, as humans, should be able to understand the inner working of an AI system and thus understand how it reaches its conclusion. Comparatively, traceability stresses the importance of such an AI system to explain how it reached that output, effectively a trail from its input to the output. The EU AI Act references both of these and does aim to tackle it; however, other frameworks need to explicitly address each. Whilst the EU AI Act campaigns for a fair, but innovative AI – it is vital to note that overly comprehensive regulations could stifle innovation and effectively regulating algorithmic 'gaming' remains a practical challenge. On the other hand, private sector frameworks also offer valuable components, emphasising the importance of ethical AI, however such frameworks are difficult to enforce worldwide. Future regulatory approaches should strengthen a focus on both traceability and transparency as the basis of regulation, whilst developing a system that incorporates public opinion into the rapid public deployment of AI, ultimately ensuring equitable AI development for all.</p>
+
+                <h2>Conclusion</h2>
+
+                <p>We currently stand at a precipice – the path we are currently on, while paved with the promise of innovation, carries a significant risk of veering into a dystopian future. Algorithmic bias and opacity carry an increasingly significant risk in our current world state, the choices we make today and the regulatory framework we develop and implement will be the deciding factor dictating whether AI becomes a catalyst for progress, or a tool of oppression. The future of AI is not solely in the hands of developers and researches, but through regulatory framework incorporating public opinion and diversified datasets representing marginalised minorities equitably we begin to have a say in how AI progresses. We all have a collective responsibility, as humans, to mitigate its risks for future generations – let us ensure we do it right.</p>
+            </div>
+        </article>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2026 Ravjoth Brar. All rights reserved. <span class="footer-note">Kindly Hosted on GitHub Pages</span></p>
+        </footer>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const terminalBox = document.querySelector('.terminal-box');
+            if (terminalBox) {
+                terminalBox.style.opacity = '0';
+                terminalBox.style.transform = 'translateY(20px)';
+                terminalBox.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+
+                setTimeout(() => {
+                    terminalBox.style.opacity = '1';
+                    terminalBox.style.transform = 'translateY(0)';
+                }, 100);
+            }
+        });
+    </script>
+</body>
+</html>
