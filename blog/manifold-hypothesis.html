@@ -43,6 +43,11 @@
                 <h1 class="article-title">> The Manifold Hypothesis: The Elegant Principle Driving Deep Learning's Success</h1>
             </div>
 
+            <!-- Cover Image -->
+            <div class="article-cover">
+                <img src="images/manifold-hypothesis.png" alt="Manifold Hypothesis Cover" class="article-cover-image">
+            </div>
+
             <div class="terminal-box article-content">
                 <p>Have you ever wondered why we can so effortlessly spot a familiar face in a crowd?</p>
 
@@ -133,7 +138,7 @@
             if (terminalBox) {
                 terminalBox.style.opacity = '0';
                 terminalBox.style.transform = 'translateY(20px)';
-                terminalBox.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                terminalBox.style.transition = 'opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
 
                 setTimeout(() => {
                     terminalBox.style.opacity = '1';

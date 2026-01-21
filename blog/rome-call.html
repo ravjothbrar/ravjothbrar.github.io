@@ -43,6 +43,11 @@
                 <h1 class="article-title">> The Rome Call for AI</h1>
             </div>
 
+            <!-- Cover Image -->
+            <div class="article-cover">
+                <img src="images/rome-call.png" alt="Rome Call Cover" class="article-cover-image">
+            </div>
+
             <div class="terminal-box article-content">
                 <p>Artificial Intelligence (AI) is revolutionising the world at a rapid pace and the ethical implications of AI are very intriguing. Before I discuss the ethics of AI let me define what I mean by AI. Encyclopaedia Britannica defines Artificial Intelligence as, 'The ability of a digital computer or computer-controlled robot to perform tasks commonly associated with intelligent beings'.</p>
 
@@ -78,7 +83,7 @@
             if (terminalBox) {
                 terminalBox.style.opacity = '0';
                 terminalBox.style.transform = 'translateY(20px)';
-                terminalBox.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                terminalBox.style.transition = 'opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
 
                 setTimeout(() => {
                     terminalBox.style.opacity = '1';

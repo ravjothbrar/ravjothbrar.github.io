@@ -43,6 +43,11 @@
                 <h1 class="article-title">> How can we deal with algorithmic bias and opacity?</h1>
             </div>
 
+            <!-- Cover Image -->
+            <div class="article-cover">
+                <img src="images/algorithmic-bias.png" alt="Algorithmic Bias Cover" class="article-cover-image">
+            </div>
+
             <div class="terminal-box article-content">
                 <p>Artificial Intelligence (AI), more specifically Machine Learning (ML), is becoming increasingly integrated into our daily lives. With Google AI overviews reaching over a billion users to the infamous ChatGPT becoming so ubiquitous it has risen to a verb in German, AI's prowess is profound and undeniable. As ML systems begin to govern critical infrastructure across healthcare, law, and finance, two inextricably linked challenges threaten their future: algorithmic bias and opacity. Algorithmic bias refers to systematic errors in machine learning algorithms that produce unfair or discriminatory outcomes, often reflecting existing societal biases. Opacity refers to the "black box" nature of some AI systems, where the decision-making processes are often shrouded in uncertainty or darkness. Both components are not merely technical concerns but vital components that require careful and deliberate governance to maintain a coherent and equitable society.</p>
 
@@ -86,7 +91,7 @@
             if (terminalBox) {
                 terminalBox.style.opacity = '0';
                 terminalBox.style.transform = 'translateY(20px)';
-                terminalBox.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                terminalBox.style.transition = 'opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
 
                 setTimeout(() => {
                     terminalBox.style.opacity = '1';

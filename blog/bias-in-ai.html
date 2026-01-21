@@ -43,6 +43,11 @@
                 <h1 class="article-title">> How bias in AI affects society now and in the future</h1>
             </div>
 
+            <!-- Cover Image -->
+            <div class="article-cover">
+                <img src="images/bias-in-ai.png" alt="Bias in AI Cover" class="article-cover-image">
+            </div>
+
             <div class="terminal-box article-content">
                 <p>Artificial Intelligence (AI); some say it will destroy the world, others say it will make it better. Will it be the 'Terminator' or a blessing? Bias in AI can greatly impact the course of the future due to its' many repercussions so we must stay vigilant. Many have debated whether AI will turn against us, but we still do not know. In this paper, I discuss the current uses of AI and how it will impact society. I hope for the sake of humanity that this is not the first step to our extinction.</p>
 
@@ -110,7 +115,7 @@
             if (terminalBox) {
                 terminalBox.style.opacity = '0';
                 terminalBox.style.transform = 'translateY(20px)';
-                terminalBox.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                terminalBox.style.transition = 'opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
 
                 setTimeout(() => {
                     terminalBox.style.opacity = '1';
