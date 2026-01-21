@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Rome Call for AI | Ravjoth Brar</title>
+    <meta name="description" content="Discussing the Rome Call for AI Ethics - a landmark document signed by representatives of the three Abrahamic religions outlining key principles for AI governance.">
+    <link rel="canonical" href="https://ravjothbrar.com/blog/rome-call.html" />
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <!-- Corner Decorations -->
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
+
+    <!-- Side Navigation -->
+    <nav class="side-nav">
+        <ul>
+            <li><a href="../index.html#home" class="nav-link">> Home</a></li>
+            <li><a href="../index.html#about" class="nav-link">> About Me</a></li>
+            <li><a href="../index.html#links" class="nav-link">> Links</a></li>
+            <li><a href="../index.html#roles" class="nav-link">> Roles</a></li>
+            <li><a href="../index.html#projects" class="nav-link">> Projects</a></li>
+            <li><a href="../blog.html" class="nav-link active">> Blog</a></li>
+            <li><a href="../index.html#publications" class="nav-link">> Publications</a></li>
+            <li><a href="../index.html#cv" class="nav-link">> CV</a></li>
+            <li><a href="../index.html#contact" class="nav-link">> Contact Me</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content blog-article-page">
+        <!-- Article Header -->
+        <article class="section">
+            <div class="article-header">
+                <div class="article-meta">
+                    <a href="../blog.html" class="back-link">&larr; Back to Blog</a>
+                    <span class="article-date">05/03/2023</span>
+                </div>
+                <h1 class="article-title">> The Rome Call for AI</h1>
+            </div>
+
+            <div class="terminal-box article-content">
+                <p>Artificial Intelligence (AI) is revolutionising the world at a rapid pace and the ethical implications of AI are very intriguing. Before I discuss the ethics of AI let me define what I mean by AI. Encyclopaedia Britannica defines Artificial Intelligence as, 'The ability of a digital computer or computer-controlled robot to perform tasks commonly associated with intelligent beings'.</p>
+
+                <p>On the 10th of January 2023, representatives of the three Abrahamic religions signed a document called the Rome Call for AI Ethics. This document was monumental as it outlined six key principles which should be implemented in the future of AI systems. They wanted to guarantee a future in which AI is at the service of human ingenuity and creativity whilst ensuring that AI is transparent, inclusive, controlled and governed with human interests in mind. I agree with these principles and in this article I am going to discuss some of the challenges in implementing them.</p>
+
+                <h2>Transparency</h2>
+
+                <p>The first principle is transparency. A common misconception regarding AI transparency and traceability is that they are the same when they are actually very different. AI transparency is the concept that we should develop AI with the ability to understand how it works. On the other hand, AI traceability is the ability that the AI should be able to re-trace its journey backwards and record where it found its information and how it reached its conclusion. In my opinion, AI traceability is more important. This is because the AI can then help to mitigate bias by explaining its logic and working back to understand where it went wrong if needed. However, in this document they seem to confuse these two concepts and definite traceability as the ability for the AI to be able to explain its actions. This may need to be looked into further as it is crucial that as society progresses to using more AI systems, the correct regulations are in place.</p>
+
+                <h2>Inclusion</h2>
+
+                <p>The second principle is inclusion. In this situation they define inclusion as everyone benefiting and being offered the best possible conditions to express themselves and develop. An example of this is AI being used to generate art. Shutterstock is suing a famous AI called Stable Diffusion. This is because Stable Diffusion's AI was trained with data and images from Shutterstock of artworks without consent from the artists. This has resulted in a massive uproar from traditional artists as they demand to be reimbursed for their artwork.</p>
+
+                <h2>Accountability</h2>
+
+                <p>The third principle is accountability. Accountability is the idea that there must always be a person who takes responsibility for an AI's actions. This principle has already been implemented by the EU to ensure that people do not exploit AI systems and not be held accountable for what it has done. This will also encourage more companies to place better safeguards and regulations on their AI systems to prevent this from happening. This is very interesting ethically - if an AI system goes haywire and accidentally does an illegal act, is a person to blame for an illegal act that they did not commit? This would technically be accusing an innocent person of a crime. The implications are immense because if this is properly enforced, then if an AI system develops on their own and then commits an illegal act will the person who created the initial AI system be to blame or the AI system itself? Furthermore, how are you going to punish an AI system as it will feel no retribution for its actions and cannot be punished traditionally i.e. in prison.</p>
+
+                <h2>Impartiality</h2>
+
+                <p>The fourth principle is impartiality, the concept that AI systems must not follow or create biases. At first glance this may seem like a very strong principle however as you look at it more, the more you realise how difficult it is. To ensure that AI does not follow or create biases, the training data being relied on must be checked before it can be used. This is extremely hard to do as to would cost a lot of money and resources to review. Currently, the majority of training data used in AI systems are being trawled from the Internet as it is an easily accessible vast pool of data. However, some repercussions may be that the AI will not be as intelligent as it has not been trained on a lot of independent data. For example, this may result in bias in hiring applications where the AI has the potential to stereotype against a certain community due to their race being underrepresented in the training data. We must realise that the regulation of AI systems is still developing and we all need to play a part in ensuring its equitable outcome.</p>
+            </div>
+        </article>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2026 Ravjoth Brar. All rights reserved. <span class="footer-note">Kindly Hosted on GitHub Pages</span></p>
+        </footer>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const terminalBox = document.querySelector('.terminal-box');
+            if (terminalBox) {
+                terminalBox.style.opacity = '0';
+                terminalBox.style.transform = 'translateY(20px)';
+                terminalBox.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+
+                setTimeout(() => {
+                    terminalBox.style.opacity = '1';
+                    terminalBox.style.transform = 'translateY(0)';
+                }, 100);
+            }
+        });
+    </script>
+</body>
+</html>
