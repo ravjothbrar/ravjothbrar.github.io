@@ -43,6 +43,11 @@
                 <h1 class="article-title">> What is AlphaFold and how did it revolutionise protein structure prediction?</h1>
             </div>
 
+            <!-- Cover Image -->
+            <div class="article-cover">
+                <img src="images/alphafold.png" alt="AlphaFold Cover" class="article-cover-image">
+            </div>
+
             <div class="terminal-box article-content">
                 <p>In 1972, Christian Anfinsen was awarded a Nobel Prize for his research which demonstrated that it should be possible to determine a protein's 3D shape based on the sequence of the amino acids which comprise it. This problem is more commonly known as the 'protein folding problem', and remained, gathering dust, for just under 50 years – then AlphaFold knocked on the door.</p>
 
@@ -84,7 +89,7 @@
             if (terminalBox) {
                 terminalBox.style.opacity = '0';
                 terminalBox.style.transform = 'translateY(20px)';
-                terminalBox.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                terminalBox.style.transition = 'opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
 
                 setTimeout(() => {
                     terminalBox.style.opacity = '1';

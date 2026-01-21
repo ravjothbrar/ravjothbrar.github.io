@@ -43,6 +43,11 @@
                 <h1 class="article-title">> 1984 Today: Unmasking AI's Potential for a Dystopian Future</h1>
             </div>
 
+            <!-- Cover Image -->
+            <div class="article-cover">
+                <img src="images/1984-today.png" alt="1984 Today Cover" class="article-cover-image">
+            </div>
+
             <div class="terminal-box article-content">
                 <h2>The AI Revolution's Dark Side: Are We Sleepwalking into a Dystopia?</h2>
 
@@ -118,7 +123,7 @@
             if (terminalBox) {
                 terminalBox.style.opacity = '0';
                 terminalBox.style.transform = 'translateY(20px)';
-                terminalBox.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                terminalBox.style.transition = 'opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
 
                 setTimeout(() => {
                     terminalBox.style.opacity = '1';

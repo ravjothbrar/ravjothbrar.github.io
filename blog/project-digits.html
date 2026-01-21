@@ -43,6 +43,11 @@
                 <h1 class="article-title">> Project DIGITS: NVIDIA Revolutionises AI Development - Yet Again</h1>
             </div>
 
+            <!-- Cover Image -->
+            <div class="article-cover">
+                <img src="images/project-digits.png" alt="Project DIGITS Cover" class="article-cover-image">
+            </div>
+
             <div class="terminal-box article-content">
                 <p>NVIDIA have just launched a supercomputer you can hold in your hands.</p>
 
@@ -96,7 +101,7 @@
             if (terminalBox) {
                 terminalBox.style.opacity = '0';
                 terminalBox.style.transform = 'translateY(20px)';
-                terminalBox.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                terminalBox.style.transition = 'opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
 
                 setTimeout(() => {
                     terminalBox.style.opacity = '1';
