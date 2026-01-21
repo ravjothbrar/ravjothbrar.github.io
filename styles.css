@@ -2027,9 +2027,10 @@ a.value:hover {
 /* Blog Article Page Styles */
 .blog-article-page {
     padding-top: 60px;
-    max-width: 1400px;
-    width: 95%;
-    margin: 0 auto;
+    max-width: 1600px !important;
+    width: 100% !important;
+    padding-left: 280px !important;
+    padding-right: 80px !important;
 }
 
 .blog-article-page .terminal-box {
