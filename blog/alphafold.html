@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is AlphaFold and how did it revolutionise protein structure prediction? | Ravjoth Brar</title>
+    <meta name="description" content="Understanding AlphaFold - the AI breakthrough that solved the 50-year-old protein folding problem and revolutionized biology.">
+    <link rel="canonical" href="https://ravjothbrar.com/blog/alphafold.html" />
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <!-- Corner Decorations -->
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
+
+    <!-- Side Navigation -->
+    <nav class="side-nav">
+        <ul>
+            <li><a href="../index.html#home" class="nav-link">> Home</a></li>
+            <li><a href="../index.html#about" class="nav-link">> About Me</a></li>
+            <li><a href="../index.html#links" class="nav-link">> Links</a></li>
+            <li><a href="../index.html#roles" class="nav-link">> Roles</a></li>
+            <li><a href="../index.html#projects" class="nav-link">> Projects</a></li>
+            <li><a href="../blog.html" class="nav-link active">> Blog</a></li>
+            <li><a href="../index.html#publications" class="nav-link">> Publications</a></li>
+            <li><a href="../index.html#cv" class="nav-link">> CV</a></li>
+            <li><a href="../index.html#contact" class="nav-link">> Contact Me</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content blog-article-page">
+        <!-- Article Header -->
+        <article class="section">
+            <div class="article-header">
+                <div class="article-meta">
+                    <a href="../blog.html" class="back-link">&larr; Back to Blog</a>
+                    <span class="article-date">18/08/2024</span>
+                </div>
+                <h1 class="article-title">> What is AlphaFold and how did it revolutionise protein structure prediction?</h1>
+            </div>
+
+            <div class="terminal-box article-content">
+                <p>In 1972, Christian Anfinsen was awarded a Nobel Prize for his research which demonstrated that it should be possible to determine a protein's 3D shape based on the sequence of the amino acids which comprise it. This problem is more commonly known as the 'protein folding problem', and remained, gathering dust, for just under 50 years – then AlphaFold knocked on the door.</p>
+
+                <p>Proteins are involved in essentially every important activity that happens inside every organism: digesting food, muscle contraction, moving oxygen through your body, your immune system, your hormones, even your hair. The famed biologist Arthur Lesk stated – 'In the drama of life at a molecular scale, proteins are where the action is'. Their importance cannot be underestimated. Proteins themselves are comprised of a string of amino acids and can range from a few dozen to several thousand amino acids in length. But proteins do not stay like this. To function, they must fold into a 3D shape. Each specific shape correlates to its purpose, and through understanding the shapes proteins fold into, it enables us to better understand how organisms function, and ultimately how life itself works. Therefore, solving the protein folding problem would be a monumental milestone for the field of biology as a whole and CASP (the Critical Assessment of techniques for protein Structure Prediction) was born.</p>
+
+                <h2>The CASP Challenge</h2>
+
+                <p>Every two years after this, teams gather from across the world to predict, using purely computers, the 3D structures of 100 proteins from their amino acid sequence alone. Simultaneously, the 3D structures are being painstakingly worked out in the lab using traditional techniques such as X-ray crystallography which while accurate, is extremely time-consuming and challenging. The entire process for even one protein can take months or years to complete. Thus, when considering that each given protein can adopt 10^300 different configurations, and that there are billions of known protein sequences, the possibilities are quite literally, almost endless. When AlphaFold 2 was first showcased in CASP 2020, its performance was historic. On average, AlphaFold 2 successfully predicted protein's 3D shapes to within the width of a singular atom! The CASP organisers themselves declared that the protein folding problem had been solved.</p>
+
+                <h2>How AlphaFold Works</h2>
+
+                <p>AlphaFold itself is a Machine Learning (ML) model, and for any ML model the key component always remains the training data. AlphaFold was trained on predominantly publicly available datasets: most specifically the Protein Data Bank (PDB) which contains 180,000 3D structures and amino acids sequence for human and non-human proteins. Another database, UniProt, contains the amino acid sequences (without the 3D structure) for another 200,000,000 more proteins. The model itself is built on Transformers, a revolutionary neural network architecture pioneered by Google in 2017 which ChatGPT, Gemini, and many other major AI models use. However, the AlphaFold team designed their own transformer to work specifically with 3D structures known as Invariant Point Attention (IPA).</p>
+
+                <h2>Invariant Point Attention (IPA)</h2>
+
+                <p>IPA works in various steps. Firstly, each amino acid in the protein sequence is assigned a random point in 3D space. Each of these vectors might also include some contextual information about the amino acid such as its type and local environment. Essentially providing more factors for the model to take into consideration, improving its accuracy. Next, the model computes each possible pairing relationship between each of the points. This includes: the Euclidean distance between the two points, the orientation between the two points, and any differences in contextual information (The actual computation here can be done by hand by using Pythagoras' Theorem, but the model automates it extremely quickly). This next step is where all the magic of IPA happens, IPA ensures that the model's attention mechanism is not affected by the orientation of the protein structure. This is achieved by the model focusing on features that will remain consistent even if the shape drastically changes, these are known as inherently invariant features.</p>
+
+                <p>Imagine you have two points, A and B, in 3D space. If you rotate the entire space, the co-ordinates of A and B will change respectively, but the distance between them remains the same. This distance is an example of an inherently invariant feature and the Euclidean distance between the two points are the core feature that IPA relies on. Similarly, consider three points A, B, and C. The angles formed by the vectors AB and AC will stay constant even under transformations. Features derived from these angles (like its cosine or sine) would also be inherently invariant. These all aid the model in learning the spatial relationships between different points of the structure. This leads to the model being quite robust, ensuring that the model's predictions are less likely to be affected by irrelevant changes in the input's data orientation or position. This puts AlphaFold's IPA technology parsecs beyond all its possible competitors.</p>
+
+                <h2>The Impact of AlphaFold</h2>
+
+                <p>AlphaFold has brought about a paradigm shift in biology, leaving a permanent mark on multiple different fronts. Before AlphaFold we knew the 3D structure of about 17% of the 20,000 proteins in the human body, these had been painstakingly worked out in the laboratory across decades through tediously long experimental methods. Thanks to AlphaFold, we now have the 3D structures for almost all proteins in the human body (98.5%). Perhaps the best thing about AlphaFold is that it is open-source and easy for anyone, anywhere to use, simply through the following link you can predict the 3D structure of proteins - <a href="https://alphafold.ebi.ac.uk/" target="_blank">https://alphafold.ebi.ac.uk/</a>, phenomenal. AlphaFold has displayed its accuracy, most famously, in the COVID-19 outbreak. AlphaFold shared its most up-to-date predictions for the 5 SARS-CoV-2 targets and their first prediction had the correct topology and their second prediction was spot on. This conveys how AlphaFold may becomes even more important in the future as more disease outbreaks occur. AlphaFold's most anticipated usage is drug discovery. AlphaFold provides structural insights into target proteins which can aid designing more effective drugs, hopefully, in the future, combating diseases such as cancer, Alzheimer's, and infectious diseases.</p>
+
+                <h2>Conclusion</h2>
+
+                <p>In conclusion, AlphaFold represents the first, and certainly not the last, time AI has significantly improved humanity's scientific knowledge. The possibilities with AI's usage in biology are quite literally endless, and the vast field of proteins has changed forever. The impacts will not come today nor tomorrow, but the long-term impact will be transformative. I, for one, cannot wait to witness what AI will change next.</p>
+            </div>
+        </article>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2026 Ravjoth Brar. All rights reserved. <span class="footer-note">Kindly Hosted on GitHub Pages</span></p>
+        </footer>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const terminalBox = document.querySelector('.terminal-box');
+            if (terminalBox) {
+                terminalBox.style.opacity = '0';
+                terminalBox.style.transform = 'translateY(20px)';
+                terminalBox.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+
+                setTimeout(() => {
+                    terminalBox.style.opacity = '1';
+                    terminalBox.style.transform = 'translateY(0)';
+                }, 100);
+            }
+        });
+    </script>
+</body>
+</html>
