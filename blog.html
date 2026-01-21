@@ -32,100 +32,101 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="main-content blog-page">
+    <main class="main-content blog-page-wide">
         <!-- Blog Header -->
-        <section class="section">
+        <section class="section blog-header-section">
             <div class="section-header">
                 <span class="bracket">||</span> BLOG <span class="bracket">||</span>
             </div>
             <div class="blog-intro terminal-box">
-                <p><span class="prompt">>></span> Thoughts on AI, deep learning, ethics, and the future of technology.</p>
+                <p><span class="prompt">>></span> Thoughts on AI, ethics, and the future as we know it.</p>
             </div>
         </section>
 
-        <!-- Featured Article (Most Recent) -->
-        <section class="section">
-            <div class="pinned-header">
-                <span class="prompt">></span> Latest Article
-            </div>
-
-            <a href="blog/algorithmic-bias.html" class="bento-item bento-featured">
-                <img src="blog/images/algorithmic-bias.png" alt="Algorithmic Bias" class="bento-cover">
-                <div class="bento-content">
-                    <span class="bento-date">06/05/2025</span>
-                    <h3 class="bento-title">> How can we deal with algorithmic bias and opacity?</h3>
-                    <p class="bento-excerpt">As ML systems begin to govern critical infrastructure across healthcare, law, and finance, two inextricably linked challenges threaten their future: algorithmic bias and opacity. Both components are not merely technical concerns but vital components that require careful and deliberate governance.</p>
-                </div>
-            </a>
-        </section>
-
-        <!-- All Articles Section -->
-        <section class="section">
-            <div class="pinned-header">
-                <span class="prompt">></span> All Articles
-            </div>
-
-            <div class="blog-grid">
-                <a href="blog/algorithmic-bias.html" class="blog-card">
-                    <img src="blog/images/algorithmic-bias.png" alt="Algorithmic Bias" class="blog-card-image">
-                    <div class="blog-card-content">
-                        <span class="blog-card-date">06/05/2025</span>
-                        <h3 class="blog-card-title">> How can we deal with algorithmic bias and opacity?</h3>
-                        <p class="blog-card-excerpt">As ML systems begin to govern critical infrastructure, two challenges threaten their future.</p>
+        <!-- Bento Grid Layout -->
+        <section class="section blog-bento-section">
+            <div class="blog-bento">
+                <!-- Featured Article - Full Width -->
+                <a href="blog/algorithmic-bias.html" class="bento-card bento-hero" data-index="0">
+                    <div class="bento-card-image">
+                        <img src="blog/images/algorithmic-bias.png" alt="Algorithmic Bias">
+                    </div>
+                    <div class="bento-card-overlay">
+                        <span class="bento-card-label">Latest</span>
+                    </div>
+                    <div class="bento-card-content">
+                        <span class="bento-card-date">06/05/2025</span>
+                        <h2 class="bento-card-title">> How can we deal with algorithmic bias and opacity?</h2>
+                        <p class="bento-card-excerpt">As ML systems begin to govern critical infrastructure across healthcare, law, and finance, two inextricably linked challenges threaten their future: algorithmic bias and opacity.</p>
                     </div>
                 </a>
 
-                <a href="blog/project-digits.html" class="blog-card">
-                    <img src="blog/images/project-digits.png" alt="Project DIGITS" class="blog-card-image">
-                    <div class="blog-card-content">
-                        <span class="blog-card-date">10/02/2025</span>
-                        <h3 class="blog-card-title">> Project DIGITS: NVIDIA Revolutionises AI Development</h3>
-                        <p class="blog-card-excerpt">NVIDIA have just launched a supercomputer you can hold in your hands.</p>
+                <!-- Row 2: Two Medium Cards -->
+                <a href="blog/project-digits.html" class="bento-card bento-medium" data-index="1">
+                    <div class="bento-card-image">
+                        <img src="blog/images/project-digits.png" alt="Project DIGITS">
+                    </div>
+                    <div class="bento-card-content">
+                        <span class="bento-card-date">10/02/2025</span>
+                        <h3 class="bento-card-title">> Project DIGITS: NVIDIA Revolutionises AI Development</h3>
+                        <p class="bento-card-excerpt">NVIDIA have just launched a supercomputer you can hold in your hands.</p>
                     </div>
                 </a>
 
-                <a href="blog/manifold-hypothesis.html" class="blog-card">
-                    <img src="blog/images/manifold-hypothesis.png" alt="Manifold Hypothesis" class="blog-card-image">
-                    <div class="blog-card-content">
-                        <span class="blog-card-date">10/02/2025</span>
-                        <h3 class="blog-card-title">> The Manifold Hypothesis: Deep Learning's Elegant Principle</h3>
-                        <p class="blog-card-excerpt">Have you ever wondered why we can so effortlessly spot a familiar face in a crowd?</p>
+                <a href="blog/manifold-hypothesis.html" class="bento-card bento-medium" data-index="2">
+                    <div class="bento-card-image">
+                        <img src="blog/images/manifold-hypothesis.png" alt="Manifold Hypothesis">
+                    </div>
+                    <div class="bento-card-content">
+                        <span class="bento-card-date">10/02/2025</span>
+                        <h3 class="bento-card-title">> The Manifold Hypothesis: Deep Learning's Elegant Principle</h3>
+                        <p class="bento-card-excerpt">Have you ever wondered why we can so effortlessly spot a familiar face in a crowd?</p>
                     </div>
                 </a>
 
-                <a href="blog/1984-today.html" class="blog-card">
-                    <img src="blog/images/1984-today.png" alt="1984 Today" class="blog-card-image">
-                    <div class="blog-card-content">
-                        <span class="blog-card-date">05/01/2025</span>
-                        <h3 class="blog-card-title">> 1984 Today: Unmasking AI's Potential for a Dystopian Future</h3>
-                        <p class="blog-card-excerpt">The AI Revolution's Dark Side: Are We Sleepwalking into a Dystopia?</p>
+                <!-- Row 3: Large + Small -->
+                <a href="blog/1984-today.html" class="bento-card bento-large" data-index="3">
+                    <div class="bento-card-image">
+                        <img src="blog/images/1984-today.png" alt="1984 Today">
+                    </div>
+                    <div class="bento-card-content">
+                        <span class="bento-card-date">05/01/2025</span>
+                        <h3 class="bento-card-title">> 1984 Today: Unmasking AI's Potential for a Dystopian Future</h3>
+                        <p class="bento-card-excerpt">The AI Revolution's Dark Side: Are We Sleepwalking into a Dystopia?</p>
                     </div>
                 </a>
 
-                <a href="blog/alphafold.html" class="blog-card">
-                    <img src="blog/images/alphafold.png" alt="AlphaFold" class="blog-card-image">
-                    <div class="blog-card-content">
-                        <span class="blog-card-date">18/08/2024</span>
-                        <h3 class="blog-card-title">> What is AlphaFold and how did it revolutionise protein structure prediction?</h3>
-                        <p class="blog-card-excerpt">The protein folding problem remained unsolved for 50 years – then AlphaFold knocked on the door.</p>
+                <a href="blog/alphafold.html" class="bento-card bento-tall" data-index="4">
+                    <div class="bento-card-image">
+                        <img src="blog/images/alphafold.png" alt="AlphaFold">
+                    </div>
+                    <div class="bento-card-content">
+                        <span class="bento-card-date">18/08/2024</span>
+                        <h3 class="bento-card-title">> What is AlphaFold?</h3>
+                        <p class="bento-card-excerpt">The protein folding problem remained unsolved for 50 years – then AlphaFold knocked on the door.</p>
                     </div>
                 </a>
 
-                <a href="blog/rome-call.html" class="blog-card">
-                    <img src="blog/images/rome-call.png" alt="Rome Call for AI" class="blog-card-image">
-                    <div class="blog-card-content">
-                        <span class="blog-card-date">05/03/2023</span>
-                        <h3 class="blog-card-title">> The Rome Call for AI</h3>
-                        <p class="blog-card-excerpt">Representatives of the three Abrahamic religions signed a document outlining key principles for AI ethics.</p>
+                <!-- Row 4: Two More Cards -->
+                <a href="blog/rome-call.html" class="bento-card bento-medium" data-index="5">
+                    <div class="bento-card-image">
+                        <img src="blog/images/rome-call.png" alt="Rome Call for AI">
+                    </div>
+                    <div class="bento-card-content">
+                        <span class="bento-card-date">05/03/2023</span>
+                        <h3 class="bento-card-title">> The Rome Call for AI</h3>
+                        <p class="bento-card-excerpt">Representatives of the three Abrahamic religions signed a document outlining key principles for AI ethics.</p>
                     </div>
                 </a>
 
-                <a href="blog/bias-in-ai.html" class="blog-card">
-                    <img src="blog/images/bias-in-ai.png" alt="Bias in AI" class="blog-card-image">
-                    <div class="blog-card-content">
-                        <span class="blog-card-date">17/01/2023</span>
-                        <h3 class="blog-card-title">> How bias in AI affects society now and in the future</h3>
-                        <p class="blog-card-excerpt">Bias in AI can greatly impact the course of the future due to its many repercussions.</p>
+                <a href="blog/bias-in-ai.html" class="bento-card bento-medium" data-index="6">
+                    <div class="bento-card-image">
+                        <img src="blog/images/bias-in-ai.png" alt="Bias in AI">
+                    </div>
+                    <div class="bento-card-content">
+                        <span class="bento-card-date">17/01/2023</span>
+                        <h3 class="bento-card-title">> How bias in AI affects society now and in the future</h3>
+                        <p class="bento-card-excerpt">Bias in AI can greatly impact the course of the future due to its many repercussions.</p>
                     </div>
                 </a>
             </div>
@@ -139,32 +140,43 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Scroll animation using IntersectionObserver
-            const animatedElements = document.querySelectorAll('.terminal-box, .bento-item, .bento-featured, .blog-card, .section-header, .pinned-header');
+            // Smooth spread animation for bento cards
+            const bentoCards = document.querySelectorAll('.bento-card');
 
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
+            // Initially hide all cards
+            bentoCards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'scale(0.8) translateY(60px)';
+            });
 
-            const observer = new IntersectionObserver(function(entries) {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('animate-in');
-                    }
+            // Animate cards with staggered delay
+            setTimeout(() => {
+                bentoCards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.transition = 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+                        card.style.opacity = '1';
+                        card.style.transform = 'scale(1) translateY(0)';
+                    }, index * 100);
                 });
-            }, observerOptions);
+            }, 200);
 
-            animatedElements.forEach(element => {
-                element.classList.add('scroll-animate');
-                observer.observe(element);
+            // Scroll animation for header elements
+            const headerElements = document.querySelectorAll('.section-header, .terminal-box');
+
+            headerElements.forEach(element => {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(20px)';
+                element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
             });
 
-            // Staggered animation for blog cards
-            const blogCards = document.querySelectorAll('.blog-card');
-            blogCards.forEach((card, index) => {
-                card.style.transitionDelay = `${index * 0.1}s`;
-            });
+            setTimeout(() => {
+                headerElements.forEach((element, index) => {
+                    setTimeout(() => {
+                        element.style.opacity = '1';
+                        element.style.transform = 'translateY(0)';
+                    }, index * 100);
+                });
+            }, 100);
         });
     </script>
 </body>
