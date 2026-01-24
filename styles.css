@@ -2120,10 +2120,36 @@ a.value:hover {
 @media (max-width: 768px) {
     .blog-article-page {
         max-width: 100%;
+        width: 100% !important;
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        padding-top: 100px !important;
     }
 
     .blog-article-page .terminal-box {
-        padding: 30px 25px;
+        padding: 25px 20px;
+    }
+
+    .blog-article-page .article-content {
+        text-align: left !important;
+        font-size: 15px;
+        line-height: 1.8;
+    }
+
+    .blog-article-page .article-content p {
+        text-align: left !important;
+        margin-bottom: 1.2em;
+    }
+
+    .blog-article-page .article-content h2 {
+        text-align: left !important;
+        font-size: 20px;
+    }
+
+    .blog-article-page .article-content ul,
+    .blog-article-page .article-content ol {
+        text-align: left !important;
+        padding-left: 25px;
     }
 
     .back-link {
@@ -2132,11 +2158,21 @@ a.value:hover {
     }
 
     .article-title {
-        font-size: 24px;
+        font-size: 22px;
+        text-align: left !important;
     }
 
     .article-cover-image {
-        max-height: 250px;
+        max-height: 200px;
+    }
+
+    .article-header {
+        text-align: left !important;
+    }
+
+    .article-meta {
+        flex-wrap: wrap;
+        gap: 10px;
     }
 }
 
