@@ -807,6 +807,16 @@ a.value:hover {
     line-height: 1.7;
     margin-bottom: 10px;
     font-weight: 450;
+    padding-left: 18px;
+    position: relative;
+}
+
+.card-description::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: var(--accent-color);
+    font-weight: bold;
 }
 
 .card-description:last-child {
@@ -819,6 +829,16 @@ a.value:hover {
     font-style: italic;
     margin-bottom: 10px;
     opacity: 0.8;
+    padding-left: 18px;
+    position: relative;
+}
+
+.card-org-description::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: var(--accent-color);
+    font-weight: bold;
 }
 
 .card-bullets {
