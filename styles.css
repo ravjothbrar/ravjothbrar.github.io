@@ -635,7 +635,7 @@ a.value:hover {
 .cards-grid {
     column-count: 2;
     column-gap: 25px;
-    padding: 10px 0;
+    padding: 15px 0;
 }
 
 .card-item {
@@ -643,32 +643,26 @@ a.value:hover {
     border: 2px solid var(--border-color);
     padding: 25px;
     position: relative;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
     flex-direction: column;
     break-inside: avoid;
+    -webkit-column-break-inside: avoid;
     margin-bottom: 25px;
+    overflow: hidden;
 }
 
 .card-item::before {
     content: '';
     position: absolute;
-    top: -8px;
-    left: 20px;
-    right: 20px;
+    top: 0;
+    left: 0;
+    right: 0;
     height: 4px;
     background-color: var(--accent-color);
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .card-item:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 40px rgba(124, 58, 237, 0.15);
-}
-
-.card-item:hover::before {
-    left: 10px;
-    right: 10px;
+    box-shadow: 0 8px 25px rgba(124, 58, 237, 0.15);
 }
 
 /* Gradient Border Cards */
