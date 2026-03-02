@@ -638,8 +638,8 @@ a.value:hover {
     padding: 10px 0;
 }
 
-/* Force 2nd project card to start new column so both ongoing projects are at top */
-#projects .cards-grid > .card-item:nth-child(2) {
+/* Force 5th project card to start right column (row-major visual order with masonry fill) */
+#projects .cards-grid > .card-item:nth-child(5) {
     break-before: column;
 }
 
@@ -919,7 +919,7 @@ a.value:hover {
         column-count: 1;
     }
 
-    #projects .cards-grid > .card-item:nth-child(2) {
+    #projects .cards-grid > .card-item:nth-child(5) {
         break-before: auto;
     }
 
