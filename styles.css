@@ -631,11 +631,13 @@ a.value:hover {
 }
 
 /* Role Items */
-/* Cards Grid Layout for Roles and Projects - Masonry Style */
+/* Cards Grid Layout for Roles and Projects */
 .cards-grid {
-    column-count: 2;
-    column-gap: 25px;
-    padding: 15px 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+    padding: 10px 0;
+    align-items: start;
 }
 
 .card-item {
@@ -645,9 +647,6 @@ a.value:hover {
     position: relative;
     display: flex;
     flex-direction: column;
-    break-inside: avoid;
-    -webkit-column-break-inside: avoid;
-    margin-bottom: 25px;
     overflow: hidden;
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -912,12 +911,11 @@ a.value:hover {
 
 @media (max-width: 768px) {
     .cards-grid {
-        column-count: 1;
+        grid-template-columns: 1fr;
     }
 
     .card-item {
         padding: 20px;
-        margin-bottom: 20px;
     }
 
     .card-title {
