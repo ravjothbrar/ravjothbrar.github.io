@@ -837,6 +837,14 @@ a.value:hover {
     margin-bottom: 0;
 }
 
+.card-description--no-arrow {
+    padding-left: 0;
+}
+
+.card-description--no-arrow::before {
+    content: none;
+}
+
 .card-org-description {
     color: var(--muted-text);
     font-size: 13px;
