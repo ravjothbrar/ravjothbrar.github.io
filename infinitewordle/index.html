@@ -8,20 +8,28 @@
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
     <style>
         :root {
-            --bg: #0a0a0a;
-            --card-bg: #111;
-            --border: #1e1e1e;
-            --text: #e0e0e0;
-            --muted: #555;
-            --accent: #7c3aed;
-            --accent-light: #a855f7;
-            --correct: #7c3aed;
-            --present: #d97706;
-            --absent: #222;
-            --absent-text: #555;
-            --key-bg: #2a2a2a;
-            --tile-border: #2e2e2e;
-            --tile-active-border: #888;
+            --bg:             #f4f6f8;
+            --card:           #ffffff;
+            --border:         #dde3ec;
+            --text:           #1a2332;
+            --muted:          #6b7a90;
+            --accent:         #0e7166;
+            --accent-hover:   #0b5e56;
+            --accent-light:   #e6f4f2;
+            --correct:        #22a85a;
+            --correct-bg:     #e8f8ef;
+            --present:        #c99a07;
+            --present-bg:     #fdf6dc;
+            --absent:         #8a98aa;
+            --absent-bg:      #eef0f3;
+            --key-bg:         #dde3ec;
+            --lilac:          #ede9fe;
+            --lilac-border:   #c4b5fd;
+            --lilac-text:     #4c1d95;
+            --lilac-hover:    #ddd6fe;
+            --red:            #cc2929;
+            --tile-border:    #c8d0da;
+            --tile-active:    #6b7a90;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -29,7 +37,7 @@
         body {
             background: var(--bg);
             color: var(--text);
-            font-family: 'Courier New', Courier, monospace;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -40,163 +48,305 @@
         /* ── Header ── */
         header {
             width: 100%;
-            max-width: 540px;
-            padding: 18px 20px 14px;
+            max-width: 580px;
+            padding: 14px 20px 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border);
-            gap: 12px;
+            border-bottom: 1.5px solid var(--border);
+            background: var(--card);
+            box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+            gap: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
         .back-link {
             color: var(--muted);
             text-decoration: none;
-            font-size: 12px;
-            letter-spacing: 1px;
+            font-size: 13px;
+            font-weight: 500;
             transition: color 0.2s;
             flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
-        .back-link:hover { color: var(--accent-light); }
+        .back-link:hover { color: var(--accent); }
 
         .game-title {
-            font-size: 20px;
-            font-weight: bold;
+            font-size: 22px;
+            font-weight: 900;
             letter-spacing: 5px;
             color: var(--text);
             text-align: center;
             flex: 1;
         }
-        .game-title span { color: var(--accent-light); }
+        .game-title span { color: var(--accent); }
 
-        .streak-display {
-            font-size: 11px;
-            color: var(--muted);
-            text-align: right;
-            letter-spacing: 1px;
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             flex-shrink: 0;
         }
-        .streak-num {
-            display: block;
-            color: var(--accent-light);
-            font-size: 20px;
-            font-weight: bold;
+
+        .streak-pill {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: var(--accent-light);
+            border-radius: 10px;
+            padding: 4px 10px;
             line-height: 1.1;
         }
-
-        /* ── Difficulty Bar ── */
-        .difficulty-bar {
-            display: flex;
-            gap: 6px;
-            padding: 14px 20px 10px;
-            width: 100%;
-            max-width: 540px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .diff-btn {
-            background: none;
-            border: 1px solid var(--border);
-            color: var(--muted);
-            font-family: 'Courier New', monospace;
-            font-size: 10px;
-            padding: 5px 12px;
-            cursor: pointer;
-            letter-spacing: 1.5px;
-            transition: all 0.15s;
+        .streak-label {
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--accent);
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        .diff-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent-light);
-        }
-        .diff-btn.active {
-            border-color: var(--accent);
-            color: var(--accent-light);
-            background: rgba(124, 58, 237, 0.12);
+        .streak-num {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--accent);
+            line-height: 1;
         }
 
-        /* ── Toast Message ── */
-        .toast {
-            height: 28px;
-            font-size: 12px;
+        .icon-btn {
+            background: var(--bg);
+            border: 1.5px solid var(--border);
             color: var(--muted);
-            text-align: center;
-            letter-spacing: 1px;
+            font-size: 15px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.3s;
+            transition: all 0.15s;
         }
-        .toast.error { color: #ef4444; }
-        .toast.info  { color: var(--accent-light); }
+        .icon-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-light);
+        }
+
+        /* ── Difficulty Picker (landing) ── */
+        .diff-picker {
+            width: 100%;
+            max-width: 580px;
+            padding: 36px 24px 20px;
+        }
+        .diff-picker-heading {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        .diff-picker-sub {
+            font-size: 15px;
+            color: var(--muted);
+            margin-bottom: 28px;
+        }
+        .diff-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            max-width: 400px;
+        }
+        .diff-btn {
+            background: var(--lilac);
+            border: 2px solid var(--lilac-border);
+            color: var(--lilac-text);
+            font-family: inherit;
+            font-size: 17px;
+            font-weight: 700;
+            padding: 16px 20px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.18s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: left;
+        }
+        .diff-btn:hover {
+            background: var(--lilac-hover);
+            border-color: #7c3aed;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(124,58,237,0.16);
+        }
+        .diff-btn--extreme {
+            background: #fff1f1;
+            border-color: #fca5a5;
+            color: var(--red);
+        }
+        .diff-btn--extreme:hover {
+            background: #fee2e2;
+            border-color: var(--red);
+            box-shadow: 0 6px 16px rgba(204,41,41,0.16);
+        }
+        .diff-badge {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .diff-badge--novice  { background: #dcfce7; color: #15803d; }
+        .diff-badge--scholar { background: #dbeafe; color: #1d4ed8; }
+        .diff-badge--extreme { background: #fee2e2; color: var(--red); }
+
+        /* ── Game Area ── */
+        .game-area {
+            width: 100%;
+            max-width: 580px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ── In-game difficulty chips ── */
+        .diff-chips {
+            display: flex;
+            gap: 8px;
+            padding: 12px 20px 6px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .diff-chip {
+            background: var(--lilac);
+            border: 1.5px solid var(--lilac-border);
+            color: var(--lilac-text);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 7px 16px;
+            border-radius: 22px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .diff-chip:hover {
+            background: var(--lilac-hover);
+            border-color: #7c3aed;
+        }
+        .diff-chip.active {
+            background: #7c3aed;
+            border-color: #7c3aed;
+            color: #fff;
+        }
+        .diff-chip--extreme {
+            background: #fff1f1;
+            border-color: #fca5a5;
+            color: var(--red);
+        }
+        .diff-chip--extreme:hover {
+            background: #fee2e2;
+            border-color: var(--red);
+        }
+        .diff-chip--extreme.active {
+            background: var(--red);
+            border-color: var(--red);
+            color: #fff;
+        }
+
+        /* ── Toast ── */
+        .toast {
+            min-height: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--muted);
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+        }
+        .toast.error { color: var(--red); }
+        .toast.info  { color: var(--accent); }
 
         /* ── Grid ── */
         .grid {
             display: flex;
             flex-direction: column;
             gap: 5px;
-            padding: 6px 20px 10px;
+            padding: 4px 20px 4px;
         }
-
-        .row {
-            display: flex;
-            gap: 5px;
-        }
-
+        .row { display: flex; gap: 5px; }
         .tile {
-            width: 56px;
-            height: 56px;
-            border: 2px solid var(--tile-border);
+            width: 60px;
+            height: 60px;
+            border: 2.5px solid var(--tile-border);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
-            font-weight: bold;
-            letter-spacing: 1px;
+            font-size: 26px;
+            font-weight: 900;
             text-transform: uppercase;
             color: var(--text);
-            background: transparent;
-            transition: border-color 0.05s;
+            background: var(--card);
+            font-family: 'Courier New', monospace;
+            transition: border-color 0.06s;
         }
-        .tile.filled  { border-color: var(--tile-active-border); }
+        .tile.filled  { border-color: var(--tile-active); }
         .tile.correct { background: var(--correct); border-color: var(--correct); color: #fff; }
         .tile.present { background: var(--present); border-color: var(--present); color: #fff; }
-        .tile.absent  { background: var(--absent);  border-color: var(--absent);  color: var(--absent-text); }
+        .tile.absent  { background: var(--absent-bg); border-color: var(--absent); color: var(--absent); }
 
-        .tile.pop {
-            animation: tilePop 0.1s ease-in-out;
-        }
-        .tile.shake {
-            animation: tileShake 0.45s ease;
-        }
-        .tile.bounce {
-            animation: tileBounce 0.38s ease;
-        }
+        .tile.pop    { animation: tilePop 0.1s ease-in-out; }
+        .tile.shake  { animation: tileShake 0.45s ease; }
+        .tile.bounce { animation: tileBounce 0.38s ease; }
 
         @keyframes tilePop {
-            0%   { transform: scale(1); }
-            50%  { transform: scale(1.1); }
-            100% { transform: scale(1); }
+            0%,100% { transform: scale(1); }
+            50%     { transform: scale(1.12); }
         }
         @keyframes tileShake {
-            0%, 100% { transform: translateX(0); }
-            15%  { transform: translateX(-5px); }
-            35%  { transform: translateX(5px); }
-            55%  { transform: translateX(-4px); }
-            75%  { transform: translateX(4px); }
+            0%,100% { transform: translateX(0); }
+            15% { transform: translateX(-6px); }
+            35% { transform: translateX(6px); }
+            55% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
         }
         @keyframes tileBounce {
-            0%, 100% { transform: translateY(0); }
-            45%  { transform: translateY(-18px); }
+            0%,100% { transform: translateY(0); }
+            45%     { transform: translateY(-14px); }
         }
+
+        /* ── Hint strip (last guess) ── */
+        .hint-strip {
+            display: none;
+            padding: 8px 20px 4px;
+        }
+        .hint-strip.show { display: block; }
+        .hint-strip-btn {
+            background: var(--present-bg);
+            border: 1.5px solid #f0c940;
+            color: #7a5c00;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 9px 22px;
+            border-radius: 22px;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .hint-strip-btn:hover { background: #fef3a0; border-color: #d4a800; }
 
         /* ── Keyboard ── */
         .keyboard {
-            padding: 4px 20px 20px;
+            padding: 6px 16px 20px;
             width: 100%;
-            max-width: 500px;
+            max-width: 520px;
         }
         .kb-row {
             display: flex;
@@ -208,282 +358,393 @@
             height: 54px;
             min-width: 38px;
             border: none;
+            border-radius: 6px;
             background: var(--key-bg);
             color: var(--text);
             font-family: 'Courier New', monospace;
-            font-size: 13px;
-            font-weight: bold;
+            font-size: 14px;
+            font-weight: 700;
             text-transform: uppercase;
             cursor: pointer;
-            padding: 0 6px;
-            transition: background 0.15s, color 0.15s, filter 0.1s;
-            letter-spacing: 0.5px;
+            padding: 0 4px;
+            transition: background 0.12s, color 0.12s, filter 0.1s;
         }
-        .key.wide    { min-width: 56px; font-size: 10px; letter-spacing: 0; }
-        .key:hover   { filter: brightness(1.4); }
-        .key:active  { filter: brightness(0.8); }
+        .key.wide { min-width: 56px; font-size: 12px; font-family: inherit; }
+        .key:hover   { filter: brightness(0.92); }
+        .key:active  { filter: brightness(0.80); }
         .key.correct { background: var(--correct); color: #fff; }
         .key.present { background: var(--present); color: #fff; }
-        .key.absent  { background: #181818; color: #3a3a3a; }
+        .key.absent  { background: #c4cad4; color: #8a98aa; }
 
-        /* ── Modal ── */
-        .modal-overlay {
+        /* ── Overlay / Modal base ── */
+        .overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.88);
-            z-index: 100;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-overlay.show { display: flex; }
-
-        .modal {
-            background: var(--card-bg);
-            border: 1px solid var(--accent);
-            padding: 36px 32px;
-            max-width: 320px;
-            width: 90%;
-            text-align: center;
-        }
-
-        .modal-result {
-            font-size: 11px;
-            color: var(--accent-light);
-            letter-spacing: 3px;
-            margin-bottom: 16px;
-            text-transform: uppercase;
-        }
-        .modal-word {
-            font-size: 30px;
-            font-weight: bold;
-            letter-spacing: 8px;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-        }
-        .modal-stats {
-            font-size: 11px;
-            color: var(--muted);
-            margin-bottom: 24px;
-            line-height: 2;
-            letter-spacing: 1px;
-        }
-        .modal-stats b { color: var(--text); }
-
-        .play-again-btn {
-            background: var(--accent);
-            color: white;
-            border: none;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            letter-spacing: 2px;
-            padding: 12px 28px;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: background 0.2s;
-            width: 100%;
-        }
-        .play-again-btn:hover { background: var(--accent-light); }
-
-        /* ── Legend ── */
-        .legend {
-            display: flex;
-            gap: 16px;
-            font-size: 10px;
-            color: var(--muted);
-            letter-spacing: 1px;
-            padding: 0 20px 8px;
-            justify-content: center;
-        }
-        .legend-item { display: flex; align-items: center; gap: 6px; }
-        .legend-dot {
-            width: 10px;
-            height: 10px;
-            flex-shrink: 0;
-        }
-        .legend-dot.correct { background: var(--correct); }
-        .legend-dot.present { background: var(--present); }
-        .legend-dot.absent  { background: #444; }
-
-        .diff-btn--extreme {
-            border-color: #b91c1c;
-            color: #f87171;
-        }
-        .diff-btn--extreme:hover {
-            border-color: #ef4444;
-            color: #fca5a5;
-            background: rgba(185, 28, 28, 0.12);
-        }
-        .diff-btn--extreme.active {
-            border-color: #ef4444;
-            color: #fca5a5;
-            background: rgba(185, 28, 28, 0.18);
-        }
-
-        /* ── Help Button ── */
-        .help-btn {
-            background: none;
-            border: 1px solid var(--border);
-            color: var(--muted);
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-            width: 26px;
-            height: 26px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: color 0.2s, border-color 0.2s;
-        }
-        .help-btn:hover { color: var(--accent-light); border-color: var(--accent); }
-
-        /* ── How To Play Modal ── */
-        .htp-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.88);
+            background: rgba(15,23,42,0.45);
+            backdrop-filter: blur(4px);
             z-index: 200;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
-        .htp-overlay.show { display: flex; }
-        .htp-modal {
-            background: var(--card-bg);
-            border: 1px solid var(--accent);
-            padding: 32px 28px;
-            max-width: 340px;
-            width: 90%;
-        }
-        .htp-title {
-            font-size: 11px;
-            color: var(--accent-light);
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-bottom: 18px;
+        .overlay.show { display: flex; }
+
+        .modal-box {
+            background: var(--card);
+            border-radius: 20px;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.14);
+            padding: 34px 30px;
+            max-width: 400px;
+            width: 100%;
             text-align: center;
         }
-        .htp-body {
+
+        .modal-tag {
+            display: inline-block;
             font-size: 11px;
-            color: var(--muted);
-            letter-spacing: 0.5px;
-            line-height: 1.9;
-            margin-bottom: 20px;
+            font-weight: 800;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 10px;
         }
-        .htp-body p { margin-bottom: 10px; }
+        .modal-tag.loss { color: var(--red); }
+
+        .modal-word {
+            font-size: 30px;
+            font-weight: 900;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            font-family: 'Courier New', monospace;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        .modal-sub {
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 24px;
+            line-height: 1.7;
+        }
+        .modal-sub b { color: var(--text); }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 800;
+            padding: 14px 0;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.18s, transform 0.1s;
+        }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .btn-primary:active { transform: scale(0.98); }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--muted);
+            border: 1.5px solid var(--border);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 11px 0;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.15s;
+            margin-top: 10px;
+        }
+        .btn-outline:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+
+        /* ── How-To-Play ── */
+        .htp-title { font-size: 22px; font-weight: 900; color: var(--text); margin-bottom: 8px; }
+        .htp-sub   { font-size: 14px; color: var(--muted); margin-bottom: 22px; line-height: 1.65; }
         .htp-examples {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            margin-bottom: 22px;
+            gap: 14px;
+            margin-bottom: 26px;
+            text-align: left;
         }
-        .htp-example {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 11px;
-            color: var(--muted);
-            letter-spacing: 0.5px;
-        }
+        .htp-example { display: flex; align-items: center; gap: 16px; }
         .htp-tile {
-            width: 32px;
-            height: 32px;
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
-            font-weight: bold;
-            text-transform: uppercase;
+            font-size: 20px;
+            font-weight: 900;
             color: #fff;
+            font-family: 'Courier New', monospace;
             flex-shrink: 0;
         }
         .htp-tile.correct { background: var(--correct); }
-        .htp-tile.present { background: var(--present); }
-        .htp-tile.absent  { background: #444; color: #aaa; }
-        .htp-close {
-            background: var(--accent);
-            color: white;
-            border: none;
-            font-family: 'Courier New', monospace;
-            font-size: 11px;
-            letter-spacing: 2px;
-            padding: 10px 0;
-            cursor: pointer;
-            text-transform: uppercase;
-            width: 100%;
-            transition: background 0.2s;
+        .htp-tile.present { background: var(--present); color: #fff; }
+        .htp-tile.absent  { background: var(--absent); color: #fff; }
+        .htp-label { font-size: 14px; line-height: 1.5; color: var(--text); }
+        .htp-label strong { font-weight: 800; }
+        .htp-label em { color: var(--muted); font-style: normal; }
+
+        /* ── Statistics ── */
+        .stats-modal { max-width: 460px; text-align: left; padding: 28px 26px; }
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
-        .htp-close:hover { background: var(--accent-light); }
+        .stats-title { font-size: 20px; font-weight: 900; color: var(--text); }
+        .stats-clear-btn {
+            background: none;
+            border: none;
+            color: var(--red);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 4px 0;
+        }
+        .stats-clear-btn:hover { text-decoration: underline; }
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+        .stat-card {
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            border-radius: 14px;
+            padding: 16px 10px;
+            text-align: center;
+        }
+        .stat-icon { font-size: 22px; margin-bottom: 6px; }
+        .stat-num  { font-size: 26px; font-weight: 900; color: var(--accent); line-height: 1; margin-bottom: 4px; }
+        .stat-lbl  { font-size: 11px; color: var(--muted); font-weight: 600; }
+        .stats-sec-title {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 10px;
+        }
+        .hist-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 230px;
+            overflow-y: auto;
+        }
+        .hist-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 11px 14px;
+        }
+        .hist-badge-result {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 900;
+            font-family: 'Courier New', monospace;
+            flex-shrink: 0;
+        }
+        .hist-badge-result.win  { background: var(--correct-bg); color: var(--correct); }
+        .hist-badge-result.loss { background: #fee2e2; color: var(--red); }
+        .hist-info { flex: 1; min-width: 0; }
+        .hist-word {
+            font-size: 15px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: 'Courier New', monospace;
+            color: var(--text);
+        }
+        .hist-meta { font-size: 12px; color: var(--muted); margin-top: 2px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .hist-diff {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 10px;
+        }
+        .hist-diff.novice  { background: #dcfce7; color: #15803d; }
+        .hist-diff.scholar { background: #dbeafe; color: #1d4ed8; }
+        .hist-diff.extreme { background: #fee2e2; color: var(--red); }
+        .stats-empty {
+            text-align: center;
+            padding: 32px 20px;
+            color: var(--muted);
+            font-size: 15px;
+        }
+        .dist-bar-wrap { margin-bottom: 20px; }
+        .dist-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+        .dist-lbl { width: 14px; font-weight: 700; color: var(--muted); text-align: right; flex-shrink: 0; }
+        .dist-bar-outer { flex: 1; background: var(--bg); border-radius: 4px; height: 20px; overflow: hidden; }
+        .dist-bar-inner {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 4px;
+            min-width: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff;
+            transition: width 0.4s ease;
+        }
+
+        /* ── Hint Modal ── */
+        .hint-icon { font-size: 40px; margin-bottom: 8px; }
+        .hint-box {
+            background: var(--present-bg);
+            border: 2px solid #f0c940;
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin: 14px 0 22px;
+            font-size: 16px;
+            color: #5c3d00;
+            line-height: 1.7;
+            text-align: left;
+        }
+        .hint-box b { color: #7a5200; }
 
         /* ── Responsive ── */
-        @media (max-width: 380px) {
-            .tile  { width: 48px; height: 48px; font-size: 19px; }
-            .key   { height: 46px; min-width: 30px; font-size: 11px; }
+        @media (max-width: 420px) {
+            .tile  { width: 50px; height: 50px; font-size: 21px; }
+            .key   { height: 46px; min-width: 30px; font-size: 12px; }
             .key.wide { min-width: 46px; }
-            .game-title { font-size: 16px; letter-spacing: 3px; }
+            .game-title { font-size: 18px; letter-spacing: 3px; }
+            .modal-box { padding: 26px 20px; }
+            .stats-modal { padding: 22px 16px; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="../index.html#projects" class="back-link">&lt; home</a>
+        <a href="../index.html#projects" class="back-link">← home</a>
         <div class="game-title">WORDLE<span>∞</span></div>
-        <div class="streak-display">streak<span class="streak-num" id="streakNum">0</span></div>
-        <button class="help-btn" id="helpBtn" title="How to play">?</button>
+        <div class="header-right">
+            <div class="streak-pill">
+                <span class="streak-label">streak</span>
+                <span class="streak-num" id="streakNum">0</span>
+            </div>
+            <button class="icon-btn" id="statsBtn" title="Statistics">📊</button>
+            <button class="icon-btn" id="helpBtn" title="How to play">?</button>
+        </div>
     </header>
 
-    <div class="htp-overlay" id="htpModal">
-        <div class="htp-modal">
+    <!-- ── How To Play Modal ── -->
+    <div class="overlay" id="htpOverlay">
+        <div class="modal-box">
             <div class="htp-title">How to Play</div>
-            <div class="htp-body">
-                <p>Guess the hidden 5-letter word in 6 tries.</p>
-                <p>After each guess, the tiles change colour to show how close your guess was.</p>
-            </div>
+            <div class="htp-sub">Guess the hidden 5-letter word in 6 tries. After each guess, the tiles change colour to show how close you were.</div>
             <div class="htp-examples">
                 <div class="htp-example">
                     <div class="htp-tile correct">S</div>
-                    <span>Purple — correct letter, correct position</span>
+                    <div class="htp-label"><strong>Green</strong> — <em>correct letter, correct position</em></div>
                 </div>
                 <div class="htp-example">
                     <div class="htp-tile present">T</div>
-                    <span>Orange — correct letter, wrong position</span>
+                    <div class="htp-label"><strong>Yellow</strong> — <em>correct letter, wrong position</em></div>
                 </div>
                 <div class="htp-example">
                     <div class="htp-tile absent">X</div>
-                    <span>Dark — letter not in the word</span>
+                    <div class="htp-label"><strong>Grey</strong> — <em>letter not in the word at all</em></div>
                 </div>
             </div>
-            <button class="htp-close" id="htpClose">&gt; Got it</button>
+            <button class="btn-primary" id="htpClose">Let's Play!</button>
         </div>
     </div>
 
-    <div class="difficulty-bar" id="difficultyBar">
-        <button class="diff-btn active" data-diff="novice">Novice</button>
-        <button class="diff-btn" data-diff="scholar">Scholar</button>
-        <button class="diff-btn diff-btn--extreme" data-diff="extreme">Extremely Difficult</button>
-    </div>
-
-    <div class="toast" id="toast"></div>
-
-    <div class="grid" id="grid"></div>
-
-    <div class="legend">
-        <div class="legend-item"><div class="legend-dot correct"></div> correct</div>
-        <div class="legend-item"><div class="legend-dot present"></div> wrong place</div>
-        <div class="legend-item"><div class="legend-dot absent"></div> not in word</div>
-    </div>
-
-    <div class="keyboard" id="keyboard"></div>
-
-    <div class="modal-overlay" id="modal">
-        <div class="modal">
-            <div class="modal-result" id="modalResult"></div>
-            <div class="modal-word"   id="modalWord"></div>
-            <div class="modal-stats"  id="modalStats"></div>
-            <button class="play-again-btn" id="playAgainBtn">&gt; Play Again</button>
+    <!-- ── Statistics Modal ── -->
+    <div class="overlay" id="statsOverlay">
+        <div class="modal-box stats-modal">
+            <div class="stats-header">
+                <div class="stats-title">Statistics</div>
+                <button class="stats-clear-btn" id="statsClearBtn">🗑 Clear All</button>
+            </div>
+            <div id="statsBody"></div>
+            <button class="btn-outline" id="statsClose" style="margin-top:16px">Close</button>
         </div>
+    </div>
+
+    <!-- ── Hint Modal ── -->
+    <div class="overlay" id="hintOverlay">
+        <div class="modal-box">
+            <div class="hint-icon">💡</div>
+            <div class="modal-tag">Last Chance Hint</div>
+            <div class="hint-box" id="hintBox"></div>
+            <button class="btn-primary" id="hintClose">Got it — make my guess</button>
+        </div>
+    </div>
+
+    <!-- ── Game Result Modal ── -->
+    <div class="overlay" id="resultOverlay">
+        <div class="modal-box">
+            <div class="modal-tag" id="resultTag">well done.</div>
+            <div class="modal-word" id="resultWord"></div>
+            <div class="modal-sub" id="resultSub"></div>
+            <button class="btn-primary" id="playAgainBtn">Play Again</button>
+            <button class="btn-outline" id="changeDiffBtn">Change Difficulty</button>
+        </div>
+    </div>
+
+    <!-- ── Difficulty Picker (shown until first selection) ── -->
+    <div class="diff-picker" id="diffPicker">
+        <div class="diff-picker-heading">Choose your difficulty</div>
+        <div class="diff-picker-sub">Select a level to start playing</div>
+        <div class="diff-buttons" id="diffButtons">
+            <button class="diff-btn" data-diff="novice">
+                <span>Novice</span>
+                <span class="diff-badge diff-badge--novice">Easy</span>
+            </button>
+            <button class="diff-btn" data-diff="scholar">
+                <span>Scholar</span>
+                <span class="diff-badge diff-badge--scholar">Medium</span>
+            </button>
+            <button class="diff-btn diff-btn--extreme" data-diff="extreme">
+                <span>Extremely Difficult</span>
+                <span class="diff-badge diff-badge--extreme">Hard</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ── Game Area (hidden until difficulty selected) ── -->
+    <div class="game-area" id="gameArea" style="display:none">
+        <div class="diff-chips" id="diffChips">
+            <button class="diff-chip" data-diff="novice">Novice</button>
+            <button class="diff-chip" data-diff="scholar">Scholar</button>
+            <button class="diff-chip diff-chip--extreme" data-diff="extreme">Extremely Difficult</button>
+        </div>
+
+        <div class="toast" id="toast"></div>
+        <div class="grid" id="grid"></div>
+        <div class="hint-strip" id="hintStrip">
+            <button class="hint-strip-btn" id="hintTrigger">💡 Need a hint? (this is your last guess!)</button>
+        </div>
+        <div class="keyboard" id="keyboard"></div>
     </div>
 
 <script>
@@ -605,26 +866,48 @@ const WORDS = {
     ]
 };
 
-// Build a combined valid-guess set from all word banks
-const ALL_WORDS = new Set([
-    ...WORDS.novice, ...WORDS.scholar, ...WORDS.extreme
-]);
+const ALL_WORDS = new Set([...WORDS.novice, ...WORDS.scholar, ...WORDS.extreme]);
+
+// ─────────────────────────────────────────────
+//  STATS  (localStorage)
+// ─────────────────────────────────────────────
+const STATS_KEY = 'wordle-inf-stats-v1';
+
+function loadStats() {
+    const def = { played: 0, won: 0, streak: 0, best: 0, dist: [0,0,0,0,0,0], history: [] };
+    try { return Object.assign(def, JSON.parse(localStorage.getItem(STATS_KEY))); }
+    catch { return def; }
+}
+function saveStats(s) { localStorage.setItem(STATS_KEY, JSON.stringify(s)); }
+
+function recordResult(won, guessesUsed, word, diff) {
+    const s = loadStats();
+    s.played++;
+    if (won) {
+        s.won++;
+        s.streak++;
+        if (s.streak > s.best) s.best = s.streak;
+        if (guessesUsed >= 1 && guessesUsed <= 6) s.dist[guessesUsed - 1]++;
+    } else {
+        s.streak = 0;
+    }
+    s.history.unshift({ ts: Date.now(), word, diff, guesses: guessesUsed, won });
+    if (s.history.length > 25) s.history = s.history.slice(0, 25);
+    saveStats(s);
+    return s;
+}
 
 // ─────────────────────────────────────────────
 //  STATE
 // ─────────────────────────────────────────────
-let difficulty  = 'novice';
-let answer      = '';
-let currentRow  = 0;
-let currentCol  = 0;
+let difficulty   = null;
+let answer       = '';
+let currentRow   = 0;
+let currentCol   = 0;
 let currentGuess = [];
-let gameOver    = false;
-let streak      = 0;
-let gamesPlayed = 0;
-let guessCount  = 0;   // for win, how many guesses
-
-// Key state map: letter → 'correct' | 'present' | 'absent'
-let keyState = {};
+let gameOver     = false;
+let guessCount   = 0;
+let keyState     = {};
 
 const ROWS = 6;
 const COLS = 5;
@@ -632,25 +915,27 @@ const COLS = 5;
 // ─────────────────────────────────────────────
 //  DOM REFS
 // ─────────────────────────────────────────────
-const gridEl       = document.getElementById('grid');
-const keyboardEl   = document.getElementById('keyboard');
-const toastEl      = document.getElementById('toast');
-const modalEl      = document.getElementById('modal');
-const modalResult  = document.getElementById('modalResult');
-const modalWord    = document.getElementById('modalWord');
-const modalStats   = document.getElementById('modalStats');
-const streakNum    = document.getElementById('streakNum');
-const diffBar      = document.getElementById('difficultyBar');
+const gridEl        = document.getElementById('grid');
+const keyboardEl    = document.getElementById('keyboard');
+const toastEl       = document.getElementById('toast');
+const streakNumEl   = document.getElementById('streakNum');
+const diffPickerEl  = document.getElementById('diffPicker');
+const gameAreaEl    = document.getElementById('gameArea');
+const diffChipsEl   = document.getElementById('diffChips');
+const hintStripEl   = document.getElementById('hintStrip');
+const resultOverlay = document.getElementById('resultOverlay');
+const htpOverlay    = document.getElementById('htpOverlay');
+const statsOverlay  = document.getElementById('statsOverlay');
+const hintOverlay   = document.getElementById('hintOverlay');
 
 // ─────────────────────────────────────────────
-//  GRID BUILDER
+//  GRID & KEYBOARD
 // ─────────────────────────────────────────────
 function buildGrid() {
     gridEl.innerHTML = '';
     for (let r = 0; r < ROWS; r++) {
         const row = document.createElement('div');
         row.className = 'row';
-        row.id = `row-${r}`;
         for (let c = 0; c < COLS; c++) {
             const tile = document.createElement('div');
             tile.className = 'tile';
@@ -660,20 +945,13 @@ function buildGrid() {
         gridEl.appendChild(row);
     }
 }
+function getTile(r, c) { return document.getElementById(`tile-${r}-${c}`); }
 
-function getTile(r, c) {
-    return document.getElementById(`tile-${r}-${c}`);
-}
-
-// ─────────────────────────────────────────────
-//  KEYBOARD BUILDER
-// ─────────────────────────────────────────────
 const KB_ROWS = [
     ['q','w','e','r','t','y','u','i','o','p'],
     ['a','s','d','f','g','h','j','k','l'],
     ['Enter','z','x','c','v','b','n','m','⌫']
 ];
-
 function buildKeyboard() {
     keyboardEl.innerHTML = '';
     KB_ROWS.forEach(keys => {
@@ -690,47 +968,39 @@ function buildKeyboard() {
         keyboardEl.appendChild(row);
     });
 }
-
-function getKeyBtn(letter) {
-    return keyboardEl.querySelector(`[data-key="${letter}"]`);
-}
+function getKeyBtn(letter) { return keyboardEl.querySelector(`[data-key="${letter}"]`); }
 
 function updateKeyboard() {
     Object.entries(keyState).forEach(([letter, state]) => {
         const btn = getKeyBtn(letter);
-        if (btn) {
-            // Only upgrade state: correct > present > absent
-            if (btn.classList.contains('correct')) return;
-            if (state === 'correct') {
-                btn.classList.remove('present','absent');
-                btn.classList.add('correct');
-            } else if (state === 'present' && !btn.classList.contains('correct')) {
-                btn.classList.remove('absent');
-                btn.classList.add('present');
-            } else if (state === 'absent' && !btn.classList.contains('correct') && !btn.classList.contains('present')) {
-                btn.classList.add('absent');
-            }
+        if (!btn) return;
+        if (btn.classList.contains('correct')) return;
+        if (state === 'correct') {
+            btn.classList.remove('present','absent');
+            btn.classList.add('correct');
+        } else if (state === 'present' && !btn.classList.contains('correct')) {
+            btn.classList.remove('absent');
+            btn.classList.add('present');
+        } else if (state === 'absent' && !btn.classList.contains('correct') && !btn.classList.contains('present')) {
+            btn.classList.add('absent');
         }
     });
 }
 
 // ─────────────────────────────────────────────
-//  INPUT HANDLING
+//  INPUT
 // ─────────────────────────────────────────────
 function handleKey(key) {
-    if (gameOver) return;
-
-    if (key === 'Enter') {
-        submitGuess();
-    } else if (key === '⌫' || key === 'Backspace') {
-        deleteLetter();
-    } else if (/^[a-zA-Z]$/.test(key)) {
-        addLetter(key.toLowerCase());
-    }
+    if (gameOver || !difficulty) return;
+    if (key === 'Enter') submitGuess();
+    else if (key === '⌫' || key === 'Backspace') deleteLetter();
+    else if (/^[a-zA-Z]$/.test(key)) addLetter(key.toLowerCase());
 }
 
 document.addEventListener('keydown', e => {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
+    // Don't intercept if a modal is open
+    if (document.querySelector('.overlay.show')) return;
     if (e.key === 'Enter') handleKey('Enter');
     else if (e.key === 'Backspace') handleKey('Backspace');
     else if (/^[a-zA-Z]$/.test(e.key)) handleKey(e.key);
@@ -745,7 +1015,6 @@ function addLetter(letter) {
     animateTile(tile, 'pop');
     currentCol++;
 }
-
 function deleteLetter() {
     if (currentCol === 0) return;
     currentCol--;
@@ -756,148 +1025,95 @@ function deleteLetter() {
 }
 
 // ─────────────────────────────────────────────
-//  GUESS SUBMISSION
+//  SCORING & SUBMISSION
 // ─────────────────────────────────────────────
-function submitGuess() {
-    if (currentCol < COLS) {
-        showToast('not enough letters', 'error');
-        shakeRow(currentRow);
-        return;
+function scoreGuess(guess) {
+    const result = Array(COLS).fill('absent');
+    const ansArr = answer.split('');
+    const gArr   = guess.split('');
+    const used   = Array(COLS).fill(false);
+
+    for (let i = 0; i < COLS; i++) {
+        if (gArr[i] === ansArr[i]) { result[i] = 'correct'; used[i] = true; gArr[i] = null; }
     }
+    for (let i = 0; i < COLS; i++) {
+        if (result[i] === 'correct') continue;
+        for (let j = 0; j < COLS; j++) {
+            if (!used[j] && gArr[i] === ansArr[j]) { result[i] = 'present'; used[j] = true; break; }
+        }
+    }
+    guess.split('').forEach((letter, i) => {
+        if (!keyState[letter] || keyState[letter] === 'absent') keyState[letter] = result[i];
+        else if (keyState[letter] === 'present' && result[i] === 'correct') keyState[letter] = 'correct';
+    });
+    return result;
+}
 
+function submitGuess() {
+    if (currentCol < COLS) { showToast('not enough letters', 'error'); shakeRow(currentRow); return; }
     const guess = currentGuess.join('');
+    const result = scoreGuess(guess);
 
-    // Optional: light word validation (only flag if not in ANY list)
-    // Allow any 5-letter alpha string to keep it accessible
-    // (remove the block below to enforce strict dictionary)
-    // if (!ALL_WORDS.has(guess)) {
-    //     showToast('not in word list', 'error');
-    //     shakeRow(currentRow);
-    //     return;
-    // }
-
-    const result = scoreGuess(guess, answer);
-    revealRow(currentRow, guess, result, () => {
-        // After reveal
+    revealRow(currentRow, result, () => {
         updateKeyboard();
-
         if (guess === answer) {
             guessCount = currentRow + 1;
-            streak++;
-            gamesPlayed++;
-            streakNum.textContent = streak;
+            const stats = recordResult(true, guessCount, answer, difficulty);
+            streakNumEl.textContent = stats.streak;
             setTimeout(() => bounceRow(currentRow), 200);
-            setTimeout(() => showModal(true), 1600);
+            setTimeout(() => showResult(true, guessCount, stats.streak), 1600);
             gameOver = true;
             return;
         }
-
         currentRow++;
         currentCol = 0;
         currentGuess = [];
 
         if (currentRow >= ROWS) {
-            streak = 0;
-            gamesPlayed++;
-            streakNum.textContent = streak;
-            setTimeout(() => showModal(false), 400);
+            guessCount = ROWS;
+            const stats = recordResult(false, ROWS, answer, difficulty);
+            streakNumEl.textContent = stats.streak;
+            setTimeout(() => showResult(false, 0, 0), 400);
             gameOver = true;
+        } else if (currentRow === ROWS - 1) {
+            // Last row — offer hint
+            hintStripEl.classList.add('show');
         }
     });
-}
-
-// ─────────────────────────────────────────────
-//  SCORING
-// ─────────────────────────────────────────────
-function scoreGuess(guess, answer) {
-    const result = Array(COLS).fill('absent');
-    const answerArr = answer.split('');
-    const guessArr  = guess.split('');
-    const used = Array(COLS).fill(false);
-
-    // First pass: correct positions
-    for (let i = 0; i < COLS; i++) {
-        if (guessArr[i] === answerArr[i]) {
-            result[i] = 'correct';
-            used[i] = true;
-            guessArr[i] = null;
-        }
-    }
-
-    // Second pass: present letters
-    for (let i = 0; i < COLS; i++) {
-        if (result[i] === 'correct') continue;
-        for (let j = 0; j < COLS; j++) {
-            if (!used[j] && guessArr[i] === answerArr[j]) {
-                result[i] = 'present';
-                used[j] = true;
-                break;
-            }
-        }
-    }
-
-    // Update key state
-    guess.split('').forEach((letter, i) => {
-        if (!keyState[letter] || keyState[letter] === 'absent') {
-            keyState[letter] = result[i];
-        } else if (keyState[letter] === 'present' && result[i] === 'correct') {
-            keyState[letter] = 'correct';
-        }
-    });
-
-    return result;
 }
 
 // ─────────────────────────────────────────────
 //  REVEAL ANIMATION
 // ─────────────────────────────────────────────
-function revealRow(rowIdx, guess, result, onDone) {
+function revealRow(rowIdx, result, onDone) {
     for (let c = 0; c < COLS; c++) {
         const tile = getTile(rowIdx, c);
         const delay = c * 320;
-
         setTimeout(() => {
-            // Flip first half
             tile.style.transition = 'transform 0.18s ease-in';
             tile.style.transform  = 'rotateX(90deg)';
-
             setTimeout(() => {
-                // Apply color at midpoint
                 tile.classList.remove('filled');
                 tile.classList.add(result[c]);
-                // Flip back
                 tile.style.transition = 'transform 0.18s ease-out';
                 tile.style.transform  = 'rotateX(0deg)';
             }, 180);
         }, delay);
     }
-
-    const totalDuration = (COLS - 1) * 320 + 360;
-    setTimeout(onDone, totalDuration);
+    setTimeout(onDone, (COLS - 1) * 320 + 360);
 }
 
-// ─────────────────────────────────────────────
-//  ANIMATIONS
-// ─────────────────────────────────────────────
 function animateTile(tile, cls) {
     tile.classList.remove(cls);
-    void tile.offsetWidth; // reflow
+    void tile.offsetWidth;
     tile.classList.add(cls);
     tile.addEventListener('animationend', () => tile.classList.remove(cls), { once: true });
 }
-
 function shakeRow(rowIdx) {
-    for (let c = 0; c < COLS; c++) {
-        const tile = getTile(rowIdx, c);
-        animateTile(tile, 'shake');
-    }
+    for (let c = 0; c < COLS; c++) animateTile(getTile(rowIdx, c), 'shake');
 }
-
 function bounceRow(rowIdx) {
-    for (let c = 0; c < COLS; c++) {
-        const tile = getTile(rowIdx, c);
-        setTimeout(() => animateTile(tile, 'bounce'), c * 80);
-    }
+    for (let c = 0; c < COLS; c++) setTimeout(() => animateTile(getTile(rowIdx, c), 'bounce'), c * 80);
 }
 
 // ─────────────────────────────────────────────
@@ -908,70 +1124,181 @@ function showToast(msg, type = 'info') {
     clearTimeout(toastTimer);
     toastEl.textContent = msg;
     toastEl.className = `toast ${type}`;
-    toastTimer = setTimeout(() => {
-        toastEl.textContent = '';
-        toastEl.className = 'toast';
-    }, 1800);
+    toastTimer = setTimeout(() => { toastEl.textContent = ''; toastEl.className = 'toast'; }, 1900);
 }
 
 // ─────────────────────────────────────────────
-//  MODAL
+//  RESULT MODAL
 // ─────────────────────────────────────────────
-const WIN_MESSAGES = [
-    'flawless.', 'impressive.', 'well done.', 'nailed it.', 'nice work.', 'phew.'
-];
+const WIN_MSGS = ['flawless.', 'impressive.', 'well done.', 'nailed it.', 'nice work.', 'phew.'];
+const DIFF_LABEL = { novice: 'Novice', scholar: 'Scholar', extreme: 'Extremely Difficult' };
 
-function showModal(won) {
-    modalResult.textContent = won
-        ? WIN_MESSAGES[Math.min(guessCount - 1, WIN_MESSAGES.length - 1)]
-        : 'better luck next time.';
-    modalWord.textContent = answer;
+function showResult(won, guesses, streak) {
+    const tag   = document.getElementById('resultTag');
+    const word  = document.getElementById('resultWord');
+    const sub   = document.getElementById('resultSub');
 
-    const label = { novice: 'Novice', scholar: 'Scholar', extreme: 'Extremely Difficult' };
-    modalStats.innerHTML = won
-        ? `solved in <b>${guessCount}</b> guess${guessCount === 1 ? '' : 'es'}<br>
-           difficulty: <b>${label[difficulty]}</b><br>
-           streak: <b>${streak}</b>`
-        : `difficulty: <b>${label[difficulty]}</b><br>
-           streak reset to <b>0</b>`;
+    tag.textContent = won ? WIN_MSGS[Math.min(guesses - 1, 5)] : 'better luck next time.';
+    tag.className = 'modal-tag' + (won ? '' : ' loss');
+    word.textContent = answer;
 
-    modalEl.classList.add('show');
+    if (won) {
+        sub.innerHTML = `Solved in <b>${guesses}</b> guess${guesses === 1 ? '' : 'es'} &nbsp;·&nbsp; streak <b>${streak}</b><br><span style="font-size:12px;color:var(--muted)">difficulty: ${DIFF_LABEL[difficulty]}</span>`;
+    } else {
+        sub.innerHTML = `The word was above. &nbsp;·&nbsp; Streak reset to <b>0</b><br><span style="font-size:12px;color:var(--muted)">difficulty: ${DIFF_LABEL[difficulty]}</span>`;
+    }
+
+    resultOverlay.classList.add('show');
 }
 
-document.getElementById('playAgainBtn').addEventListener('click', startGame);
-modalEl.addEventListener('click', e => { if (e.target === modalEl) {} }); // keep open on overlay click
+document.getElementById('playAgainBtn').addEventListener('click', () => {
+    resultOverlay.classList.remove('show');
+    startGame(difficulty);
+});
+document.getElementById('changeDiffBtn').addEventListener('click', () => {
+    resultOverlay.classList.remove('show');
+    showDiffPicker();
+});
+
+// ─────────────────────────────────────────────
+//  HINT
+// ─────────────────────────────────────────────
+function getHintText(word) {
+    const vowels = 'aeiou';
+    const vc = word.split('').filter(l => vowels.includes(l)).length;
+    return `The word starts with <b>${word[0].toUpperCase()}</b> and ends with <b>${word[word.length-1].toUpperCase()}</b>.<br>It contains <b>${vc}</b> vowel${vc !== 1 ? 's' : ''}.`;
+}
+
+document.getElementById('hintTrigger').addEventListener('click', () => {
+    document.getElementById('hintBox').innerHTML = getHintText(answer);
+    hintOverlay.classList.add('show');
+});
+document.getElementById('hintClose').addEventListener('click', () => {
+    hintOverlay.classList.remove('show');
+});
 
 // ─────────────────────────────────────────────
 //  HOW TO PLAY
 // ─────────────────────────────────────────────
-const htpModal = document.getElementById('htpModal');
-document.getElementById('helpBtn').addEventListener('click', () => htpModal.classList.add('show'));
-document.getElementById('htpClose').addEventListener('click', () => htpModal.classList.remove('show'));
-htpModal.addEventListener('click', e => { if (e.target === htpModal) htpModal.classList.remove('show'); });
+document.getElementById('helpBtn').addEventListener('click', () => htpOverlay.classList.add('show'));
+document.getElementById('htpClose').addEventListener('click', () => {
+    htpOverlay.classList.remove('show');
+    // If no difficulty chosen yet, keep picker visible
+});
+htpOverlay.addEventListener('click', e => { if (e.target === htpOverlay) htpOverlay.classList.remove('show'); });
+
+// ─────────────────────────────────────────────
+//  STATISTICS MODAL
+// ─────────────────────────────────────────────
+function formatDate(ts) {
+    const d = new Date(ts);
+    return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+        + ', ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+}
+
+function renderStats() {
+    const s = loadStats();
+    const body = document.getElementById('statsBody');
+    const pct = s.played > 0 ? Math.round((s.won / s.played) * 100) : 0;
+
+    // Cards
+    body.innerHTML = `
+        <div class="stats-cards">
+            <div class="stat-card"><div class="stat-icon">🎮</div><div class="stat-num">${s.played}</div><div class="stat-lbl">Games Played</div></div>
+            <div class="stat-card"><div class="stat-icon">🏆</div><div class="stat-num">${pct}%</div><div class="stat-lbl">Win Rate</div></div>
+            <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-num">${s.best}</div><div class="stat-lbl">Best Streak</div></div>
+        </div>
+        <div class="stats-sec-title">Guess Distribution</div>
+        <div class="dist-bar-wrap" id="distBars"></div>
+        <div class="stats-sec-title">Recent Games</div>
+        <div class="hist-list" id="histList"></div>
+    `;
+
+    // Distribution bars
+    const maxDist = Math.max(...s.dist, 1);
+    const distEl = document.getElementById('distBars');
+    s.dist.forEach((count, i) => {
+        const pctBar = Math.round((count / maxDist) * 100);
+        distEl.innerHTML += `
+            <div class="dist-row">
+                <div class="dist-lbl">${i+1}</div>
+                <div class="dist-bar-outer">
+                    <div class="dist-bar-inner" style="width:${Math.max(pctBar,4)}%">${count > 0 ? count : ''}</div>
+                </div>
+            </div>`;
+    });
+
+    // History
+    const histEl = document.getElementById('histList');
+    if (s.history.length === 0) {
+        histEl.innerHTML = '<div class="stats-empty">No games played yet.<br>Play a round to see your history!</div>';
+    } else {
+        s.history.forEach(item => {
+            const winClass = item.won ? 'win' : 'loss';
+            const label    = item.won ? `${item.guesses}/6` : 'X/6';
+            const diffName = DIFF_LABEL[item.diff] || item.diff;
+            histEl.innerHTML += `
+                <div class="hist-item">
+                    <div class="hist-badge-result ${winClass}">${label}</div>
+                    <div class="hist-info">
+                        <div class="hist-word">${item.word}</div>
+                        <div class="hist-meta">
+                            <span class="hist-diff ${item.diff}">${diffName}</span>
+                            <span>📅 ${formatDate(item.ts)}</span>
+                        </div>
+                    </div>
+                </div>`;
+        });
+    }
+}
+
+document.getElementById('statsBtn').addEventListener('click', () => {
+    renderStats();
+    statsOverlay.classList.add('show');
+});
+document.getElementById('statsClose').addEventListener('click', () => statsOverlay.classList.remove('show'));
+statsOverlay.addEventListener('click', e => { if (e.target === statsOverlay) statsOverlay.classList.remove('show'); });
+
+document.getElementById('statsClearBtn').addEventListener('click', () => {
+    if (!confirm('Clear all statistics? This cannot be undone.')) return;
+    localStorage.removeItem(STATS_KEY);
+    streakNumEl.textContent = '0';
+    renderStats();
+});
 
 // ─────────────────────────────────────────────
 //  DIFFICULTY SELECTOR
 // ─────────────────────────────────────────────
-diffBar.addEventListener('click', e => {
-    const btn = e.target.closest('.diff-btn');
+function showDiffPicker() {
+    difficulty = null;
+    gameAreaEl.style.display  = 'none';
+    diffPickerEl.style.display = '';
+}
+
+document.getElementById('diffButtons').addEventListener('click', e => {
+    const btn = e.target.closest('[data-diff]');
+    if (!btn) return;
+    startGame(btn.dataset.diff);
+});
+
+diffChipsEl.addEventListener('click', e => {
+    const btn = e.target.closest('[data-diff]');
     if (!btn) return;
     if (btn.dataset.diff === difficulty && !gameOver) return;
-    diffBar.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    difficulty = btn.dataset.diff;
-    startGame();
+    startGame(btn.dataset.diff);
 });
 
 // ─────────────────────────────────────────────
 //  GAME INIT
 // ─────────────────────────────────────────────
-function pickWord() {
-    const pool = WORDS[difficulty];
+function pickWord(diff) {
+    const pool = WORDS[diff];
     return pool[Math.floor(Math.random() * pool.length)];
 }
 
-function startGame() {
-    answer       = pickWord();
+function startGame(diff) {
+    difficulty   = diff;
+    answer       = pickWord(diff);
     currentRow   = 0;
     currentCol   = 0;
     currentGuess = [];
@@ -979,14 +1306,35 @@ function startGame() {
     keyState     = {};
     guessCount   = 0;
 
+    // Update streak display from stored stats
+    const s = loadStats();
+    streakNumEl.textContent = s.streak;
+
+    // Show game area, hide picker
+    diffPickerEl.style.display = 'none';
+    gameAreaEl.style.display   = '';
+
+    // Update chips
+    diffChipsEl.querySelectorAll('[data-diff]').forEach(c => {
+        c.classList.toggle('active', c.dataset.diff === diff);
+    });
+
+    hintStripEl.classList.remove('show');
+    resultOverlay.classList.remove('show');
+    toastEl.textContent = '';
+
     buildGrid();
     buildKeyboard();
-    modalEl.classList.remove('show');
-    toastEl.textContent = '';
-    streakNum.textContent = streak;
 }
 
-startGame();
+// ─────────────────────────────────────────────
+//  FIRST VISIT
+// ─────────────────────────────────────────────
+const VISITED_KEY = 'wordle-inf-visited';
+if (!localStorage.getItem(VISITED_KEY)) {
+    localStorage.setItem(VISITED_KEY, '1');
+    htpOverlay.classList.add('show');
+}
 </script>
 </body>
 </html>
