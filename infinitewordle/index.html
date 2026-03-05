@@ -305,6 +305,117 @@
         .legend-dot.present { background: var(--present); }
         .legend-dot.absent  { background: #444; }
 
+        .diff-btn--extreme {
+            border-color: #b91c1c;
+            color: #f87171;
+        }
+        .diff-btn--extreme:hover {
+            border-color: #ef4444;
+            color: #fca5a5;
+            background: rgba(185, 28, 28, 0.12);
+        }
+        .diff-btn--extreme.active {
+            border-color: #ef4444;
+            color: #fca5a5;
+            background: rgba(185, 28, 28, 0.18);
+        }
+
+        /* ── Help Button ── */
+        .help-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            width: 26px;
+            height: 26px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: color 0.2s, border-color 0.2s;
+        }
+        .help-btn:hover { color: var(--accent-light); border-color: var(--accent); }
+
+        /* ── How To Play Modal ── */
+        .htp-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.88);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+        }
+        .htp-overlay.show { display: flex; }
+        .htp-modal {
+            background: var(--card-bg);
+            border: 1px solid var(--accent);
+            padding: 32px 28px;
+            max-width: 340px;
+            width: 90%;
+        }
+        .htp-title {
+            font-size: 11px;
+            color: var(--accent-light);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+        .htp-body {
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 0.5px;
+            line-height: 1.9;
+            margin-bottom: 20px;
+        }
+        .htp-body p { margin-bottom: 10px; }
+        .htp-examples {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 22px;
+        }
+        .htp-example {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 0.5px;
+        }
+        .htp-tile {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .htp-tile.correct { background: var(--correct); }
+        .htp-tile.present { background: var(--present); }
+        .htp-tile.absent  { background: #444; color: #aaa; }
+        .htp-close {
+            background: var(--accent);
+            color: white;
+            border: none;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            letter-spacing: 2px;
+            padding: 10px 0;
+            cursor: pointer;
+            text-transform: uppercase;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .htp-close:hover { background: var(--accent-light); }
+
         /* ── Responsive ── */
         @media (max-width: 380px) {
             .tile  { width: 48px; height: 48px; font-size: 19px; }
@@ -320,13 +431,38 @@
         <a href="../index.html#projects" class="back-link">&lt; home</a>
         <div class="game-title">WORDLE<span>∞</span></div>
         <div class="streak-display">streak<span class="streak-num" id="streakNum">0</span></div>
+        <button class="help-btn" id="helpBtn" title="How to play">?</button>
     </header>
+
+    <div class="htp-overlay" id="htpModal">
+        <div class="htp-modal">
+            <div class="htp-title">How to Play</div>
+            <div class="htp-body">
+                <p>Guess the hidden 5-letter word in 6 tries.</p>
+                <p>After each guess, the tiles change colour to show how close your guess was.</p>
+            </div>
+            <div class="htp-examples">
+                <div class="htp-example">
+                    <div class="htp-tile correct">S</div>
+                    <span>Purple — correct letter, correct position</span>
+                </div>
+                <div class="htp-example">
+                    <div class="htp-tile present">T</div>
+                    <span>Orange — correct letter, wrong position</span>
+                </div>
+                <div class="htp-example">
+                    <div class="htp-tile absent">X</div>
+                    <span>Dark — letter not in the word</span>
+                </div>
+            </div>
+            <button class="htp-close" id="htpClose">&gt; Got it</button>
+        </div>
+    </div>
 
     <div class="difficulty-bar" id="difficultyBar">
         <button class="diff-btn active" data-diff="novice">Novice</button>
         <button class="diff-btn" data-diff="scholar">Scholar</button>
-        <button class="diff-btn" data-diff="sage">Sage</button>
-        <button class="diff-btn" data-diff="lexicon">Lexicon Master</button>
+        <button class="diff-btn diff-btn--extreme" data-diff="extreme">Extremely Difficult</button>
     </div>
 
     <div class="toast" id="toast"></div>
@@ -434,7 +570,7 @@ const WORDS = {
         "tunic","ulcer","umber","upend","usurp","valor","vapid","verge","vigil","viper",
         "visor","vogue","vouch","wager","wrath","wreck","zesty","zeal"
     ],
-    sage: [
+    extreme: [
         "abash","abhor","abide","afoot","agape","agate","agave","ahull","aioli","allay",
         "ambit","amide","amuck","anear","antle","apian","apish","apnea","arras","arrant",
         "assay","atilt","atoll","baize","balmy","baste","bated","batik","bezel","bifid",
@@ -454,27 +590,24 @@ const WORDS = {
         "runic","russet","sepal","shard","shorl","sidle","smalt","sneer","spall","spiff",
         "stele","stria","swept","sylph","tangy","terce","thegn","tical","tinge","tipsy",
         "toddy","toper","toyon","trice","trull","tulle","tweed","twill","undid","verve",
-        "vying","wadis","wheal","whelp","winey","wizen","xenon","yokel","scops","scree"
-    ],
-    lexicon: [
+        "vying","wadis","wheal","whelp","winey","wizen","xenon","yokel","scops","scree",
         "abaft","acerb","agist","aglet","agone","alapa","alula","amice","areic","argot",
         "arles","aulic","avian","braxy","calix","camis","canid","capiz","chert","chimb",
         "chyle","chyme","cirri","cloze","cobia","coign","coude","cycad","drupe","dulia",
         "durra","eloin","emmet","emyde","epact","ergot","eyrie","favus","fitch","fleam",
         "flued","fordo","fumet","gambe","garth","gipon","glair","glede","gleet","gonzo",
-        "gopak","hafiz","haick","hapax","heiau","hosel","hyoid","iblex","icker","igloo",
-        "imide","impis","jalap","jambe","knout","kvass","lahar","larum","liege","logia",
-        "lusus","luted","mahoe","makos","melic","metol","mohur","naiad","novum","oakum",
-        "opsin","ormer","ornis","ovolo","oxbow","pavis","pewit","phlox","piked","prion",
-        "putsch","pyrex","quass","rabic","rathe","ribes","rohde","shorl","skelp","speil",
-        "stoep","suety","taboret","thymy","toffy","tromp","trull","tules","ureal","varve",
-        "virid","zoeae","yawls","spean","snath","swale","thane","blype","byway","calix"
+        "gopak","hafiz","haick","hapax","heiau","hosel","iblex","icker","igloo","imide",
+        "impis","jalap","jambe","knout","kvass","lahar","larum","logia","lusus","luted",
+        "mahoe","makos","melic","metol","mohur","naiad","novum","oakum","opsin","ormer",
+        "ornis","ovolo","oxbow","pavis","piked","putsch","pyrex","quass","rabic","rohde",
+        "skelp","speil","stoep","suety","taboret","thymy","toffy","tromp","tules","ureal",
+        "varve","virid","zoeae","yawls","spean","snath","swale","thane","blype"
     ]
 };
 
 // Build a combined valid-guess set from all word banks
 const ALL_WORDS = new Set([
-    ...WORDS.novice, ...WORDS.scholar, ...WORDS.sage, ...WORDS.lexicon
+    ...WORDS.novice, ...WORDS.scholar, ...WORDS.extreme
 ]);
 
 // ─────────────────────────────────────────────
@@ -794,7 +927,7 @@ function showModal(won) {
         : 'better luck next time.';
     modalWord.textContent = answer;
 
-    const label = { novice: 'Novice', scholar: 'Scholar', sage: 'Sage', lexicon: 'Lexicon Master' };
+    const label = { novice: 'Novice', scholar: 'Scholar', extreme: 'Extremely Difficult' };
     modalStats.innerHTML = won
         ? `solved in <b>${guessCount}</b> guess${guessCount === 1 ? '' : 'es'}<br>
            difficulty: <b>${label[difficulty]}</b><br>
@@ -807,6 +940,14 @@ function showModal(won) {
 
 document.getElementById('playAgainBtn').addEventListener('click', startGame);
 modalEl.addEventListener('click', e => { if (e.target === modalEl) {} }); // keep open on overlay click
+
+// ─────────────────────────────────────────────
+//  HOW TO PLAY
+// ─────────────────────────────────────────────
+const htpModal = document.getElementById('htpModal');
+document.getElementById('helpBtn').addEventListener('click', () => htpModal.classList.add('show'));
+document.getElementById('htpClose').addEventListener('click', () => htpModal.classList.remove('show'));
+htpModal.addEventListener('click', e => { if (e.target === htpModal) htpModal.classList.remove('show'); });
 
 // ─────────────────────────────────────────────
 //  DIFFICULTY SELECTOR
