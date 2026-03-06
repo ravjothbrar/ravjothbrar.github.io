@@ -990,8 +990,29 @@ function updateKeyboard() {
 // ─────────────────────────────────────────────
 //  INPUT
 // ─────────────────────────────────────────────
+// ─────────────────────────────────────────────
+//  WORD VALIDATION  (game words → instant; others → dictionary API)
+// ─────────────────────────────────────────────
+const validCache  = new Set(ALL_WORDS);   // pre-seed with all game words
+const invalidCache = new Set();           // remember rejections this session
+
+async function isValidWord(word) {
+    if (validCache.has(word))  return true;
+    if (invalidCache.has(word)) return false;
+    try {
+        const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+        if (res.ok) { validCache.add(word); return true; }
+        invalidCache.add(word);
+        return false;
+    } catch {
+        return true; // if offline / API down, allow the guess
+    }
+}
+
+let submitting = false;
+
 function handleKey(key) {
-    if (gameOver || !difficulty) return;
+    if (gameOver || !difficulty || submitting) return;
     if (key === 'Enter') submitGuess();
     else if (key === '⌫' || key === 'Backspace') deleteLetter();
     else if (/^[a-zA-Z]$/.test(key)) addLetter(key.toLowerCase());
@@ -1049,9 +1070,19 @@ function scoreGuess(guess) {
     return result;
 }
 
-function submitGuess() {
+async function submitGuess() {
     if (currentCol < COLS) { showToast('not enough letters', 'error'); shakeRow(currentRow); return; }
     const guess = currentGuess.join('');
+
+    submitting = true;
+    showToast('checking…', 'info');
+    const valid = await isValidWord(guess);
+    submitting = false;
+    toastEl.textContent = '';
+    toastEl.className = 'toast';
+
+    if (!valid) { showToast('not a valid word', 'error'); shakeRow(currentRow); return; }
+
     const result = scoreGuess(guess);
 
     revealRow(currentRow, result, () => {
