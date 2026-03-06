@@ -833,7 +833,7 @@ const WORDS = {
     ],
     extreme: [
         "abash","abhor","abide","afoot","agape","agate","agave","ahull","aioli","allay",
-        "ambit","amide","amuck","anear","antle","apian","apish","apnea","arras","arrant",
+        "ambit","amide","amuck","anear","antle","apian","apish","apnea","arras","tabor",
         "assay","atilt","atoll","baize","balmy","baste","bated","batik","bezel","bifid",
         "bight","bilge","blase","bleat","blimp","bloke","blowy","blurt","boded","bogle",
         "bract","burly","byway","cadge","carom","cavil","chary","churl","civet","clave",
@@ -847,22 +847,22 @@ const WORDS = {
         "mewls","mitre","mooch","morel","mousy","murex","myrrh","nabob","nival","nonce",
         "odeon","oleic","otter","outre","paned","parol","pated","payee","penna","pewit",
         "phlox","pilaf","pinna","plash","plonk","prion","prise","privy","pupal","quirk",
-        "rathe","ravel","recant","remit","renege","repine","ribes","roach","roble","rumen",
-        "runic","russet","sepal","shard","shorl","sidle","smalt","sneer","spall","spiff",
+        "rathe","ravel","fichu","remit","thews","oxlip","ribes","roach","roble","rumen",
+        "runic","lapin","sepal","shard","shorl","sidle","smalt","sneer","spall","spiff",
         "stele","stria","swept","sylph","tangy","terce","thegn","tical","tinge","tipsy",
         "toddy","toper","toyon","trice","trull","tulle","tweed","twill","undid","verve",
         "vying","wadis","wheal","whelp","winey","wizen","xenon","yokel","scops","scree",
-        "abaft","acerb","agist","aglet","agone","alapa","alula","amice","areic","argot",
-        "arles","aulic","avian","braxy","calix","camis","canid","capiz","chert","chimb",
+        "abaft","acerb","agist","aglet","agone","breve","alula","amice","areic","argot",
+        "arles","aulic","avian","braxy","calix","aleph","canid","capiz","chert","chimb",
         "chyle","chyme","cirri","cloze","cobia","coign","coude","cycad","drupe","dulia",
         "durra","eloin","emmet","emyde","epact","ergot","eyrie","favus","fitch","fleam",
         "flued","fordo","fumet","gambe","garth","gipon","glair","glede","gleet","gonzo",
-        "gopak","hafiz","haick","hapax","heiau","hosel","iblex","icker","igloo","imide",
+        "gopak","umbra","haick","chine","foehn","hosel","whelk","swarf","igloo","imide",
         "impis","jalap","jambe","knout","kvass","lahar","larum","logia","lusus","luted",
         "mahoe","makos","melic","metol","mohur","naiad","novum","oakum","opsin","ormer",
-        "ornis","ovolo","oxbow","pavis","piked","putsch","pyrex","quass","rabic","rohde",
-        "skelp","speil","stoep","suety","taboret","thymy","toffy","tromp","tules","ureal",
-        "varve","virid","zoeae","yawls","spean","snath","swale","thane","blype"
+        "ornis","ovolo","oxbow","pavis","piked","matzo","pyrex","quass","rabic","spahi",
+        "skelp","liard","stoep","suety","rebus","thymy","toffy","tromp","tules","ureal",
+        "varve","virid","zoeae","yawls","culet","snath","swale","thane","grebe"
     ]
 };
 
@@ -990,8 +990,29 @@ function updateKeyboard() {
 // ─────────────────────────────────────────────
 //  INPUT
 // ─────────────────────────────────────────────
+// ─────────────────────────────────────────────
+//  WORD VALIDATION  (game words → instant; others → dictionary API)
+// ─────────────────────────────────────────────
+const validCache  = new Set(ALL_WORDS);   // pre-seed with all game words
+const invalidCache = new Set();           // remember rejections this session
+
+async function isValidWord(word) {
+    if (validCache.has(word))  return true;
+    if (invalidCache.has(word)) return false;
+    try {
+        const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+        if (res.ok) { validCache.add(word); return true; }
+        invalidCache.add(word);
+        return false;
+    } catch {
+        return true; // if offline / API down, allow the guess
+    }
+}
+
+let submitting = false;
+
 function handleKey(key) {
-    if (gameOver || !difficulty) return;
+    if (gameOver || !difficulty || submitting) return;
     if (key === 'Enter') submitGuess();
     else if (key === '⌫' || key === 'Backspace') deleteLetter();
     else if (/^[a-zA-Z]$/.test(key)) addLetter(key.toLowerCase());
@@ -1049,9 +1070,19 @@ function scoreGuess(guess) {
     return result;
 }
 
-function submitGuess() {
+async function submitGuess() {
     if (currentCol < COLS) { showToast('not enough letters', 'error'); shakeRow(currentRow); return; }
     const guess = currentGuess.join('');
+
+    submitting = true;
+    showToast('checking…', 'info');
+    const valid = await isValidWord(guess);
+    submitting = false;
+    toastEl.textContent = '';
+    toastEl.className = 'toast';
+
+    if (!valid) { showToast('not a valid word', 'error'); shakeRow(currentRow); return; }
+
     const result = scoreGuess(guess);
 
     revealRow(currentRow, result, () => {
