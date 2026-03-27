@@ -1798,6 +1798,38 @@ a.value:hover {
     font-size: 13px;
 }
 
+.bento-banner {
+    grid-column: span 12;
+    flex-direction: row;
+    align-items: center;
+    min-height: auto;
+}
+
+.bento-banner .bento-card-content {
+    flex-direction: row;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 28px 36px;
+}
+
+.bento-banner .bento-card-date {
+    margin-bottom: 0;
+    flex-shrink: 0;
+}
+
+.bento-banner .bento-card-title {
+    margin-bottom: 0;
+    flex: 1;
+    min-width: 200px;
+}
+
+.bento-banner .bento-card-excerpt {
+    flex: 2;
+    min-width: 200px;
+    flex-grow: 0;
+}
+
 /* Responsive Bento Layout */
 @media (max-width: 1200px) {
     .blog-bento {
@@ -1863,9 +1895,23 @@ a.value:hover {
     .bento-hero,
     .bento-medium,
     .bento-large,
-    .bento-tall {
+    .bento-tall,
+    .bento-banner {
         grid-column: span 12;
         min-height: auto;
+    }
+
+    .bento-banner .bento-card-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 25px;
+    }
+
+    .bento-banner .bento-card-date,
+    .bento-banner .bento-card-title,
+    .bento-banner .bento-card-excerpt {
+        margin-bottom: 0;
     }
 
     .bento-hero .bento-card-image,
