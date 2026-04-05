@@ -638,8 +638,8 @@ a.value:hover {
     padding: 10px 0;
 }
 
-/* Force 5th project card to start right column (row-major visual order with masonry fill) */
-#projects .cards-grid > .card-item:nth-child(5) {
+/* Force 6th project card to start right column (row-major visual order with masonry fill) */
+#projects .cards-grid > .card-item:nth-child(6) {
     break-before: column;
 }
 
@@ -766,6 +766,17 @@ a.value:hover {
 }
 .card-gradient-lightblue:hover {
     box-shadow: 0 15px 40px rgba(14, 165, 233, 0.25);
+}
+.card-gradient-teal {
+    border: 2px solid transparent;
+    background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
+                linear-gradient(135deg, #0d9488, #14b8a6, #5eead4) border-box;
+}
+.card-gradient-teal::before {
+    background: linear-gradient(90deg, #0d9488, #14b8a6, #5eead4);
+}
+.card-gradient-teal:hover {
+    box-shadow: 0 15px 40px rgba(13, 148, 136, 0.25);
 }
 
 .card-header {
@@ -927,7 +938,7 @@ a.value:hover {
         column-count: 1;
     }
 
-    #projects .cards-grid > .card-item:nth-child(5) {
+    #projects .cards-grid > .card-item:nth-child(6) {
         break-before: auto;
     }
 
