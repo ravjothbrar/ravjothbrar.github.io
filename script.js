@@ -191,95 +191,188 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ========================================
-    // Interactive Portrait with Liquid Metaball Reveal Effect
+    // Interactive Portrait with WebGL Liquid Reveal Effect
     // ========================================
 
     const portraitContainer = document.getElementById('interactivePortrait');
     const portraitImage = document.getElementById('portraitImage');
-    const asciiCanvas = document.getElementById('asciiCanvas');
-    const revealCanvas = document.getElementById('revealCanvas');
+    const webglCanvas = document.getElementById('webglCanvas');
 
-    if (portraitContainer && portraitImage && asciiCanvas && revealCanvas) {
-        initCanvasPortrait();
+    if (portraitContainer && portraitImage && webglCanvas) {
+        initWebGLPortrait();
     }
 
-    function initCanvasPortrait() {
+    function initWebGLPortrait() {
         const container = portraitContainer;
         const width = container.clientWidth;
         const height = container.clientHeight;
 
-        // Set up canvases
-        asciiCanvas.width = width;
-        asciiCanvas.height = height;
-        revealCanvas.width = width;
-        revealCanvas.height = height;
+        webglCanvas.width = width;
+        webglCanvas.height = height;
 
-        const asciiCtx = asciiCanvas.getContext('2d');
-        const revealCtx = revealCanvas.getContext('2d');
+        const gl = webglCanvas.getContext('webgl') || webglCanvas.getContext('experimental-webgl');
+        if (!gl) {
+            // WebGL not available — fall back to showing the portrait photo
+            portraitImage.style.display = 'block';
+            portraitImage.style.zIndex = '3';
+            return;
+        }
 
-        // Liquid metaball trail system - organic movement
-        const metaballs = [];
-        const MAX_METABALLS = 22;
-        const METABALL_RADIUS = 52;
-        const METABALL_SPAWN_RATE = 4; // Spawn every 4 frames
-        const DECAY_SPEED = 0.008;
-        const THRESHOLD = 0.8;
+        portraitImage.style.display = 'none';
 
-        // Downscale factor for performance (process at lower resolution)
-        const SCALE = 4;
-        const scaledWidth = Math.ceil(width / SCALE);
-        const scaledHeight = Math.ceil(height / SCALE);
+        // ---- Shaders ----
+        const vsSource = `
+            attribute vec2 aPosition;
+            void main() {
+                gl_Position = vec4(aPosition, 0.0, 1.0);
+            }
+        `;
 
-        let frameCount = 0;
+        // Fragment shader: GPU metaball field + texture blend.
+        // All 22 uniform slots are always filled; inactive balls have radius/strength = 0.
+        const fsSource = `
+            precision mediump float;
 
-        // Intro animation state
-        let introPhase = 'showing_portrait'; // 'showing_portrait', 'fading', 'complete'
+            uniform sampler2D uAsciiTex;
+            uniform sampler2D uPortraitTex;
+            uniform vec2 uResolution;
+            uniform float uIntroAlpha;
+
+            uniform vec2  uBallPos[22];
+            uniform float uBallRadius[22];
+            uniform float uBallStrength[22];
+
+            void main() {
+                vec2 fragCoord = gl_FragCoord.xy;
+                vec2 uv     = fragCoord / uResolution;
+                vec2 uvTex  = vec2(uv.x, 1.0 - uv.y); // flip Y: WebGL origin is bottom-left
+
+                vec4 ascii   = texture2D(uAsciiTex,    uvTex);
+                vec4 portrait = texture2D(uPortraitTex, uvTex);
+
+                // Accumulate inverse-square metaball field
+                float field = 0.0;
+                for (int i = 0; i < 22; i++) {
+                    vec2  diff   = fragCoord - uBallPos[i];
+                    float distSq = max(dot(diff, diff), 1.0);
+                    float r      = uBallRadius[i];
+                    field += (r * r * uBallStrength[i]) / distSq;
+                }
+
+                // Smooth liquid edge — double smoothstep (same thresholds as before)
+                float t = clamp((field - 0.16) / 1.44, 0.0, 1.0);
+                t = t * t * (3.0 - 2.0 * t);
+                t = t * t * (3.0 - 2.0 * t);
+                float revealAmount = t;
+
+                // ASCII fades in during intro, disappears inside metaball blobs
+                float asciiAlpha = ascii.a * uIntroAlpha * (1.0 - revealAmount);
+
+                // Composite: ASCII layer over portrait
+                vec3 color = mix(portrait.rgb, ascii.rgb, asciiAlpha);
+                gl_FragColor = vec4(color, 1.0);
+            }
+        `;
+
+        function compileShader(type, source) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                console.error('Shader error:', gl.getShaderInfoLog(shader));
+                gl.deleteShader(shader);
+                return null;
+            }
+            return shader;
+        }
+
+        const vs = compileShader(gl.VERTEX_SHADER, vsSource);
+        const fs = compileShader(gl.FRAGMENT_SHADER, fsSource);
+        if (!vs || !fs) return;
+
+        const program = gl.createProgram();
+        gl.attachShader(program, vs);
+        gl.attachShader(program, fs);
+        gl.linkProgram(program);
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+            console.error('Program link error:', gl.getProgramInfoLog(program));
+            return;
+        }
+        gl.useProgram(program);
+
+        // Full-screen quad (covers clip space -1..1)
+        const quadBuf = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+        const posLoc = gl.getAttribLocation(program, 'aPosition');
+        gl.enableVertexAttribArray(posLoc);
+        gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+        // Uniform locations
+        const uResolutionLoc   = gl.getUniformLocation(program, 'uResolution');
+        const uIntroAlphaLoc   = gl.getUniformLocation(program, 'uIntroAlpha');
+        const uAsciiTexLoc     = gl.getUniformLocation(program, 'uAsciiTex');
+        const uPortraitTexLoc  = gl.getUniformLocation(program, 'uPortraitTex');
+
+        const uBallPosLoc      = [];
+        const uBallRadiusLoc   = [];
+        const uBallStrengthLoc = [];
+        for (let i = 0; i < 22; i++) {
+            uBallPosLoc.push(gl.getUniformLocation(program,      `uBallPos[${i}]`));
+            uBallRadiusLoc.push(gl.getUniformLocation(program,   `uBallRadius[${i}]`));
+            uBallStrengthLoc.push(gl.getUniformLocation(program, `uBallStrength[${i}]`));
+        }
+
+        gl.uniform2f(uResolutionLoc, width, height);
+        gl.uniform1i(uAsciiTexLoc, 0);
+        gl.uniform1i(uPortraitTexLoc, 1);
+
+        // ---- Texture helper ----
+        function uploadTexture(img) {
+            const tex = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, tex);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            return tex;
+        }
+
+        // ---- Load images ----
+        let asciiTex = null, portraitTex = null, imagesLoaded = 0;
+
+        let introPhase = 'showing_portrait';
         let introFadeProgress = 0;
         const INTRO_FADE_SPEED = 0.02;
-
-        // Load images
-        const asciiImg = new Image();
-        const portraitImg = new Image();
-        let imagesLoaded = 0;
-
-        asciiImg.crossOrigin = 'anonymous';
-        portraitImg.crossOrigin = 'anonymous';
 
         function onImageLoad() {
             imagesLoaded++;
             if (imagesLoaded === 2) {
-                // Both images loaded, start the effect
-                portraitImage.style.display = 'none';
-                asciiCanvas.style.display = 'block';
-                revealCanvas.style.display = 'block';
+                asciiTex   = uploadTexture(asciiImg);
+                portraitTex = uploadTexture(portraitImg);
 
-                // Start with portrait visible (intro animation)
                 introPhase = 'showing_portrait';
                 introFadeProgress = 0;
+                setTimeout(() => { introPhase = 'fading'; }, 1000);
 
-                // After 1 second, start fading to ASCII
-                setTimeout(() => {
-                    introPhase = 'fading';
-                }, 1000);
-
-                // Initial render and start animation
-                drawFrame();
                 requestAnimationFrame(animate);
             }
         }
 
-        asciiImg.onload = onImageLoad;
+        const asciiImg   = new Image();
+        const portraitImg = new Image();
+        asciiImg.crossOrigin   = 'anonymous';
+        portraitImg.crossOrigin = 'anonymous';
+        asciiImg.onload   = onImageLoad;
         portraitImg.onload = onImageLoad;
-
-        asciiImg.src = 'images/ascii-art.png';
+        asciiImg.src   = 'images/ascii-art.png';
         portraitImg.src = 'images/profile.jpg';
 
-        // Mouse tracking
-        let mouseX = -1000;
-        let mouseY = -1000;
+        // ---- Mouse / touch tracking ----
+        let mouseX = -1000, mouseY = -1000;
         let isHovering = false;
-        let lastMouseX = -1000;
-        let lastMouseY = -1000;
+        let lastMouseX = -1000, lastMouseY = -1000;
 
         container.addEventListener('mousemove', (e) => {
             const rect = container.getBoundingClientRect();
@@ -287,272 +380,140 @@ document.addEventListener('DOMContentLoaded', function() {
             mouseY = e.clientY - rect.top;
             isHovering = true;
         });
-
         container.addEventListener('mouseleave', () => {
-            mouseX = -1000;
-            mouseY = -1000;
+            mouseX = -1000; mouseY = -1000;
             isHovering = false;
         });
-
-        // Touch support
         container.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            const rect = container.getBoundingClientRect();
+            const rect  = container.getBoundingClientRect();
             const touch = e.touches[0];
             mouseX = touch.clientX - rect.left;
             mouseY = touch.clientY - rect.top;
             isHovering = true;
-        });
-
+        }, { passive: false });
         container.addEventListener('touchmove', (e) => {
             e.preventDefault();
-            const rect = container.getBoundingClientRect();
+            const rect  = container.getBoundingClientRect();
             const touch = e.touches[0];
             mouseX = touch.clientX - rect.left;
             mouseY = touch.clientY - rect.top;
-        });
-
+        }, { passive: false });
         container.addEventListener('touchend', () => {
-            mouseX = -1000;
-            mouseY = -1000;
+            mouseX = -1000; mouseY = -1000;
             isHovering = false;
         });
 
-        // Metaball class for liquid effect with organic movement
+        // ---- Metaball physics (JS-side, passed as uniforms each frame) ----
+        const metaballs = [];
+        const MAX_METABALLS  = 22;
+        const METABALL_RADIUS = 52;
+        const METABALL_SPAWN_RATE = 4;
+        const DECAY_SPEED = 0.008;
+        let frameCount = 0;
+
         class Metaball {
-            constructor(x, y, radius) {
+            constructor(x, y) {
                 this.x = x;
                 this.y = y;
-                this.radius = radius;
+                this.radius   = METABALL_RADIUS;
                 this.strength = 1.0;
                 this.decayRate = DECAY_SPEED + Math.random() * 0.008;
-                // Add random velocity for organic wandering movement
                 const angle = Math.random() * Math.PI * 2;
                 const speed = 0.8 + Math.random() * 1.2;
                 this.vx = Math.cos(angle) * speed;
                 this.vy = Math.sin(angle) * speed;
-                // Add wobble parameters for organic pulsing
                 this.wobblePhase = Math.random() * Math.PI * 2;
                 this.wobbleSpeed = 0.05 + Math.random() * 0.08;
             }
-
             update() {
                 this.strength -= this.decayRate;
-
-                // Move organically - wandering motion
                 this.x += this.vx;
                 this.y += this.vy;
-
-                // Add slight random direction changes for more organic feel
                 this.vx += (Math.random() - 0.5) * 0.3;
                 this.vy += (Math.random() - 0.5) * 0.3;
-
-                // Dampen velocity slightly
                 this.vx *= 0.98;
                 this.vy *= 0.98;
-
-                // Update wobble phase
                 this.wobblePhase += this.wobbleSpeed;
-
-                // Radius shrinks with wobble for organic pulsing
                 const wobble = 1 + Math.sin(this.wobblePhase) * 0.15;
-                this.radius = METABALL_RADIUS * Math.pow(this.strength, 0.4) * wobble;
+                this.radius = METABALL_RADIUS * Math.pow(Math.max(0, this.strength), 0.4) * wobble;
             }
-
-            isDead() {
-                return this.strength <= 0;
-            }
-
-            // Calculate metaball field contribution at point (px, py)
-            fieldAt(px, py) {
-                const dx = px - this.x;
-                const dy = py - this.y;
-                const distSq = dx * dx + dy * dy;
-                if (distSq === 0) return this.strength * 10;
-                // Inverse square falloff creates liquid-like merging
-                return (this.radius * this.radius * this.strength) / distSq;
-            }
+            isDead() { return this.strength <= 0; }
         }
 
         function spawnMetaball() {
-            if (isHovering && mouseX >= 0 && mouseX < width && mouseY >= 0 && mouseY < height) {
-                // Check if mouse has moved enough to spawn new metaball
-                const dx = mouseX - lastMouseX;
-                const dy = mouseY - lastMouseY;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-
-                if (dist > 8 || metaballs.length === 0) {
-                    // Spawn metaball with slight random offset for organic placement
-                    const offsetX = (Math.random() - 0.5) * 20;
-                    const offsetY = (Math.random() - 0.5) * 20;
-                    const ball = new Metaball(mouseX + offsetX, mouseY + offsetY, METABALL_RADIUS);
-                    metaballs.push(ball);
-
-                    lastMouseX = mouseX;
-                    lastMouseY = mouseY;
-
-                    // Limit number of metaballs
-                    while (metaballs.length > MAX_METABALLS) {
-                        metaballs.shift();
-                    }
-                }
+            if (!isHovering || mouseX < 0 || mouseX >= width || mouseY < 0 || mouseY >= height) return;
+            const dx = mouseX - lastMouseX;
+            const dy = mouseY - lastMouseY;
+            if (Math.sqrt(dx*dx + dy*dy) > 8 || metaballs.length === 0) {
+                metaballs.push(new Metaball(
+                    mouseX + (Math.random() - 0.5) * 20,
+                    mouseY + (Math.random() - 0.5) * 20
+                ));
+                lastMouseX = mouseX;
+                lastMouseY = mouseY;
+                while (metaballs.length > MAX_METABALLS) metaballs.shift();
             }
         }
 
-        function updateMetaballs() {
-            // Update all metaballs
-            for (let i = metaballs.length - 1; i >= 0; i--) {
-                metaballs[i].update();
-                if (metaballs[i].isDead()) {
-                    metaballs.splice(i, 1);
-                }
-            }
-        }
+        // ---- Render ----
+        function render() {
+            if (!asciiTex || !portraitTex) return;
 
-        // Calculate combined metaball field at a point
-        function getFieldAt(px, py) {
-            let field = 0;
-            for (const ball of metaballs) {
-                field += ball.fieldAt(px, py);
-            }
-            return field;
-        }
-
-        function drawFrame() {
-            // Clear canvases
-            asciiCtx.clearRect(0, 0, width, height);
-            revealCtx.clearRect(0, 0, width, height);
-
-            // Draw portrait on reveal canvas (bottom layer)
-            revealCtx.drawImage(portraitImg, 0, 0, width, height);
-
-            // Draw ASCII art on ascii canvas (top layer)
-            asciiCtx.drawImage(asciiImg, 0, 0, width, height);
-
-            // Handle intro animation phases
+            // Intro alpha
+            let introAlpha = 0;
             if (introPhase === 'showing_portrait') {
-                // Make ASCII fully transparent to show portrait
-                asciiCtx.clearRect(0, 0, width, height);
-                return;
+                introAlpha = 0;
             } else if (introPhase === 'fading') {
-                // Gradually fade in ASCII art
                 introFadeProgress += INTRO_FADE_SPEED;
-                if (introFadeProgress >= 1) {
-                    introFadeProgress = 1;
-                    introPhase = 'complete';
-                }
-                // Apply global alpha to fade in ASCII
-                const imageData = asciiCtx.getImageData(0, 0, width, height);
-                const data = imageData.data;
-                const alpha = introFadeProgress * introFadeProgress * (3 - 2 * introFadeProgress); // smoothstep
-                for (let i = 3; i < data.length; i += 4) {
-                    data[i] = Math.floor(data[i] * alpha);
-                }
-                asciiCtx.putImageData(imageData, 0, 0);
-                return;
+                if (introFadeProgress >= 1) { introFadeProgress = 1; introPhase = 'complete'; }
+                const t = introFadeProgress;
+                introAlpha = t * t * (3 - 2 * t); // smoothstep
+            } else {
+                introAlpha = 1;
             }
 
-            // Normal mode - only process if there are metaballs
-            if (metaballs.length === 0) return;
+            gl.viewport(0, 0, width, height);
 
-            // Calculate field at lower resolution for performance
-            const fieldMap = new Float32Array(scaledWidth * scaledHeight);
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, asciiTex);
+            gl.activeTexture(gl.TEXTURE1);
+            gl.bindTexture(gl.TEXTURE_2D, portraitTex);
 
-            // Compute bounding box of active metaballs at scaled coordinates
-            const margin = METABALL_RADIUS * 2.5 / SCALE;
-            let minSX = scaledWidth, maxSX = 0, minSY = scaledHeight, maxSY = 0;
+            gl.uniform1f(uIntroAlphaLoc, introAlpha);
 
-            for (const ball of metaballs) {
-                const sx = ball.x / SCALE;
-                const sy = ball.y / SCALE;
-                minSX = Math.min(minSX, sx - margin);
-                maxSX = Math.max(maxSX, sx + margin);
-                minSY = Math.min(minSY, sy - margin);
-                maxSY = Math.max(maxSY, sy + margin);
-            }
-
-            minSX = Math.max(0, Math.floor(minSX));
-            maxSX = Math.min(scaledWidth, Math.ceil(maxSX));
-            minSY = Math.max(0, Math.floor(minSY));
-            maxSY = Math.min(scaledHeight, Math.ceil(maxSY));
-
-            // Compute field at scaled resolution
-            for (let sy = minSY; sy < maxSY; sy++) {
-                for (let sx = minSX; sx < maxSX; sx++) {
-                    const px = sx * SCALE;
-                    const py = sy * SCALE;
-                    fieldMap[sy * scaledWidth + sx] = getFieldAt(px, py);
+            // Upload all 22 metaball slots; empty slots get radius=0, strength=0
+            for (let i = 0; i < MAX_METABALLS; i++) {
+                if (i < metaballs.length) {
+                    const b = metaballs[i];
+                    // Flip Y so JS screen coords map to WebGL's bottom-left origin
+                    gl.uniform2f(uBallPosLoc[i],      b.x, height - b.y);
+                    gl.uniform1f(uBallRadiusLoc[i],   b.radius);
+                    gl.uniform1f(uBallStrengthLoc[i], b.strength);
+                } else {
+                    gl.uniform2f(uBallPosLoc[i],      0, 0);
+                    gl.uniform1f(uBallRadiusLoc[i],   0);
+                    gl.uniform1f(uBallStrengthLoc[i], 0);
                 }
             }
 
-            // Get the ASCII image data
-            const imageData = asciiCtx.getImageData(0, 0, width, height);
-            const data = imageData.data;
-
-            // Apply reveal with bilinear interpolation for smooth edges
-            const minX = minSX * SCALE;
-            const maxX = Math.min(width, maxSX * SCALE);
-            const minY = minSY * SCALE;
-            const maxY = Math.min(height, maxSY * SCALE);
-
-            for (let y = minY; y < maxY; y++) {
-                for (let x = minX; x < maxX; x++) {
-                    // Bilinear interpolation from scaled field map
-                    const fx = x / SCALE;
-                    const fy = y / SCALE;
-                    const x0 = Math.floor(fx);
-                    const y0 = Math.floor(fy);
-                    const x1 = Math.min(x0 + 1, scaledWidth - 1);
-                    const y1 = Math.min(y0 + 1, scaledHeight - 1);
-                    const dx = fx - x0;
-                    const dy = fy - y0;
-
-                    const f00 = fieldMap[y0 * scaledWidth + x0];
-                    const f10 = fieldMap[y0 * scaledWidth + x1];
-                    const f01 = fieldMap[y1 * scaledWidth + x0];
-                    const f11 = fieldMap[y1 * scaledWidth + x1];
-
-                    const field = f00 * (1 - dx) * (1 - dy) +
-                                  f10 * dx * (1 - dy) +
-                                  f01 * (1 - dx) * dy +
-                                  f11 * dx * dy;
-
-                    if (field > THRESHOLD * 0.2) {
-                        const pixelIdx = (y * width + x) * 4;
-                        // Smooth transition using smoothstep
-                        let revealAmount = (field - THRESHOLD * 0.2) / (THRESHOLD * 1.8);
-                        revealAmount = Math.min(1, Math.max(0, revealAmount));
-                        // Double smoothstep for extra-smooth liquid edges
-                        revealAmount = revealAmount * revealAmount * (3 - 2 * revealAmount);
-                        revealAmount = revealAmount * revealAmount * (3 - 2 * revealAmount);
-                        // Make ASCII pixel transparent to reveal portrait underneath
-                        data[pixelIdx + 3] = Math.floor(data[pixelIdx + 3] * (1 - revealAmount));
-                    }
-                }
-            }
-
-            asciiCtx.putImageData(imageData, 0, 0);
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
         }
 
         function animate() {
             frameCount++;
-
-            // Spawn new metaballs periodically
-            if (frameCount % METABALL_SPAWN_RATE === 0) {
-                spawnMetaball();
+            if (frameCount % METABALL_SPAWN_RATE === 0) spawnMetaball();
+            for (let i = metaballs.length - 1; i >= 0; i--) {
+                metaballs[i].update();
+                if (metaballs[i].isDead()) metaballs.splice(i, 1);
             }
-
-            updateMetaballs();
-            drawFrame();
+            render();
             requestAnimationFrame(animate);
         }
 
-        // Handle resize
+        // Reload on resize (same as before)
         window.addEventListener('resize', () => {
-            const newWidth = container.clientWidth;
-            const newHeight = container.clientHeight;
-
-            if (newWidth !== width || newHeight !== height) {
+            if (container.clientWidth !== width || container.clientHeight !== height) {
                 location.reload();
             }
         });
