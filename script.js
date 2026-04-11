@@ -191,18 +191,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ========================================
-    // Interactive Portrait with WebGL Liquid Reveal Effect
+    // Interactive Portrait with Canvas2D Liquid Reveal Effect
     // ========================================
+    // Approach: two-layer compositing with globalCompositeOperation = 'destination-out'.
+    // The ASCII art layer is drawn on an offscreen canvas; radial-gradient circles are
+    // then punched through it with 'destination-out', revealing the portrait underneath.
+    // No getImageData/putImageData → no CPU↔GPU round-trips → smooth at any framerate.
 
     const portraitContainer = document.getElementById('interactivePortrait');
     const portraitImage = document.getElementById('portraitImage');
     const webglCanvas = document.getElementById('webglCanvas');
 
     if (portraitContainer && portraitImage && webglCanvas) {
-        initWebGLPortrait();
+        initPortrait();
     }
 
-    function initWebGLPortrait() {
+    function initPortrait() {
         const container = portraitContainer;
         const width = container.clientWidth;
         const height = container.clientHeight;
@@ -210,162 +214,51 @@ document.addEventListener('DOMContentLoaded', function() {
         webglCanvas.width = width;
         webglCanvas.height = height;
 
-        const gl = webglCanvas.getContext('webgl') || webglCanvas.getContext('experimental-webgl');
-        if (!gl) {
-            // WebGL not available — fall back to showing the portrait photo
+        const ctx = webglCanvas.getContext('2d');
+        if (!ctx) {
             portraitImage.style.display = 'block';
             portraitImage.style.zIndex = '3';
             return;
         }
 
-        portraitImage.style.display = 'none';
-
-        // ---- Shaders ----
-        const vsSource = `
-            attribute vec2 aPosition;
-            void main() {
-                gl_Position = vec4(aPosition, 0.0, 1.0);
-            }
-        `;
-
-        // Fragment shader: GPU metaball field + texture blend.
-        // All 22 uniform slots are always filled; inactive balls have radius/strength = 0.
-        const fsSource = `
-            precision mediump float;
-
-            uniform sampler2D uAsciiTex;
-            uniform sampler2D uPortraitTex;
-            uniform vec2 uResolution;
-            uniform float uIntroAlpha;
-
-            uniform vec2  uBallPos[22];
-            uniform float uBallRadius[22];
-            uniform float uBallStrength[22];
-
-            void main() {
-                vec2 fragCoord = gl_FragCoord.xy;
-                vec2 uv     = fragCoord / uResolution;
-                vec2 uvTex  = vec2(uv.x, 1.0 - uv.y); // flip Y: WebGL origin is bottom-left
-
-                vec4 ascii   = texture2D(uAsciiTex,    uvTex);
-                vec4 portrait = texture2D(uPortraitTex, uvTex);
-
-                // Accumulate inverse-square metaball field
-                float field = 0.0;
-                for (int i = 0; i < 22; i++) {
-                    vec2  diff   = fragCoord - uBallPos[i];
-                    float distSq = max(dot(diff, diff), 1.0);
-                    float r      = uBallRadius[i];
-                    field += (r * r * uBallStrength[i]) / distSq;
-                }
-
-                // Smooth liquid edge — double smoothstep (same thresholds as before)
-                float t = clamp((field - 0.16) / 1.44, 0.0, 1.0);
-                t = t * t * (3.0 - 2.0 * t);
-                t = t * t * (3.0 - 2.0 * t);
-                float revealAmount = t;
-
-                // ASCII fades in during intro, disappears inside metaball blobs
-                float asciiAlpha = ascii.a * uIntroAlpha * (1.0 - revealAmount);
-
-                // Composite: ASCII layer over portrait
-                vec3 color = mix(portrait.rgb, ascii.rgb, asciiAlpha);
-                gl_FragColor = vec4(color, 1.0);
-            }
-        `;
-
-        function compileShader(type, source) {
-            const shader = gl.createShader(type);
-            gl.shaderSource(shader, source);
-            gl.compileShader(shader);
-            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-                console.error('Shader error:', gl.getShaderInfoLog(shader));
-                gl.deleteShader(shader);
-                return null;
-            }
-            return shader;
-        }
-
-        const vs = compileShader(gl.VERTEX_SHADER, vsSource);
-        const fs = compileShader(gl.FRAGMENT_SHADER, fsSource);
-        if (!vs || !fs) return;
-
-        const program = gl.createProgram();
-        gl.attachShader(program, vs);
-        gl.attachShader(program, fs);
-        gl.linkProgram(program);
-        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-            console.error('Program link error:', gl.getProgramInfoLog(program));
-            return;
-        }
-        gl.useProgram(program);
-
-        // Full-screen quad (covers clip space -1..1)
-        const quadBuf = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
-        const posLoc = gl.getAttribLocation(program, 'aPosition');
-        gl.enableVertexAttribArray(posLoc);
-        gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
-
-        // Uniform locations
-        const uResolutionLoc   = gl.getUniformLocation(program, 'uResolution');
-        const uIntroAlphaLoc   = gl.getUniformLocation(program, 'uIntroAlpha');
-        const uAsciiTexLoc     = gl.getUniformLocation(program, 'uAsciiTex');
-        const uPortraitTexLoc  = gl.getUniformLocation(program, 'uPortraitTex');
-
-        const uBallPosLoc      = [];
-        const uBallRadiusLoc   = [];
-        const uBallStrengthLoc = [];
-        for (let i = 0; i < 22; i++) {
-            uBallPosLoc.push(gl.getUniformLocation(program,      `uBallPos[${i}]`));
-            uBallRadiusLoc.push(gl.getUniformLocation(program,   `uBallRadius[${i}]`));
-            uBallStrengthLoc.push(gl.getUniformLocation(program, `uBallStrength[${i}]`));
-        }
-
-        gl.uniform2f(uResolutionLoc, width, height);
-        gl.uniform1i(uAsciiTexLoc, 0);
-        gl.uniform1i(uPortraitTexLoc, 1);
-
-        // ---- Texture helper ----
-        function uploadTexture(img) {
-            const tex = gl.createTexture();
-            gl.bindTexture(gl.TEXTURE_2D, tex);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-            return tex;
-        }
+        // Offscreen canvas holds the ASCII layer + composited holes each frame
+        const offscreen = document.createElement('canvas');
+        offscreen.width = width;
+        offscreen.height = height;
+        const offCtx = offscreen.getContext('2d');
 
         // ---- Load images ----
-        let asciiTex = null, portraitTex = null, imagesLoaded = 0;
-
+        let imagesLoaded = 0;
         let introPhase = 'showing_portrait';
         let introFadeProgress = 0;
         const INTRO_FADE_SPEED = 0.02;
 
+        const asciiImg   = new Image();
+        const portraitImg = new Image();
+
         function onImageLoad() {
             imagesLoaded++;
             if (imagesLoaded === 2) {
-                asciiTex   = uploadTexture(asciiImg);
-                portraitTex = uploadTexture(portraitImg);
+                // Hide the static img element — canvas renders everything from here
+                portraitImage.style.display = 'none';
 
                 introPhase = 'showing_portrait';
                 introFadeProgress = 0;
                 setTimeout(() => { introPhase = 'fading'; }, 1000);
-
                 requestAnimationFrame(animate);
             }
         }
 
-        const asciiImg   = new Image();
-        const portraitImg = new Image();
-        asciiImg.crossOrigin   = 'anonymous';
-        portraitImg.crossOrigin = 'anonymous';
+        function onImageError() {
+            // If either image fails, fall back to the portrait element
+            portraitImage.style.display = 'block';
+            portraitImage.style.zIndex = '3';
+        }
+
         asciiImg.onload   = onImageLoad;
         portraitImg.onload = onImageLoad;
+        asciiImg.onerror   = onImageError;
+        portraitImg.onerror = onImageError;
         asciiImg.src   = 'images/ascii-art.png';
         portraitImg.src = 'images/profile.jpg';
 
@@ -404,7 +297,7 @@ document.addEventListener('DOMContentLoaded', function() {
             isHovering = false;
         });
 
-        // ---- Metaball physics (JS-side, passed as uniforms each frame) ----
+        // ---- Metaball physics ----
         const metaballs = [];
         const MAX_METABALLS  = 22;
         const METABALL_RADIUS = 52;
@@ -416,7 +309,6 @@ document.addEventListener('DOMContentLoaded', function() {
             constructor(x, y) {
                 this.x = x;
                 this.y = y;
-                this.radius   = METABALL_RADIUS;
                 this.strength = 1.0;
                 this.decayRate = DECAY_SPEED + Math.random() * 0.008;
                 const angle = Math.random() * Math.PI * 2;
@@ -425,6 +317,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.vy = Math.sin(angle) * speed;
                 this.wobblePhase = Math.random() * Math.PI * 2;
                 this.wobbleSpeed = 0.05 + Math.random() * 0.08;
+                this.radius = METABALL_RADIUS;
             }
             update() {
                 this.strength -= this.decayRate;
@@ -457,10 +350,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // ---- Render ----
-        function render() {
-            if (!asciiTex || !portraitTex) return;
+        function drawFrame() {
+            // Layer 1: portrait as the base
+            ctx.drawImage(portraitImg, 0, 0, width, height);
 
-            // Intro alpha
+            // Compute intro alpha
             let introAlpha = 0;
             if (introPhase === 'showing_portrait') {
                 introAlpha = 0;
@@ -473,31 +367,35 @@ document.addEventListener('DOMContentLoaded', function() {
                 introAlpha = 1;
             }
 
-            gl.viewport(0, 0, width, height);
+            // Layer 2: ASCII art on offscreen canvas, with metaball holes punched through
+            offCtx.clearRect(0, 0, width, height);
+            offCtx.globalAlpha = introAlpha;
+            offCtx.drawImage(asciiImg, 0, 0, width, height);
+            offCtx.globalAlpha = 1;
 
-            gl.activeTexture(gl.TEXTURE0);
-            gl.bindTexture(gl.TEXTURE_2D, asciiTex);
-            gl.activeTexture(gl.TEXTURE1);
-            gl.bindTexture(gl.TEXTURE_2D, portraitTex);
-
-            gl.uniform1f(uIntroAlphaLoc, introAlpha);
-
-            // Upload all 22 metaball slots; empty slots get radius=0, strength=0
-            for (let i = 0; i < MAX_METABALLS; i++) {
-                if (i < metaballs.length) {
-                    const b = metaballs[i];
-                    // Flip Y so JS screen coords map to WebGL's bottom-left origin
-                    gl.uniform2f(uBallPosLoc[i],      b.x, height - b.y);
-                    gl.uniform1f(uBallRadiusLoc[i],   b.radius);
-                    gl.uniform1f(uBallStrengthLoc[i], b.strength);
-                } else {
-                    gl.uniform2f(uBallPosLoc[i],      0, 0);
-                    gl.uniform1f(uBallRadiusLoc[i],   0);
-                    gl.uniform1f(uBallStrengthLoc[i], 0);
+            if (metaballs.length > 0) {
+                // destination-out: draws erase shapes that cut holes in the ASCII layer,
+                // revealing the portrait drawn underneath on the main canvas.
+                offCtx.globalCompositeOperation = 'destination-out';
+                for (const ball of metaballs) {
+                    // Gradient radius ~2.5× the physics radius matches the original
+                    // inverse-square field reveal extent (~130px at full strength)
+                    const r = ball.radius * 2.5;
+                    const s = Math.max(0, ball.strength);
+                    const grad = offCtx.createRadialGradient(ball.x, ball.y, 0, ball.x, ball.y, r);
+                    grad.addColorStop(0,   `rgba(0,0,0,${s.toFixed(3)})`);
+                    grad.addColorStop(0.45, `rgba(0,0,0,${(s * 0.75).toFixed(3)})`);
+                    grad.addColorStop(1,   'rgba(0,0,0,0)');
+                    offCtx.fillStyle = grad;
+                    offCtx.beginPath();
+                    offCtx.arc(ball.x, ball.y, r, 0, Math.PI * 2);
+                    offCtx.fill();
                 }
+                offCtx.globalCompositeOperation = 'source-over';
             }
 
-            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+            // Composite ASCII+holes on top of the portrait
+            ctx.drawImage(offscreen, 0, 0);
         }
 
         function animate() {
@@ -507,7 +405,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 metaballs[i].update();
                 if (metaballs[i].isDead()) metaballs.splice(i, 1);
             }
-            render();
+            drawFrame();
             requestAnimationFrame(animate);
         }
 
