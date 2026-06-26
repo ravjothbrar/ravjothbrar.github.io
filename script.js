@@ -259,8 +259,8 @@ document.addEventListener('DOMContentLoaded', function() {
         portraitImg.onload = onImageLoad;
         asciiImg.onerror   = onImageError;
         portraitImg.onerror = onImageError;
-        asciiImg.src   = 'images/ascii-art.png';
-        portraitImg.src = 'images/profile.jpg';
+        asciiImg.src   = 'images/new-ascii-art.png';
+        portraitImg.src = 'images/new-profile.png';
 
         // ---- Mouse / touch tracking ----
         let mouseX = -1000, mouseY = -1000;
