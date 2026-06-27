@@ -16,6 +16,20 @@
     <!-- Scroll Progress Bar -->
     <div class="scroll-progress" id="scrollProgress"></div>
 
+    <!-- Dark / Light Mode Toggle -->
+    <button class="theme-toggle" id="themeToggle" title="Toggle dark/light mode" aria-label="Toggle dark/light mode">
+        <svg class="theme-icon theme-icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <svg class="theme-icon theme-icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+    </button>
+
     <!-- Corner Decorations -->
     <div class="corner corner-tl"></div>
     <div class="corner corner-tr"></div>
@@ -45,7 +59,7 @@
                 <div class="hero-left">
                     <!-- Hero Social Links -->
                     <div class="hero-social-links">
-                        <a href="https://www.linkedin.com/in/ravjoth-brar-ba1890322/" class="hero-social-link" target="_blank" title="LinkedIn">
+                        <a href="https://www.linkedin.com/in/ravjothbrar/" class="hero-social-link" target="_blank" title="LinkedIn">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                             </svg>
@@ -106,6 +120,11 @@
                 <p><span class="prompt">>></span> I'm Ravjoth Brar - a passionate student AI researcher. My work spans from research and ethics to real-world applications of AI.</p>
                 <p><span class="prompt">>></span> My key interest is making AI more interpretable, ethical, and accessible - my work has spanned from more technical pieces like fine-tuning language models and developing bespoke AI systems to more ethical and philosophical topics, such as exploring how Sikhism can be used as a framework for AI regulation (pending peer-review).</p>
                 <p><span class="prompt">>></span> Willing to learn from everyone - I'm actively seeking internships, placements, and research opportunities where I can contribute technical depth, creative problem-solving, and a fresh perspective on AI's societal impact. Let's collaborate on building the future of responsible AI.</p>
+                <div class="about-quote">
+                    <div class="about-quote-latin">Per aspera ad astra</div>
+                    <div class="about-quote-attribution">~ Seneca</div>
+                    <div class="about-quote-translation">Through hardship to the stars</div>
+                </div>
             </div>
         </section>
 
@@ -116,7 +135,7 @@
             </div>
             <div class="section-content terminal-box">
                 <div class="links-grid social-links">
-                    <a href="https://www.linkedin.com/in/ravjoth-brar-ba1890322/" class="social-link" target="_blank" title="LinkedIn">
+                    <a href="https://www.linkedin.com/in/ravjothbrar/" class="social-link" target="_blank" title="LinkedIn">
                         <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                         </svg>
@@ -129,16 +148,10 @@
                         <span class="social-label">GitHub</span>
                     </a>
                     <a href="https://medium.com/@ravjoth.brar" class="social-link" target="_blank" title="Medium">
-                        <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1043.63 592.71" fill="currentColor">
-                            <path d="M588.67 296.36c0 163.67-131.78 296.35-294.33 296.35S0 460 0 296.36 131.78 0 294.34 0s294.33 132.69 294.33 296.36M911.56 296.36c0 154.06-65.89 279-147.17 279s-147.17-124.94-147.17-279 65.88-279 147.16-279 147.17 124.9 147.17 279M1043.63 296.36c0 138-23.17 249.94-51.76 249.94s-51.75-111.91-51.75-249.94 23.17-249.94 51.75-249.94 51.76 111.9 51.76 249.94"/>
+                        <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M13.54 12a6.8 6.8 0 0 1-6.77 6.82A6.8 6.8 0 0 1 0 12a6.8 6.8 0 0 1 6.77-6.82A6.8 6.8 0 0 1 13.54 12zm7.42 0c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"/>
                         </svg>
                         <span class="social-label">Medium</span>
-                    </a>
-                    <a href="https://www.youtube.com/@ravinai13" class="social-link" target="_blank" title="YouTube">
-                        <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                        </svg>
-                        <span class="social-label">YouTube</span>
                     </a>
                 </div>
             </div>
@@ -186,27 +199,15 @@
 
                     <div class="card-item card-gradient-red">
                         <div class="card-header">
-                            <div class="card-title">> Board Advisor</div>
+                            <div class="card-title">> Founding Board Advisor</div>
                             <div class="card-meta">
                                 <span class="card-type">Part-time</span>
-                                <span class="card-date">Ongoing</span>
+                                <span class="card-date">2 years+ · Ongoing</span>
                             </div>
                         </div>
                         <a href="https://www.actionbreakssilence.org" target="_blank" class="card-company-link">Action Breaks Silence</a>
                         <p class="card-org-description">A non-profit organisation dedicated to eliminating violence against women and girls globally</p>
                         <p class="card-description">Led the Communications module for an ongoing charity initiative across continents</p>
-                    </div>
-
-                    <div class="card-item card-gradient-green">
-                        <div class="card-header">
-                            <div class="card-title">> Assisting Tennis Coach</div>
-                            <div class="card-meta">
-                                <span class="card-type">Part-time</span>
-                                <span class="card-date">Ongoing</span>
-                            </div>
-                        </div>
-                        <a href="https://clubspark.lta.org.uk/TotteridgeTennisClub" target="_blank" class="card-company-link">Totteridge Tennis Club</a>
-                        <p class="card-description">Volunteered weekly for 3 years as a tennis coach</p>
                     </div>
 
                     <div class="card-item card-gradient-yellow">
@@ -242,6 +243,18 @@
                             <li>Contributed to ENTERPRISE 100 application, documenting privacy-first AI system that analyses data without storing sensitive information centrally</li>
                         </ul>
                     </div>
+
+                    <div class="card-item card-gradient-green">
+                        <div class="card-header">
+                            <div class="card-title">> Assisting Tennis Coach</div>
+                            <div class="card-meta">
+                                <span class="card-type">Part-time · 3 years</span>
+                                <span class="card-date">Jan 2023 – Jan 2026</span>
+                            </div>
+                        </div>
+                        <a href="https://clubspark.lta.org.uk/TotteridgeTennisClub" target="_blank" class="card-company-link">Totteridge Tennis Club</a>
+                        <p class="card-description">Volunteered weekly for 3 years as a tennis coach</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -253,17 +266,33 @@
             </div>
             <div class="section-content">
                 <div class="cards-grid">
-                    <!-- LEFT COLUMN: Items 1-5 (alternating by date: positions 1,3,5,7,9) -->
-                    <div class="card-item card-gradient-red">
+                    <div class="card-item card-gradient-purple">
                         <div class="card-header">
-                            <div class="card-title">> Making Pain Quantifiable</div>
+                            <div class="card-title">> Ode 2 Socrates</div>
                             <div class="card-meta">
                                 <span class="card-type">Personal</span>
-                                <span class="card-date">Ongoing</span>
+                                <span class="card-date">March 2027</span>
                             </div>
                         </div>
-                        <p class="card-description">Developing a novel methodology to make pain quantifiable and objective</p>
-                        <p class="card-description">Encoding data in high-dimensional latent space and employing Topological Data Analysis (TDA) on manifolds</p>
+                        <p class="card-description">Ode 2 Socrates is a browser-based reflection tool</p>
+                        <p class="card-description">Built to help you look inward, question your assumptions, and form arguments with AI asking Socratic questions to challenge your thinking and interrogate your underlying assumptions.</p>
+                        <p class="card-description">It maps your thinking as a spatial graph, revealing connections and blind spots you didn't know were there.</p>
+                        <p class="card-description"><em>"A space to find out what you think, how you think, and who you are."</em></p>
+                        <a href="https://ravjothbrar.com/Ode2Socrates/" target="_blank" class="card-link-btn">Click here</a>
+                    </div>
+
+                    <div class="card-item card-gradient-black">
+                        <div class="card-header">
+                            <div class="card-title">> Towards Neural Interpretability: Proposing Transparent AI Frameworks to Predict, Localise, and Evaluate Epileptic Seizures</div>
+                            <div class="card-meta">
+                                <span class="card-type">School (Extended Research Project)</span>
+                                <span class="card-date">June 2026</span>
+                            </div>
+                        </div>
+                        <p class="card-description">The brain is the most complex object in the known universe - it's fundamentally a biological supercomputer - unravelling the brain's complexity represents an elusive challenge for humanity</p>
+                        <p class="card-description">Researching machine learning frameworks to model the brain, paving the path for neural interpretability</p>
+                        <p class="card-description">Developing and proposing novel applications of AI to not only predict epileptic seizures, but enable us to achieve transparent insights into how epileptic seizures are caused and how they propagate through the brain</p>
+                        <a href="https://zenodo.org/records/20798155" target="_blank" class="card-link-btn">Click here</a>
                     </div>
 
                     <div class="card-item card-gradient-teal">
@@ -281,6 +310,17 @@
                         <a href="https://ravjothbrar.com/locatingEpilepticSeizures/" target="_blank" class="card-link-btn">Click here</a>
                     </div>
 
+                    <div class="card-item card-gradient-purple">
+                        <div class="card-header">
+                            <div class="card-title">> Building RIMICO - A Collection of Artisan Tools</div>
+                            <div class="card-meta">
+                                <span class="card-type">Personal</span>
+                                <span class="card-date">March 2026</span>
+                            </div>
+                        </div>
+                        <a href="https://ravjothbrar.com/RIMICO/" target="_blank" class="card-link-btn">Click here</a>
+                    </div>
+
                     <div class="card-item card-gradient-lightblue">
                         <div class="card-header">
                             <div class="card-title">> Master the Member States - A Model UN Study Tool</div>
@@ -292,72 +332,6 @@
                         <p class="card-description">Engineered an interactive Model UN study quiz to master flag knowledge and the official names of UN Member States (not 'Bolivia', but 'Plurinational State of Bolivia')</p>
                         <p class="card-description">Ideation -> Deployment in 2 days</p>
                         <a href="https://ravjothbrar.com/Master-the-Member-States/" target="_blank" class="card-link-btn">Click here</a>
-                    </div>
-
-                    <div class="card-item card-gradient-orange">
-                        <div class="card-header">
-                            <div class="card-title">> AI-powered Web App for Teachers</div>
-                            <div class="card-meta">
-                                <span class="card-type">Personal</span>
-                                <span class="card-date">February 2025</span>
-                            </div>
-                        </div>
-                        <p class="card-description">Web app which teachers at my school used to create subject-specific content such as worksheets and practice questions</p>
-                        <p class="card-description">Utilised the Google AI Studio API to provide responses</p>
-                        <p class="card-description">Constructed 5 prompt engineering courses, guiding students on how to effectively prompt AI</p>
-                    </div>
-
-                    <div class="card-item card-gradient-yellow">
-                        <div class="card-header">
-                            <div class="card-title">> How will Bias in AI affect society?</div>
-                            <div class="card-meta">
-                                <span class="card-type">Essay</span>
-                                <span class="card-date">January 2023</span>
-                            </div>
-                        </div>
-                        <p class="card-description">3,500 word essay explaining how bias in AI arises and deliberating its potential impact on society in the next few years, and in the coming decades</p>
-                        <p class="card-description">Awarded a Distinction in my internal school competition</p>
-                        <a href="documents/bias-in-ai-essay.pdf" target="_blank" class="card-link-btn">Click here</a>
-                    </div>
-
-                    <!-- RIGHT COLUMN: Items 6-9 (alternating by date: positions 2,4,6,8) -->
-                    <div class="card-item card-gradient-black">
-                        <div class="card-header">
-                            <div class="card-title">> Towards Neural Interpretability: Proposing Transparent AI Frameworks to Predict, Localise, and Evaluate Epileptic Seizures </div>
-                            <div class="card-meta">
-                                <span class="card-type">School (Extended Research Project)</span>
-                                <span class="card-date">Ongoing</span>
-                            </div>
-                        </div>
-                        <p class="card-description">The brain is the most complex object in the known universe - it's fundamentally a biological supercomputer - unravelling the brain's complexity represents an elusive challenge for humanity</p>
-                        <p class="card-description">Researching machine learning frameworks to model the brain, paving the path for neural interpretability</p>
-                        <p class="card-description">Developing and proposing novel applications of AI to not only predict epileptic seizures, but enable us to achieve transparent insights into how epileptic seizures are caused and how they propagate through the brain</p>
-                    </div>
-
-                    <div class="card-item card-gradient-purple">
-                        <div class="card-header">
-                            <div class="card-title">> Ode 2 Socrates</div>
-                            <div class="card-meta">
-                                <span class="card-type">Personal</span>
-                                <span class="card-date">Ongoing</span>
-                            </div>
-                        </div>
-                        <p class="card-description">Ode 2 Socrates is a browser-based reflection tool</p>
-                        <p class="card-description">Built to help you look inward, question your assumptions, and form arguments with AI asking Socratic questions to challenge your thinking and interrogate your underlying assumptions.</p>
-                        <p class="card-description">It maps your thinking as a spatial graph, revealing connections and blind spots you didn't know were there.</p>
-                        <p class="card-description"><em>"A space to find out what you think, how you think, and who you are."</em></p>
-                        <a href="https://ravjothbrar.com/Ode2Socrates/" target="_blank" class="card-link-btn">Click here</a>
-                    </div>
-
-                    <div class="card-item card-gradient-purple">
-                        <div class="card-header">
-                            <div class="card-title">> Building RIMICO - A Collection of Artisan Tools</div>
-                            <div class="card-meta">
-                                <span class="card-type">Personal</span>
-                                <span class="card-date">March 2026</span>
-                            </div>
-                        </div>
-                        <a href="https://ravjothbrar.com/RIMICO/" target="_blank" class="card-link-btn">Click here</a>
                     </div>
 
                     <div class="card-item card-gradient-green">
@@ -374,6 +348,19 @@
                         <p class="card-description">Implemented training checkpoints and mixed-precision training</p>
                     </div>
 
+                    <div class="card-item card-gradient-orange">
+                        <div class="card-header">
+                            <div class="card-title">> AI-powered Web App for Teachers</div>
+                            <div class="card-meta">
+                                <span class="card-type">Personal</span>
+                                <span class="card-date">February 2025</span>
+                            </div>
+                        </div>
+                        <p class="card-description">Web app which teachers at my school used to create subject-specific content such as worksheets and practice questions</p>
+                        <p class="card-description">Utilised the Google AI Studio API to provide responses</p>
+                        <p class="card-description">Constructed 5 prompt engineering courses, guiding students on how to effectively prompt AI</p>
+                    </div>
+
                     <div class="card-item card-gradient-blue">
                         <div class="card-header">
                             <div class="card-title">> Möbius Strip Topology in Neural Networks</div>
@@ -383,6 +370,19 @@
                             </div>
                         </div>
                         <p class="card-description">Designed and implemented a novel neural network architecture incorporating Möbius strip topology to enhance feature learning and clustering</p>
+                    </div>
+
+                    <div class="card-item card-gradient-yellow">
+                        <div class="card-header">
+                            <div class="card-title">> How will Bias in AI affect society?</div>
+                            <div class="card-meta">
+                                <span class="card-type">Essay</span>
+                                <span class="card-date">January 2023</span>
+                            </div>
+                        </div>
+                        <p class="card-description">3,500 word essay explaining how bias in AI arises and deliberating its potential impact on society in the next few years, and in the coming decades</p>
+                        <p class="card-description">Awarded a Distinction in my internal school competition</p>
+                        <a href="documents/bias-in-ai-essay.pdf" target="_blank" class="card-link-btn">Click here</a>
                     </div>
 
                 </div>
