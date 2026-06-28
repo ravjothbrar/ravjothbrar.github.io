@@ -1026,6 +1026,12 @@ a.value:hover {
 }
 
 @media (max-width: 768px) {
+    .theme-toggle {
+        top: auto;
+        bottom: 20px;
+        right: 20px;
+    }
+
     .cards-grid {
         flex-direction: column;
     }
