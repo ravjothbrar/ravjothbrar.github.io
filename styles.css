@@ -1752,6 +1752,41 @@ a.value:hover {
     flex-shrink: 0;
 }
 
+/* Orbit Canvas Section */
+.orbit-wrap {
+    position: relative;
+    width: 100%;
+    height: 380px;
+    margin: 20px 0 10px;
+    overflow: hidden;
+}
+
+.orbit-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.orbit-label {
+    position: absolute;
+    top: 16px;
+    left: 0;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--muted-text);
+    opacity: 0.55;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@media (max-width: 768px) {
+    .orbit-wrap { height: 280px; }
+}
+
+@media (max-width: 480px) {
+    .orbit-wrap { height: 220px; }
+}
+
 /* Contact Section */
 .contact-info {
     display: flex;
@@ -1967,7 +2002,7 @@ a.value:hover {
 
 @media (max-width: 480px) {
     .ascii-art pre {
-        font-size: 3.5px;
+        font-size: 5.25px;
         letter-spacing: -0.5px;
         line-height: 1.0;
     }
