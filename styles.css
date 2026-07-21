@@ -498,15 +498,37 @@ body {
     padding: 15px 0;
     border-top: 2px solid var(--accent-color);
     border-bottom: 2px solid var(--accent-color);
-    display: inline-block;
+    display: block;
     width: 100%;
     max-width: 400px;
     margin-left: auto;
     margin-right: auto;
-    display: block;
+    /* Shimmer */
+    background: linear-gradient(
+        90deg,
+        var(--text-color) 0%,
+        var(--text-color) 30%,
+        var(--accent-light) 45%,
+        #ffffff 50%,
+        var(--accent-light) 55%,
+        var(--text-color) 70%,
+        var(--text-color) 100%
+    );
+    background-size: 250% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer-sweep 4s linear infinite;
 }
 
+@keyframes shimmer-sweep {
+    0%   { background-position: 200% center; }
+    100% { background-position: -50% center; }
+}
+
+/* Keep brackets visible in accent color — they're inside span so override */
 .bracket {
+    -webkit-text-fill-color: var(--accent-color);
     color: var(--accent-color);
 }
 
@@ -1663,6 +1685,15 @@ a.value:hover {
 @keyframes blink {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }
+}
+
+/* Inline cursor shown while typewriter is running */
+.typing-active::after {
+    content: '▋';
+    color: var(--accent-color);
+    animation: blink 0.7s step-end infinite;
+    margin-left: 1px;
+    font-size: 0.9em;
 }
 
 /* Footer */

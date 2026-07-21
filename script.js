@@ -146,6 +146,58 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(box);
     });
 
+    // ---- Typewriter effect for terminal box paragraphs ----
+    // Only runs once per element when it first enters the viewport.
+    // Scope typing to the About Me section only — where narrative terminal text lives
+    const typableParas = document.querySelectorAll('#about .terminal-box > p');
+
+    function typewriterReveal(el, onDone) {
+        // Find the trailing text node after any child spans (e.g. <span class="prompt">>></span>)
+        let textNode = null;
+        for (let i = el.childNodes.length - 1; i >= 0; i--) {
+            if (el.childNodes[i].nodeType === Node.TEXT_NODE && el.childNodes[i].textContent.trim()) {
+                textNode = el.childNodes[i];
+                break;
+            }
+        }
+        if (!textNode) { if (onDone) onDone(); return; }
+        const original = textNode.textContent;
+        textNode.textContent = '';
+        el.classList.add('typing-active');
+        let i = 0;
+        const speed = 14;
+        function tick() {
+            if (i < original.length) {
+                textNode.textContent += original[i++];
+                setTimeout(tick, speed);
+            } else {
+                el.classList.remove('typing-active');
+                if (onDone) onDone();
+            }
+        }
+        tick();
+    }
+
+    // Chain paragraphs: observe only the first; each triggers the next on completion
+    let typeChainIndex = 0;
+    const parasArray = Array.from(typableParas);
+
+    function startNextPara() {
+        if (typeChainIndex >= parasArray.length) return;
+        const el = parasArray[typeChainIndex++];
+        typewriterReveal(el, startNextPara);
+    }
+
+    if (parasArray.length > 0) {
+        const typeObs = new IntersectionObserver(function(entries) {
+            if (entries[0].isIntersecting) {
+                typeObs.disconnect();
+                startNextPara();
+            }
+        }, { threshold: 0.2, rootMargin: '0px 0px -30px 0px' });
+        typeObs.observe(parasArray[0]);
+    }
+
     // Animate clickable project links when scrolling into view
     const linkItems = document.querySelectorAll('.role-item.has-link');
     const linkObserverOptions = {
