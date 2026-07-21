@@ -1152,6 +1152,14 @@ a.value:hover {
     text-decoration: underline;
 }
 
+.card-company-text {
+    color: var(--accent-color);
+    font-weight: bold;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 8px;
+}
+
 .card-description {
     color: var(--muted-text);
     font-size: 14px;
