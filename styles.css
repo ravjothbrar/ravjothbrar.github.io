@@ -222,6 +222,81 @@ body {
     min-height: 80vh;
     padding-top: 50px;
     position: relative;
+    /* Dot grid background (supermemory-style) */
+    background-image: radial-gradient(circle, var(--accent-color) 1px, transparent 1px);
+    background-size: 28px 28px;
+    background-position: 0 0;
+}
+
+/* Fade the dot grid at edges so it doesn't fight the content */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 70% at 50% 50%, transparent 40%, var(--bg-color) 100%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.hero-section > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Corner labels (off-the-radar style) */
+.hero-corner-label {
+    position: absolute;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--muted-text);
+    font-family: inherit;
+    text-transform: none;
+    opacity: 0.6;
+    z-index: 2;
+}
+
+.hero-corner-tl { top: 18px; left: 20px; }
+.hero-corner-tr { top: 18px; right: 20px; }
+
+/* Announcement pill (supermemory-style) */
+.hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    padding: 6px 14px 6px 8px;
+    font-size: 12px;
+    text-decoration: none;
+    color: var(--text-color);
+    margin-bottom: 28px;
+    transition: border-color 0.2s, background 0.2s;
+    background: var(--card-bg);
+}
+
+.hero-pill:hover {
+    border-color: var(--accent-color);
+    background: var(--code-bg);
+}
+
+.hero-pill-badge {
+    background: var(--accent-color);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 2px 8px;
+    border-radius: 999px;
+    text-transform: uppercase;
+}
+
+.hero-pill-text {
+    color: var(--muted-text);
+}
+
+.hero-pill-arrow {
+    color: var(--accent-color);
+    font-size: 13px;
 }
 
 /* Scroll Down Indicator */
@@ -487,6 +562,18 @@ body {
 .prompt {
     color: var(--accent-color);
     font-weight: bold;
+    white-space: nowrap;
+}
+
+/* Numbered line labels (off-the-radar style) */
+.line-num {
+    color: var(--muted-text);
+    font-size: 0.78em;
+    font-weight: 400;
+    opacity: 0.65;
+    margin-right: 4px;
+    letter-spacing: 0.02em;
+    -webkit-text-fill-color: var(--muted-text);
 }
 
 /* Section Headers */
@@ -498,16 +585,116 @@ body {
     padding: 15px 0;
     border-top: 2px solid var(--accent-color);
     border-bottom: 2px solid var(--accent-color);
-    display: inline-block;
+    display: block;
     width: 100%;
     max-width: 400px;
     margin-left: auto;
     margin-right: auto;
-    display: block;
+    /* Shimmer */
+    background: linear-gradient(
+        90deg,
+        var(--text-color) 0%,
+        var(--text-color) 30%,
+        var(--accent-light) 45%,
+        #ffffff 50%,
+        var(--accent-light) 55%,
+        var(--text-color) 70%,
+        var(--text-color) 100%
+    );
+    background-size: 250% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer-sweep 4s linear infinite;
 }
 
+@keyframes shimmer-sweep {
+    0%   { background-position: 200% center; }
+    100% { background-position: -50% center; }
+}
+
+/* Keep brackets visible in accent color — they're inside span so override */
 .bracket {
+    -webkit-text-fill-color: var(--accent-color);
     color: var(--accent-color);
+}
+
+/* Mobile Nav Toggle Button (phone only, hidden on larger screens) */
+.mobile-nav-toggle {
+    display: none;
+}
+
+@media (max-width: 480px) {
+    /* Collapsible nav on phones */
+    .side-nav {
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .side-nav.nav-collapsed {
+        transform: translateY(-100%);
+    }
+
+    .main-content {
+        transition: padding-top 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .main-content.nav-collapsed {
+        padding-top: 20px;
+    }
+
+    /* Hamburger toggle button */
+    .mobile-nav-toggle {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        z-index: 1100;
+        width: 36px;
+        height: 36px;
+        background-color: var(--card-bg);
+        border: 2px solid var(--accent-color);
+        cursor: pointer;
+        padding: 6px;
+        transition: background-color 0.3s ease, opacity 0.3s ease;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .mobile-nav-toggle.visible {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .mobile-nav-toggle:hover {
+        background-color: var(--accent-color);
+    }
+
+    .mobile-nav-toggle:hover .mnav-bar {
+        background-color: var(--card-bg);
+    }
+
+    .mnav-bar {
+        display: block;
+        width: 18px;
+        height: 2px;
+        background-color: var(--accent-color);
+        transition: background-color 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    /* X icon when nav is open */
+    .mobile-nav-toggle.nav-open .mnav-bar:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+    }
+    .mobile-nav-toggle.nav-open .mnav-bar:nth-child(2) {
+        opacity: 0;
+    }
+    .mobile-nav-toggle.nav-open .mnav-bar:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+    }
 }
 
 /* Theme Toggle Button */
@@ -564,9 +751,11 @@ body {
 /* About Quote */
 .about-quote {
     margin-top: 36px;
-    padding-top: 28px;
-    border-top: 1px solid var(--border-color);
-    text-align: center;
+    padding-top: 20px;
+    padding-left: 24px;
+    border-top: none;
+    border-left: 3px solid var(--accent-color);
+    text-align: left;
 }
 
 .about-quote-latin {
@@ -1023,6 +1212,12 @@ a.value:hover {
 .card-link-btn:hover {
     background-color: var(--accent-color);
     color: var(--card-bg);
+}
+
+@media (max-width: 768px) {
+    .hero-corner-label { display: none; }
+    .hero-pill { font-size: 11px; gap: 7px; }
+    .about-quote { padding-left: 16px; }
 }
 
 @media (max-width: 768px) {
@@ -1587,6 +1782,15 @@ a.value:hover {
     51%, 100% { opacity: 0; }
 }
 
+/* Inline cursor shown while typewriter is running */
+.typing-active::after {
+    content: '▋';
+    color: var(--accent-color);
+    animation: blink 0.7s step-end infinite;
+    margin-left: 1px;
+    font-size: 0.9em;
+}
+
 /* Footer */
 .footer {
     text-align: center;
@@ -1715,8 +1919,8 @@ a.value:hover {
     }
 
     .interactive-portrait {
-        width: 255px;
-        height: 380px;
+        width: 281px;
+        height: 418px;
     }
 
     .hero-name {
@@ -1769,8 +1973,22 @@ a.value:hover {
     }
 
     .interactive-portrait {
-        width: 202px;
-        height: 300px;
+        width: 222px;
+        height: 330px;
+    }
+
+    /* Disable canvas hover effect on phones — show portrait image directly */
+    #webglCanvas {
+        display: none !important;
+    }
+
+    .portrait-image {
+        display: block !important;
+        opacity: 1 !important;
+    }
+
+    .hover-prompt-btn {
+        display: none !important;
     }
 
     .hero-name {

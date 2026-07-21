@@ -22,6 +22,57 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // ---- Mobile Nav Collapse (phones only ≤480px) ----
+    const sideNav = document.getElementById('sideNav');
+    const mobileNavToggle = document.getElementById('mobileNavToggle');
+    const mainContent = document.querySelector('.main-content');
+
+    function isMobilePhone() {
+        return window.innerWidth <= 480;
+    }
+
+    function collapseNav() {
+        sideNav.classList.add('nav-collapsed');
+        mainContent.classList.add('nav-collapsed');
+        mobileNavToggle.classList.remove('nav-open');
+    }
+
+    function expandNav() {
+        sideNav.classList.remove('nav-collapsed');
+        mainContent.classList.remove('nav-collapsed');
+        mobileNavToggle.classList.add('nav-open');
+    }
+
+    if (sideNav && mobileNavToggle && isMobilePhone()) {
+        // Show toggle button
+        mobileNavToggle.classList.add('visible');
+
+        // After 2s: animate a brief collapse hint, then collapse
+        setTimeout(() => {
+            // Brief "peek" — slide up slightly then fully collapse
+            sideNav.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+            collapseNav();
+            mobileNavToggle.classList.add('visible');
+        }, 2000);
+
+        // Toggle on button click
+        mobileNavToggle.addEventListener('click', function() {
+            const isCollapsed = sideNav.classList.contains('nav-collapsed');
+            if (isCollapsed) {
+                expandNav();
+            } else {
+                collapseNav();
+            }
+        });
+
+        // Collapse nav when a link is tapped
+        sideNav.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                setTimeout(() => collapseNav(), 400);
+            });
+        });
+    }
     // Navigation active state handling
     const navLinks = document.querySelectorAll('.nav-link');
     const sections = document.querySelectorAll('.section');
@@ -94,6 +145,58 @@ document.addEventListener('DOMContentLoaded', function() {
         box.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
         observer.observe(box);
     });
+
+    // ---- Typewriter effect for terminal box paragraphs ----
+    // Only runs once per element when it first enters the viewport.
+    // Scope typing to the About Me section only — where narrative terminal text lives
+    const typableParas = document.querySelectorAll('#about .terminal-box > p');
+
+    function typewriterReveal(el, onDone) {
+        // Find the trailing text node after any child spans (e.g. <span class="prompt">>></span>)
+        let textNode = null;
+        for (let i = el.childNodes.length - 1; i >= 0; i--) {
+            if (el.childNodes[i].nodeType === Node.TEXT_NODE && el.childNodes[i].textContent.trim()) {
+                textNode = el.childNodes[i];
+                break;
+            }
+        }
+        if (!textNode) { if (onDone) onDone(); return; }
+        const original = textNode.textContent;
+        textNode.textContent = '';
+        el.classList.add('typing-active');
+        let i = 0;
+        const speed = 14;
+        function tick() {
+            if (i < original.length) {
+                textNode.textContent += original[i++];
+                setTimeout(tick, speed);
+            } else {
+                el.classList.remove('typing-active');
+                if (onDone) onDone();
+            }
+        }
+        tick();
+    }
+
+    // Chain paragraphs: observe only the first; each triggers the next on completion
+    let typeChainIndex = 0;
+    const parasArray = Array.from(typableParas);
+
+    function startNextPara() {
+        if (typeChainIndex >= parasArray.length) return;
+        const el = parasArray[typeChainIndex++];
+        typewriterReveal(el, startNextPara);
+    }
+
+    if (parasArray.length > 0) {
+        const typeObs = new IntersectionObserver(function(entries) {
+            if (entries[0].isIntersecting) {
+                typeObs.disconnect();
+                startNextPara();
+            }
+        }, { threshold: 0.2, rootMargin: '0px 0px -30px 0px' });
+        typeObs.observe(parasArray[0]);
+    }
 
     // Animate clickable project links when scrolling into view
     const linkItems = document.querySelectorAll('.role-item.has-link');
