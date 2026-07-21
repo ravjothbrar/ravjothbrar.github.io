@@ -749,6 +749,51 @@ body {
 }
 
 /* About Quote */
+/* Skill chips */
+.about-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 24px 0 0;
+}
+
+.skill-chip {
+    font-size: 11px;
+    font-family: 'Courier New', Courier, monospace;
+    letter-spacing: 0.05em;
+    padding: 4px 10px;
+    border: 1px solid var(--accent-color);
+    color: var(--accent-color);
+    border-radius: 3px;
+    background: var(--code-bg);
+    white-space: nowrap;
+}
+
+/* Publication status badge */
+.publication-status {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 2px 8px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.pub-status-review {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fbbf24;
+}
+
+[data-theme="dark"] .pub-status-review {
+    background: #2d1b00;
+    color: #fbbf24;
+    border-color: #92400e;
+}
+
 .about-quote {
     margin-top: 36px;
     padding-top: 20px;
