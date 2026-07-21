@@ -152,7 +152,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const typableParas = document.querySelectorAll('#about .terminal-box > p');
 
     function typewriterReveal(el, onDone) {
-        // Find the trailing text node after any child spans (e.g. <span class="prompt">>></span>)
         let textNode = null;
         for (let i = el.childNodes.length - 1; i >= 0; i--) {
             if (el.childNodes[i].nodeType === Node.TEXT_NODE && el.childNodes[i].textContent.trim()) {
@@ -164,18 +163,20 @@ document.addEventListener('DOMContentLoaded', function() {
         const original = textNode.textContent;
         textNode.textContent = '';
         el.classList.add('typing-active');
-        let i = 0;
-        const speed = 14;
+        let pos = 0;
+        // 5 chars/frame at 60fps ≈ 300 chars/sec — fast, smooth AI-streaming feel
+        const BATCH = 5;
         function tick() {
-            if (i < original.length) {
-                textNode.textContent += original[i++];
-                setTimeout(tick, speed);
+            if (pos < original.length) {
+                pos = Math.min(pos + BATCH, original.length);
+                textNode.textContent = original.slice(0, pos);
+                requestAnimationFrame(tick);
             } else {
                 el.classList.remove('typing-active');
                 if (onDone) onDone();
             }
         }
-        tick();
+        requestAnimationFrame(tick);
     }
 
     // Chain paragraphs: observe only the first; each triggers the next on completion
@@ -533,12 +534,176 @@ document.addEventListener('DOMContentLoaded', function() {
             requestAnimationFrame(animate);
         }
 
+        // ---- Auto-swipe ghost (desktop only) ----
+        // When portrait is in view and user isn't hovering, simulate a random swipe
+        // every few seconds to hint that the effect is interactive.
+        function ghostSwipe() {
+            if (isHovering) return;
+            const angle = Math.random() * Math.PI * 2;
+            const startX = width  * (0.25 + Math.random() * 0.5);
+            const startY = height * (0.25 + Math.random() * 0.5);
+            const swipeLen = 90 + Math.random() * 70;
+            const steps = 18;
+            for (let s = 0; s < steps; s++) {
+                const t = s / (steps - 1);
+                metaballs.push(new Metaball(
+                    startX + Math.cos(angle) * swipeLen * t + (Math.random() - 0.5) * 10,
+                    startY + Math.sin(angle) * swipeLen * t + (Math.random() - 0.5) * 10
+                ));
+                while (metaballs.length > MAX_METABALLS) metaballs.shift();
+            }
+        }
+
+        let ghostTimer = null;
+        const GHOST_INTERVAL = 4500; // ms between auto-swipes
+
+        const visObs = new IntersectionObserver(entries => {
+            const visible = entries[0].isIntersecting;
+            if (visible && !window.matchMedia('(max-width: 480px)').matches) {
+                // First ghost after 3s so it doesn't fire immediately
+                ghostTimer = setTimeout(function loop() {
+                    ghostSwipe();
+                    ghostTimer = setTimeout(loop, GHOST_INTERVAL);
+                }, 3000);
+            } else {
+                clearTimeout(ghostTimer);
+                ghostTimer = null;
+            }
+        }, { threshold: 0.5 });
+        visObs.observe(container);
+
         // Reload on resize (same as before)
         window.addEventListener('resize', () => {
             if (container.clientWidth !== width || container.clientHeight !== height) {
                 location.reload();
             }
         });
+    }
+
+    // ========================================
+    // Orbital Research Topics Canvas
+    // ========================================
+    initOrbitCanvas();
+
+    function initOrbitCanvas() {
+        const canvas = document.getElementById('orbitCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+
+        function resize() {
+            canvas.width  = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        const topics = [
+            'Neural Interpretability', 'AI Ethics', 'Bias Detection',
+            'Sikhism & AI', 'Transparency', 'Epilepsy AI',
+            'Fine-tuning', 'LLMs', 'AI Philosophy', 'Research',
+            'Writing', 'AI Regulation', 'Safety', 'Explainability',
+            'AI & God', 'Neural Nets'
+        ];
+
+        // Assign each word a ring (0–4) and starting angle
+        const NUM_RINGS = 5;
+        const orbitWords = topics.map((text, i) => ({
+            text,
+            ring: i % NUM_RINGS,
+            angle: (i / topics.length) * Math.PI * 2,
+            // alternate direction per ring for visual variety
+            speed: (0.00025 + Math.random() * 0.00015) * (i % 2 === 0 ? 1 : -1)
+        }));
+
+        function getAccent() {
+            return getComputedStyle(document.documentElement)
+                .getPropertyValue('--accent-color').trim() || '#7c3aed';
+        }
+
+        function draw(ts) {
+            const W  = canvas.width;
+            const H  = canvas.height;
+            const cx = W / 2;
+            const cy = H * 0.62;
+            const baseRx = Math.min(W * 0.44, H * 0.55);
+            const PERSP  = 0.30; // ry/rx — flatness of the perspective ellipses
+            const accent = getAccent();
+
+            ctx.clearRect(0, 0, W, H);
+
+            // ---- Draw torus rings ----
+            for (let r = 0; r < NUM_RINGS; r++) {
+                const rx = baseRx * (0.22 + r * 0.185);
+                const ry = rx * PERSP;
+                ctx.beginPath();
+                ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+                ctx.strokeStyle = accent;
+                ctx.globalAlpha = 0.1 + r * 0.035;
+                ctx.lineWidth = 0.8;
+                ctx.stroke();
+            }
+
+            // ---- Draw vertical meridian lines (torus structure) ----
+            const outerRx = baseRx * (0.22 + (NUM_RINGS - 1) * 0.185);
+            const outerRy = outerRx * PERSP;
+            const MERIDIANS = 10;
+            for (let m = 0; m < MERIDIANS; m++) {
+                const a = (m / MERIDIANS) * Math.PI * 2;
+                const x = cx + Math.cos(a) * outerRx;
+                const y = cy + Math.sin(a) * outerRy;
+                // Inner ring same angle
+                const innerRx = baseRx * 0.22;
+                const ix = cx + Math.cos(a) * innerRx;
+                const iy = cy + Math.sin(a) * innerRx * PERSP;
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(ix, iy);
+                ctx.strokeStyle = accent;
+                ctx.globalAlpha = 0.05;
+                ctx.lineWidth = 0.5;
+                ctx.stroke();
+            }
+
+            // ---- Draw orbiting words ----
+            ctx.globalAlpha = 1;
+            orbitWords.forEach(w => {
+                w.angle += w.speed;
+                const rx = baseRx * (0.22 + w.ring * 0.185);
+                const ry = rx * PERSP;
+                const x  = cx + Math.cos(w.angle) * rx;
+                const y  = cy + Math.sin(w.angle) * ry;
+
+                // Depth: sin(angle) goes from -1 (back) to +1 (front)
+                const depth = (Math.sin(w.angle) + 1) / 2;
+                const alpha = 0.22 + depth * 0.72;
+                const fs    = 8 + depth * 4.5;
+
+                ctx.globalAlpha = alpha;
+                ctx.font = `${fs.toFixed(1)}px 'Courier New', monospace`;
+                ctx.fillStyle = accent;
+                const tw = ctx.measureText(w.text).width;
+                ctx.fillText(w.text, x - tw / 2, y);
+            });
+
+            ctx.globalAlpha = 1;
+            requestAnimationFrame(draw);
+        }
+
+        // Only animate when visible
+        let orbitVisible = false;
+        let orbitRafId = null;
+        function orbitLoop(ts) {
+            if (!orbitVisible) { orbitRafId = null; return; }
+            draw(ts);
+            orbitRafId = requestAnimationFrame(orbitLoop);
+        }
+        const orbitObs = new IntersectionObserver(entries => {
+            orbitVisible = entries[0].isIntersecting;
+            if (orbitVisible && !orbitRafId) {
+                orbitRafId = requestAnimationFrame(orbitLoop);
+            }
+        }, { threshold: 0.1 });
+        orbitObs.observe(canvas);
     }
 
     // Console message
