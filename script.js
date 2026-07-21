@@ -22,6 +22,57 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // ---- Mobile Nav Collapse (phones only ≤480px) ----
+    const sideNav = document.getElementById('sideNav');
+    const mobileNavToggle = document.getElementById('mobileNavToggle');
+    const mainContent = document.querySelector('.main-content');
+
+    function isMobilePhone() {
+        return window.innerWidth <= 480;
+    }
+
+    function collapseNav() {
+        sideNav.classList.add('nav-collapsed');
+        mainContent.classList.add('nav-collapsed');
+        mobileNavToggle.classList.remove('nav-open');
+    }
+
+    function expandNav() {
+        sideNav.classList.remove('nav-collapsed');
+        mainContent.classList.remove('nav-collapsed');
+        mobileNavToggle.classList.add('nav-open');
+    }
+
+    if (sideNav && mobileNavToggle && isMobilePhone()) {
+        // Show toggle button
+        mobileNavToggle.classList.add('visible');
+
+        // After 2s: animate a brief collapse hint, then collapse
+        setTimeout(() => {
+            // Brief "peek" — slide up slightly then fully collapse
+            sideNav.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+            collapseNav();
+            mobileNavToggle.classList.add('visible');
+        }, 2000);
+
+        // Toggle on button click
+        mobileNavToggle.addEventListener('click', function() {
+            const isCollapsed = sideNav.classList.contains('nav-collapsed');
+            if (isCollapsed) {
+                expandNav();
+            } else {
+                collapseNav();
+            }
+        });
+
+        // Collapse nav when a link is tapped
+        sideNav.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                setTimeout(() => collapseNav(), 400);
+            });
+        });
+    }
     // Navigation active state handling
     const navLinks = document.querySelectorAll('.nav-link');
     const sections = document.querySelectorAll('.section');
