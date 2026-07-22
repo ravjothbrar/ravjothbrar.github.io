@@ -443,7 +443,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Smoothly animates the spotlight across the image to hint at the interaction.
         let ghostTimer = null;
         let ghostRafId  = null;
-        const GHOST_INTERVAL = 4500;
+        const GHOST_INTERVAL = 2500;
 
         function ghostSwipe() {
             if (isHovering) return;
