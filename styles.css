@@ -1466,6 +1466,8 @@ a.value:hover {
     align-items: center;
     gap: 12px;
     color: var(--text-color);
+    cursor: pointer;
+    font-family: 'Courier New', Courier, monospace;
     text-decoration: none;
     font-size: 18px;
     font-weight: 500;
@@ -1491,6 +1493,103 @@ a.value:hover {
 
 .cv-link:hover .cv-icon {
     transform: translateY(3px);
+}
+
+/* CV Request Modal */
+.cv-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    align-items: center;
+    justify-content: center;
+}
+
+.cv-modal.open {
+    display: flex;
+}
+
+.cv-modal-box {
+    position: relative;
+    background: var(--card-bg, var(--bg-color));
+    border: 1px solid var(--accent-color);
+    border-radius: 4px;
+    padding: 48px 40px 40px;
+    max-width: 420px;
+    width: calc(100% - 40px);
+    text-align: center;
+    box-shadow: 0 0 40px rgba(124, 58, 237, 0.2);
+    animation: modal-in 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes modal-in {
+    from { opacity: 0; transform: translateY(16px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0)   scale(1);    }
+}
+
+.cv-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--muted-text);
+    font-size: 22px;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s ease;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.cv-modal-close:hover {
+    color: var(--accent-color);
+}
+
+.cv-modal-icon {
+    margin: 0 auto 20px;
+    width: 48px;
+    height: 48px;
+    color: var(--accent-color);
+}
+
+.cv-modal-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.cv-modal-title {
+    font-size: 18px;
+    letter-spacing: 2px;
+    font-weight: normal;
+    margin-bottom: 16px;
+    font-family: 'Courier New', Courier, monospace;
+    color: var(--text-color);
+}
+
+.cv-modal-body {
+    color: var(--muted-text);
+    font-size: 14px;
+    line-height: 1.7;
+    margin-bottom: 24px;
+}
+
+.cv-modal-email {
+    display: inline-block;
+    color: var(--accent-color);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    text-decoration: none;
+    border: 1px solid var(--accent-color);
+    padding: 10px 20px;
+    border-radius: 3px;
+    transition: all 0.2s ease;
+}
+
+.cv-modal-email:hover {
+    background: var(--accent-color);
+    color: #fff;
 }
 
 .role-org-description {
