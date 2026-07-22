@@ -9,6 +9,21 @@
 })();
 
 document.addEventListener('DOMContentLoaded', function() {
+    // CV Request Modal
+    const cvModal    = document.getElementById('cvModal');
+    const cvBtn      = document.getElementById('cvRequestBtn');
+    const cvClose    = document.getElementById('cvModalClose');
+    if (cvModal && cvBtn) {
+        cvBtn.addEventListener('click', () => cvModal.classList.add('open'));
+        cvClose.addEventListener('click', () => cvModal.classList.remove('open'));
+        cvModal.addEventListener('click', (e) => {
+            if (e.target === cvModal) cvModal.classList.remove('open');
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') cvModal.classList.remove('open');
+        });
+    }
+
     const themeToggle = document.getElementById('themeToggle');
     if (themeToggle) {
         themeToggle.addEventListener('click', function() {
