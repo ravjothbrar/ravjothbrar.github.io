@@ -334,99 +334,62 @@ document.addEventListener('DOMContentLoaded', function() {
         asciiImg.src   = 'images/new-ascii-art.png';
         portraitImg.src = 'images/new-profile.png';
 
-        // ---- Mouse / touch tracking ----
-        let mouseX = -1000, mouseY = -1000;
+        // ---- Smooth reveal state ----
+        // Single spotlight that lerps toward the cursor each frame — no discrete particles.
+        let revealX = width / 2;
+        let revealY = height * 0.4;
+        let targetX  = width / 2;
+        let targetY  = height * 0.4;
+        let revealStrength = 0;   // current interpolated alpha of the reveal hole (0–1)
+        let targetStrength = 0;   // destination strength
         let isHovering = false;
-        let lastMouseX = -1000, lastMouseY = -1000;
 
+        const REVEAL_RADIUS = 230; // px — large soft window
+        const LERP_POS = 0.12;    // spotlight position easing per frame
+        const LERP_STR = 0.06;    // strength fade in/out per frame
+
+        // ---- Mouse / touch tracking ----
         container.addEventListener('mousemove', (e) => {
             const rect = container.getBoundingClientRect();
-            mouseX = e.clientX - rect.left;
-            mouseY = e.clientY - rect.top;
+            targetX = e.clientX - rect.left;
+            targetY = e.clientY - rect.top;
             isHovering = true;
+            targetStrength = 1;
         });
         container.addEventListener('mouseleave', () => {
-            mouseX = -1000; mouseY = -1000;
             isHovering = false;
+            targetStrength = 0;
         });
         container.addEventListener('touchstart', (e) => {
             e.preventDefault();
             const rect  = container.getBoundingClientRect();
             const touch = e.touches[0];
-            mouseX = touch.clientX - rect.left;
-            mouseY = touch.clientY - rect.top;
+            targetX = touch.clientX - rect.left;
+            targetY = touch.clientY - rect.top;
+            // Snap position on first touch so there's no lag from far away
+            revealX = targetX;
+            revealY = targetY;
             isHovering = true;
+            targetStrength = 1;
         }, { passive: false });
         container.addEventListener('touchmove', (e) => {
             e.preventDefault();
             const rect  = container.getBoundingClientRect();
             const touch = e.touches[0];
-            mouseX = touch.clientX - rect.left;
-            mouseY = touch.clientY - rect.top;
+            targetX = touch.clientX - rect.left;
+            targetY = touch.clientY - rect.top;
         }, { passive: false });
         container.addEventListener('touchend', () => {
-            mouseX = -1000; mouseY = -1000;
             isHovering = false;
+            targetStrength = 0;
         });
-
-        // ---- Metaball physics ----
-        const metaballs = [];
-        const MAX_METABALLS  = 22;
-        const METABALL_RADIUS = 52;
-        const METABALL_SPAWN_RATE = 4;
-        const DECAY_SPEED = 0.008;
-        let frameCount = 0;
-
-        class Metaball {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.strength = 1.0;
-                this.decayRate = DECAY_SPEED + Math.random() * 0.008;
-                const angle = Math.random() * Math.PI * 2;
-                const speed = 0.8 + Math.random() * 1.2;
-                this.vx = Math.cos(angle) * speed;
-                this.vy = Math.sin(angle) * speed;
-                this.wobblePhase = Math.random() * Math.PI * 2;
-                this.wobbleSpeed = 0.05 + Math.random() * 0.08;
-                this.radius = METABALL_RADIUS;
-            }
-            update() {
-                this.strength -= this.decayRate;
-                this.x += this.vx;
-                this.y += this.vy;
-                this.vx += (Math.random() - 0.5) * 0.3;
-                this.vy += (Math.random() - 0.5) * 0.3;
-                this.vx *= 0.98;
-                this.vy *= 0.98;
-                this.wobblePhase += this.wobbleSpeed;
-                const wobble = 1 + Math.sin(this.wobblePhase) * 0.15;
-                this.radius = METABALL_RADIUS * Math.pow(Math.max(0, this.strength), 0.4) * wobble;
-            }
-            isDead() { return this.strength <= 0; }
-        }
-
-        function spawnMetaball() {
-            if (!isHovering || mouseX < 0 || mouseX >= width || mouseY < 0 || mouseY >= height) return;
-            const dx = mouseX - lastMouseX;
-            const dy = mouseY - lastMouseY;
-            if (Math.sqrt(dx*dx + dy*dy) > 8 || metaballs.length === 0) {
-                metaballs.push(new Metaball(
-                    mouseX + (Math.random() - 0.5) * 20,
-                    mouseY + (Math.random() - 0.5) * 20
-                ));
-                lastMouseX = mouseX;
-                lastMouseY = mouseY;
-                while (metaballs.length > MAX_METABALLS) metaballs.shift();
-            }
-        }
 
         // ---- Render ----
         function drawFrame() {
             // Layer 1: portrait as the base
             ctx.drawImage(portraitImg, 0, 0, width, height);
 
-            // Compute intro alpha
+            // Compute intro alpha (smoothstep fade-in for ASCII overlay)
             let introAlpha = 0;
             if (introPhase === 'showing_portrait') {
                 introAlpha = 0;
@@ -434,87 +397,98 @@ document.addEventListener('DOMContentLoaded', function() {
                 introFadeProgress += INTRO_FADE_SPEED;
                 if (introFadeProgress >= 1) { introFadeProgress = 1; introPhase = 'complete'; }
                 const t = introFadeProgress;
-                introAlpha = t * t * (3 - 2 * t); // smoothstep
+                introAlpha = t * t * (3 - 2 * t);
             } else {
                 introAlpha = 1;
             }
 
-            // Layer 2: ASCII art on offscreen canvas, with metaball holes punched through
+            // Layer 2: ASCII art on offscreen canvas, with smooth spotlight hole punched through
             offCtx.clearRect(0, 0, width, height);
             offCtx.globalAlpha = introAlpha;
             offCtx.drawImage(asciiImg, 0, 0, width, height);
             offCtx.globalAlpha = 1;
 
-            if (metaballs.length > 0) {
-                // destination-out: draws erase shapes that cut holes in the ASCII layer,
-                // revealing the portrait drawn underneath on the main canvas.
+            if (revealStrength > 0.005) {
                 offCtx.globalCompositeOperation = 'destination-out';
-                for (const ball of metaballs) {
-                    // Gradient radius ~2.5× the physics radius matches the original
-                    // inverse-square field reveal extent (~130px at full strength)
-                    const r = ball.radius * 2.5;
-                    const s = Math.max(0, ball.strength);
-                    const grad = offCtx.createRadialGradient(ball.x, ball.y, 0, ball.x, ball.y, r);
-                    grad.addColorStop(0,   `rgba(0,0,0,${s.toFixed(3)})`);
-                    grad.addColorStop(0.45, `rgba(0,0,0,${(s * 0.75).toFixed(3)})`);
-                    grad.addColorStop(1,   'rgba(0,0,0,0)');
-                    offCtx.fillStyle = grad;
-                    offCtx.beginPath();
-                    offCtx.arc(ball.x, ball.y, r, 0, Math.PI * 2);
-                    offCtx.fill();
-                }
+                const r = REVEAL_RADIUS;
+                const s = revealStrength;
+                const grad = offCtx.createRadialGradient(revealX, revealY, 0, revealX, revealY, r);
+                grad.addColorStop(0,    `rgba(0,0,0,${s.toFixed(3)})`);
+                grad.addColorStop(0.35, `rgba(0,0,0,${(s * 0.95).toFixed(3)})`);
+                grad.addColorStop(0.65, `rgba(0,0,0,${(s * 0.55).toFixed(3)})`);
+                grad.addColorStop(0.85, `rgba(0,0,0,${(s * 0.15).toFixed(3)})`);
+                grad.addColorStop(1,    'rgba(0,0,0,0)');
+                offCtx.fillStyle = grad;
+                offCtx.beginPath();
+                offCtx.arc(revealX, revealY, r, 0, Math.PI * 2);
+                offCtx.fill();
                 offCtx.globalCompositeOperation = 'source-over';
             }
 
-            // Composite ASCII+holes on top of the portrait
+            // Composite ASCII+hole on top of the portrait
             ctx.drawImage(offscreen, 0, 0);
         }
 
         function animate() {
-            frameCount++;
-            if (frameCount % METABALL_SPAWN_RATE === 0) spawnMetaball();
-            for (let i = metaballs.length - 1; i >= 0; i--) {
-                metaballs[i].update();
-                if (metaballs[i].isDead()) metaballs.splice(i, 1);
-            }
+            // Lerp spotlight toward target each frame — smooth at any framerate
+            revealX += (targetX - revealX) * LERP_POS;
+            revealY += (targetY - revealY) * LERP_POS;
+            revealStrength += (targetStrength - revealStrength) * LERP_STR;
+
             drawFrame();
             requestAnimationFrame(animate);
         }
 
         // ---- Auto-swipe ghost (desktop only) ----
-        // When portrait is in view and user isn't hovering, simulate a random swipe
-        // every few seconds to hint that the effect is interactive.
+        // Smoothly animates the spotlight across the image to hint at the interaction.
+        let ghostTimer = null;
+        let ghostRafId  = null;
+        const GHOST_INTERVAL = 4500;
+
         function ghostSwipe() {
             if (isHovering) return;
-            const angle = Math.random() * Math.PI * 2;
-            const startX = width  * (0.25 + Math.random() * 0.5);
-            const startY = height * (0.25 + Math.random() * 0.5);
-            const swipeLen = 90 + Math.random() * 70;
-            const steps = 18;
-            for (let s = 0; s < steps; s++) {
-                const t = s / (steps - 1);
-                metaballs.push(new Metaball(
-                    startX + Math.cos(angle) * swipeLen * t + (Math.random() - 0.5) * 10,
-                    startY + Math.sin(angle) * swipeLen * t + (Math.random() - 0.5) * 10
-                ));
-                while (metaballs.length > MAX_METABALLS) metaballs.shift();
-            }
-        }
+            if (ghostRafId) { cancelAnimationFrame(ghostRafId); ghostRafId = null; }
 
-        let ghostTimer = null;
-        const GHOST_INTERVAL = 4500; // ms between auto-swipes
+            const startX   = width  * (0.2 + Math.random() * 0.6);
+            const startY   = height * (0.2 + Math.random() * 0.6);
+            const endX     = width  * (0.2 + Math.random() * 0.6);
+            const endY     = height * (0.2 + Math.random() * 0.6);
+            const duration = 1000 + Math.random() * 600;
+            const t0 = performance.now();
+
+            targetX = startX;
+            targetY = startY;
+            targetStrength = 0.85;
+
+            function step(now) {
+                if (isHovering) { targetStrength = 0; return; }
+                const t = Math.min(1, (now - t0) / duration);
+                // Ease in-out cubic
+                const eased = t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
+                targetX = startX + (endX - startX) * eased;
+                targetY = startY + (endY - startY) * eased;
+                if (t < 1) {
+                    ghostRafId = requestAnimationFrame(step);
+                } else {
+                    targetStrength = 0;
+                    ghostRafId = null;
+                }
+            }
+            ghostRafId = requestAnimationFrame(step);
+        }
 
         const visObs = new IntersectionObserver(entries => {
             const visible = entries[0].isIntersecting;
             if (visible && !window.matchMedia('(max-width: 480px)').matches) {
-                // First ghost after 3s so it doesn't fire immediately
                 ghostTimer = setTimeout(function loop() {
                     ghostSwipe();
                     ghostTimer = setTimeout(loop, GHOST_INTERVAL);
                 }, 3000);
             } else {
                 clearTimeout(ghostTimer);
+                if (ghostRafId) { cancelAnimationFrame(ghostRafId); ghostRafId = null; }
                 ghostTimer = null;
+                targetStrength = 0;
             }
         }, { threshold: 0.5 });
         visObs.observe(container);
