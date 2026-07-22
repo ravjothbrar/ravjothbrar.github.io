@@ -423,8 +423,21 @@ body {
     margin-right: 0;
 }
 
+@keyframes slide-up-fade {
+    from {
+        opacity: 0;
+        transform: translateY(28px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .ascii-art {
     margin-bottom: 30px;
+    animation: slide-up-fade 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: 0.1s;
 }
 
 .ascii-art pre {
@@ -440,6 +453,8 @@ body {
     letter-spacing: 4px;
     margin-bottom: 20px;
     font-family: 'Courier New', Courier, monospace;
+    animation: slide-up-fade 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: 0.28s;
 }
 
 .hero-tagline {
@@ -450,6 +465,8 @@ body {
     padding: 15px 40px;
     line-height: 2;
     font-weight: 600;
+    animation: slide-up-fade 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: 0.44s;
 }
 
 .hero-tagline-sub {
