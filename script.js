@@ -124,8 +124,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Smooth scroll for navigation links
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
-            e.preventDefault();
             const targetId = this.getAttribute('href');
+
+            // Cross-page link (e.g. ../index.html#roles on blog pages) — let the browser navigate normally
+            if (!targetId.startsWith('#')) return;
+
+            e.preventDefault();
             const targetSection = document.querySelector(targetId);
 
             // Immediately highlight the clicked link — don't wait for scroll to settle
