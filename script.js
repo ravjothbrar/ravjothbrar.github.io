@@ -82,14 +82,21 @@ document.addEventListener('DOMContentLoaded', function() {
         let current = '';
         const scrollPosition = window.scrollY + 200;
 
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.offsetHeight;
+        // If scrolled to the very bottom, force the last section active
+        const atBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 5;
 
-            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-                current = section.getAttribute('id');
-            }
-        });
+        if (atBottom) {
+            // Pick the last section on the page
+            current = sections[sections.length - 1].getAttribute('id');
+        } else {
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    current = section.getAttribute('id');
+                }
+            });
+        }
 
         navLinks.forEach(link => {
             link.classList.remove('active');
@@ -105,6 +112,10 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             const targetId = this.getAttribute('href');
             const targetSection = document.querySelector(targetId);
+
+            // Immediately highlight the clicked link — don't wait for scroll to settle
+            navLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
 
             if (targetSection) {
                 const offsetTop = targetSection.offsetTop - 80;
