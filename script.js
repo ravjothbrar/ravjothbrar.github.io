@@ -133,6 +133,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initial call to set active state
     updateActiveNav();
 
+    // Social link hover → shimmer pulse on ROLES section header
+    const rolesHeader = document.querySelector('#roles .section-header');
+    document.querySelectorAll('#links .social-link').forEach(link => {
+        link.addEventListener('mouseenter', () => {
+            if (rolesHeader) rolesHeader.classList.add('shimmer-pulse');
+        });
+        link.addEventListener('mouseleave', () => {
+            if (rolesHeader) rolesHeader.classList.remove('shimmer-pulse');
+        });
+    });
+
     // Add subtle animation to terminal boxes on scroll
     const terminalBoxes = document.querySelectorAll('.terminal-box');
 
@@ -327,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 introPhase = 'showing_portrait';
                 introFadeProgress = 0;
-                setTimeout(() => { introPhase = 'fading'; }, 1000);
+                setTimeout(() => { introPhase = 'fading'; }, 3000);
                 requestAnimationFrame(animate);
             }
         }
