@@ -1175,7 +1175,9 @@ a.value:hover {
 }
 .card-item > .card-link-btn:last-child {
     display: flex;
-    margin: 0 20px 20px 20px;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 20px 20px 20px;
 }
 
 .card-meta {
@@ -1353,7 +1355,6 @@ a.value:hover {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin-top: 6px;
     padding: 10px 20px;
     font-size: 13px;
     font-weight: 600;
