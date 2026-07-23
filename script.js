@@ -668,6 +668,22 @@ document.addEventListener('DOMContentLoaded', function() {
         orbitObs.observe(canvas);
     }
 
+    // TEDx talk link in About Me → scroll to card and pop it out
+    const aboutTedxLink = document.getElementById('about-tedx-link');
+    const tedxCard = document.getElementById('tedx-card');
+    if (aboutTedxLink && tedxCard) {
+        aboutTedxLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            tedxCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => {
+                tedxCard.classList.remove('card-popout');
+                void tedxCard.offsetWidth; // force reflow to restart animation
+                tedxCard.classList.add('card-popout');
+                setTimeout(() => tedxCard.classList.remove('card-popout'), 1600);
+            }, 500);
+        });
+    }
+
     // Console message
     console.log('%c Welcome to my portfolio!', 'color: #7c3aed; font-size: 20px; font-weight: bold;');
     console.log('%c Thanks for checking out the code.', 'color: #666; font-size: 14px;');
