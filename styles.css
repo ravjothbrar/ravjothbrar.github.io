@@ -1174,7 +1174,7 @@ a.value:hover {
     padding-bottom: 24px;
 }
 .card-item > .card-link-btn:last-child {
-    display: block;
+    display: flex;
     margin: 0 20px 20px 20px;
 }
 
@@ -1236,8 +1236,12 @@ a.value:hover {
     line-height: 1.7;
     margin-bottom: 10px;
     font-weight: 450;
-    padding-left: 22px;
     position: relative;
+}
+
+/* Higher specificity to override .card-item > *:not(.card-header) padding-left */
+.card-item > .card-description {
+    padding-left: 26px;
 }
 
 .card-description::before {
@@ -1346,7 +1350,9 @@ a.value:hover {
 
 /* Card click here button */
 .card-link-btn {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     margin-top: 6px;
     padding: 10px 20px;
     font-size: 13px;
