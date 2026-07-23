@@ -1172,7 +1172,7 @@ a.value:hover {
 }
 
 /* Padding for all card content below the header */
-.card-item > *:not(.card-header):not(.card-link-btn) {
+.card-item > *:not(.card-header):not(.card-link-btn):not(.card-yt-thumb) {
     padding-left: 20px;
     padding-right: 20px;
 }
@@ -1180,8 +1180,12 @@ a.value:hover {
     padding-top: 20px;
 }
 /* First non-header element gets top gap from the colored block */
-.card-item > *:not(.card-header):not(.card-link-btn):first-of-type {
+.card-item > *:not(.card-header):not(.card-link-btn):not(.card-yt-thumb):first-of-type {
     padding-top: 20px;
+}
+/* YouTube thumbnail: edge-to-edge, spacing handled by its own margin */
+.card-item > .card-yt-thumb {
+    margin: 12px 0 0 0;
 }
 .card-item > *:last-child:not(.card-link-btn) {
     padding-bottom: 24px;
@@ -1324,6 +1328,94 @@ a.value:hover {
 
 .card-bullets li:last-child {
     margin-bottom: 0;
+}
+
+/* Nested sub-bullets */
+.card-bullets--sub {
+    margin-top: 8px;
+    padding-left: 16px;
+}
+
+.card-bullets--sub li::before {
+    content: '—';
+    font-weight: normal;
+    color: var(--muted-text);
+}
+
+/* YouTube thumbnail embed in card */
+.card-yt-thumb {
+    display: block;
+    position: relative;
+    margin-bottom: 14px;
+    text-decoration: none;
+    overflow: hidden;
+    border-radius: 2px;
+}
+
+.card-yt-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: opacity 0.25s ease;
+}
+
+.card-yt-thumb:hover .card-yt-img {
+    opacity: 0.85;
+}
+
+.card-yt-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 52px;
+    height: 52px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 20px;
+    padding-left: 4px;
+    pointer-events: none;
+    transition: background 0.25s ease;
+}
+
+.card-yt-thumb:hover .card-yt-play {
+    background: rgba(200, 0, 0, 0.85);
+}
+
+/* Non-last button (e.g. Watch on YouTube above Read the paper) */
+.card-item > .card-link-btn:not(:last-child) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 20px 0 20px;
+    padding: 12px 20px;
+}
+
+/* Second button variant (paper) */
+.card-link-btn--paper {
+    border-color: var(--muted-text);
+    color: var(--muted-text);
+}
+
+.card-link-btn--paper:hover {
+    background-color: var(--muted-text);
+    color: var(--card-bg);
+}
+
+/* TEDx card pop-out animation */
+@keyframes card-popout {
+    0%   { transform: translateY(0)  scale(1);    box-shadow: none; }
+    30%  { transform: translateY(-10px) scale(1.02); box-shadow: 0 20px 50px rgba(234, 88, 12, 0.35); }
+    70%  { transform: translateY(-10px) scale(1.02); box-shadow: 0 20px 50px rgba(234, 88, 12, 0.35); }
+    100% { transform: translateY(0)  scale(1);    box-shadow: none; }
+}
+
+.card-popout {
+    animation: card-popout 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 /* Education card title link */
