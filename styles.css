@@ -1196,6 +1196,15 @@ a.value:hover {
     font-size: 13px;
 }
 
+/* Inside colored header: white date, more breathing room below title */
+.card-header .card-meta {
+    margin-top: 10px;
+}
+
+.card-header .card-date {
+    color: rgba(255, 255, 255, 0.85);
+}
+
 .card-company-link {
     color: var(--accent-color);
     text-decoration: none;
