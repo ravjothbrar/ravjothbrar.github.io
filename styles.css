@@ -1068,16 +1068,16 @@ a.value:hover {
 }
 
 .card-gradient-red {
-    --card-accent: #dc2626;
+    --card-accent: #e62b1e;
     border: 2px solid transparent;
     background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
-                linear-gradient(135deg, #dc2626, #ef4444, #f87171) border-box;
+                linear-gradient(135deg, #e62b1e, #ef4444, #f87171) border-box;
 }
 .card-gradient-red::before {
-    background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
+    background: linear-gradient(90deg, #e62b1e, #ef4444, #f87171);
 }
 .card-gradient-red:hover {
-    box-shadow: 0 15px 40px rgba(220, 38, 38, 0.25);
+    box-shadow: 0 15px 40px rgba(230, 43, 30, 0.25);
 }
 
 .card-gradient-green {
@@ -2126,10 +2126,16 @@ a.value:hover {
 .publication-link-btn.pub-btn-teal {
     color: #0d9488;
     border-color: #0d9488;
+    background-color: rgba(13, 148, 136, 0.08);
 }
 .publication-link-btn.pub-btn-teal:hover {
     background-color: #0d9488;
     color: #fff;
+}
+
+.publication-type.pub-type-teal {
+    color: #0d9488;
+    border-color: #0d9488;
 }
 
 .pub-link-icon {
