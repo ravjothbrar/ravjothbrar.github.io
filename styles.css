@@ -885,6 +885,19 @@ body {
     margin-bottom: 15px;
 }
 
+.inline-link {
+    color: var(--accent-color);
+    text-decoration: underline;
+    text-decoration-color: var(--accent-color);
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+    transition: opacity 0.2s ease;
+}
+
+.inline-link:hover {
+    opacity: 0.75;
+}
+
 /* Info Grid */
 .info-grid {
     display: grid;
@@ -1159,7 +1172,7 @@ a.value:hover {
 }
 
 /* Padding for all card content below the header */
-.card-item > *:not(.card-header) {
+.card-item > *:not(.card-header):not(.card-link-btn) {
     padding-left: 20px;
     padding-right: 20px;
 }
@@ -1167,7 +1180,7 @@ a.value:hover {
     padding-top: 20px;
 }
 /* First non-header element gets top gap from the colored block */
-.card-item > *:not(.card-header):first-of-type {
+.card-item > *:not(.card-header):not(.card-link-btn):first-of-type {
     padding-top: 20px;
 }
 .card-item > *:last-child:not(.card-link-btn) {
@@ -1178,6 +1191,7 @@ a.value:hover {
     align-items: center;
     justify-content: center;
     margin: 20px 20px 20px 20px;
+    padding: 12px 20px;
 }
 
 .card-meta {
@@ -1215,7 +1229,7 @@ a.value:hover {
     font-weight: bold;
     font-size: 14px;
     display: inline-block;
-    margin-bottom: 12px;
+    margin-bottom: 6px;
     transition: all 0.3s ease;
 }
 
@@ -1229,7 +1243,7 @@ a.value:hover {
     font-weight: bold;
     font-size: 14px;
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
 }
 
 .card-description {
