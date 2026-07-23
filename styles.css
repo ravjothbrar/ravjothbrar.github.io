@@ -1019,13 +1019,7 @@ a.value:hover {
 }
 
 .card-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background-color: var(--accent-color);
+    content: none;
 }
 
 .card-item:hover {
@@ -1176,8 +1170,12 @@ a.value:hover {
 .card-item > *:not(.card-header):first-of-type {
     padding-top: 20px;
 }
-.card-item > *:last-child {
+.card-item > *:last-child:not(.card-link-btn) {
     padding-bottom: 24px;
+}
+.card-item > .card-link-btn:last-child {
+    display: block;
+    margin: 0 20px 20px 20px;
 }
 
 .card-meta {
@@ -1238,7 +1236,7 @@ a.value:hover {
     line-height: 1.7;
     margin-bottom: 10px;
     font-weight: 450;
-    padding-left: 18px;
+    padding-left: 22px;
     position: relative;
 }
 
