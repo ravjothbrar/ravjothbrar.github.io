@@ -885,6 +885,19 @@ body {
     margin-bottom: 15px;
 }
 
+.inline-link {
+    color: var(--accent-color);
+    text-decoration: underline;
+    text-decoration-color: var(--accent-color);
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+    transition: opacity 0.2s ease;
+}
+
+.inline-link:hover {
+    opacity: 0.75;
+}
+
 /* Info Grid */
 .info-grid {
     display: grid;
