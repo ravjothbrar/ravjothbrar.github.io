@@ -1009,7 +1009,8 @@ a.value:hover {
 .card-item {
     background-color: var(--card-bg);
     border: 2px solid var(--border-color);
-    padding: 25px;
+    padding: 0;
+    overflow: hidden;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -1034,6 +1035,7 @@ a.value:hover {
 
 /* Gradient Border Cards */
 .card-gradient-purple {
+    --card-accent: #7c3aed;
     border: 2px solid transparent;
     background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
                 linear-gradient(135deg, #7c3aed, #a855f7, #c084fc) border-box;
@@ -1046,6 +1048,7 @@ a.value:hover {
 }
 
 .card-gradient-black {
+    --card-accent: #222222;
     border: 2px solid transparent;
     background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
                 linear-gradient(135deg, #1a1a1a, #333333, #4a4a4a) border-box;
@@ -1058,6 +1061,7 @@ a.value:hover {
 }
 
 .card-gradient-red {
+    --card-accent: #dc2626;
     border: 2px solid transparent;
     background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
                 linear-gradient(135deg, #dc2626, #ef4444, #f87171) border-box;
@@ -1070,6 +1074,7 @@ a.value:hover {
 }
 
 .card-gradient-green {
+    --card-accent: #16a34a;
     border: 2px solid transparent;
     background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
                 linear-gradient(135deg, #16a34a, #22c55e, #4ade80) border-box;
@@ -1082,6 +1087,7 @@ a.value:hover {
 }
 
 .card-gradient-blue {
+    --card-accent: #2563eb;
     border: 2px solid transparent;
     background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
                 linear-gradient(135deg, #2563eb, #3b82f6, #60a5fa) border-box;
@@ -1094,6 +1100,7 @@ a.value:hover {
 }
 
 .card-gradient-orange {
+    --card-accent: #ea580c;
     border: 2px solid transparent;
     background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
                 linear-gradient(135deg, #ea580c, #f97316, #fb923c) border-box;
@@ -1106,6 +1113,7 @@ a.value:hover {
 }
 
 .card-gradient-yellow {
+    --card-accent: #ca8a04;
     border: 2px solid transparent;
     background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
                 linear-gradient(135deg, #ca8a04, #eab308, #facc15) border-box;
@@ -1118,6 +1126,7 @@ a.value:hover {
 }
 
 .card-gradient-lightblue {
+    --card-accent: #0ea5e9;
     border: 2px solid transparent;
     background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
                 linear-gradient(135deg, #0ea5e9, #38bdf8, #7dd3fc) border-box;
@@ -1129,6 +1138,7 @@ a.value:hover {
     box-shadow: 0 15px 40px rgba(14, 165, 233, 0.25);
 }
 .card-gradient-teal {
+    --card-accent: #0d9488;
     border: 2px solid transparent;
     background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
                 linear-gradient(135deg, #0d9488, #14b8a6, #5eead4) border-box;
@@ -1141,15 +1151,29 @@ a.value:hover {
 }
 
 .card-header {
-    margin-bottom: 15px;
+    background: var(--card-accent, var(--accent-color));
+    padding: 14px 20px;
+    margin-bottom: 0;
 }
 
 .card-title {
-    font-size: 18px;
-    font-weight: bold;
-    color: var(--text-color);
-    margin-bottom: 8px;
-    line-height: 1.3;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 0;
+    line-height: 1.35;
+}
+
+/* Padding for all card content below the header */
+.card-item > *:not(.card-header) {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.card-item > .card-meta {
+    padding-top: 16px;
+}
+.card-item > *:last-child {
+    padding-bottom: 20px;
 }
 
 .card-meta {
@@ -1866,11 +1890,12 @@ a.value:hover {
 
 /* Publications */
 .publication-item {
-    padding: 24px 0;
+    padding: 24px 20px;
     border-bottom: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
     gap: 10px;
+    overflow: hidden;
 }
 
 .publication-meta {
@@ -1905,8 +1930,23 @@ a.value:hover {
 }
 
 .publication-title:hover {
-    color: var(--accent-color);
+    color: #fff;
+    opacity: 0.9;
 }
+
+/* Publication colored block headers */
+.publication-title {
+    display: block;
+    padding: 14px 20px;
+    margin: -24px -20px 14px -20px;
+    color: #ffffff !important;
+    text-decoration: none;
+    line-height: 1.4;
+    transition: opacity 0.2s ease;
+}
+
+.pub-accent-purple { background: #7c3aed; }
+.pub-accent-teal   { background: #0d9488; }
 
 .publication-venue {
     font-size: 15px;
