@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude's attempt at the Riemann Hypothesis | Ravjoth Brar</title>
+    <meta name="description" content="An unreleased research version of Claude made an unexpected leap on the Riemann Hypothesis — raising the known lower bound of zeros on the critical line from 41.6% to 67.2%. What happened, and what does it mean?">
+    <link rel="canonical" href="https://ravjothbrar.com/blog/claude-riemann-hypothesis.html" />
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon.svg">
+    <link rel="apple-touch-icon" href="../favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <!-- Corner Decorations -->
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
+
+    <!-- Side Navigation -->
+    <nav class="side-nav">
+        <ul>
+            <li><a href="../index.html#home" class="nav-link">> Home</a></li>
+            <li><a href="../index.html#about" class="nav-link">> About Me</a></li>
+            <li><a href="../index.html#links" class="nav-link">>> Links</a></li>
+            <li><a href="../index.html#education" class="nav-link">>> Education</a></li>
+            <li><a href="../index.html#roles" class="nav-link">> Roles</a></li>
+            <li><a href="../index.html#projects" class="nav-link">> Projects</a></li>
+            <li><a href="../blog.html" class="nav-link active">> Blog</a></li>
+            <li><a href="../index.html#publications" class="nav-link">> Publications</a></li>
+            <li><a href="../index.html#cv" class="nav-link">> CV</a></li>
+            <li><a href="../index.html#contact" class="nav-link">> Contact Me</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content blog-article-page">
+        <!-- Article Header -->
+        <article class="section">
+            <div class="article-header">
+                <div class="article-meta">
+                    <a href="../blog.html" class="back-link">&larr; Back to Blog</a>
+                    <span class="article-date">11/08/2026</span>
+                </div>
+                <h1 class="article-title">> Claude's attempt at the Riemann Hypothesis</h1>
+            </div>
+
+            <div class="terminal-box article-content">
+                <p>The Riemann Hypothesis is one of the most infamous and renowned unsolved problems in the history of mathematics. Yesterday, an unreleased research version of Claude unexpectedly made strides on a related problem: the bounds for the fraction of zeros of the Riemann zeta function. I'll give a brief overview of the Riemann zeta function, explain how Claude's model approached this problem, and contemplate what this means for the field of mathematical proof going forwards.</p>
+
+                <h2>>> The Riemann Zeta Function and How it Relates to the Riemann Hypothesis</h2>
+
+                <p>The Riemann hypothesis makes the claim that "all nontrivial zeros of the Riemann zeta function have a real part equal to 1/2". The Riemann zeta function is linked to the density of prime numbers — numbers which do not have any factors bar 1 and themselves — and prime numbers hold massive importance in cryptography.</p>
+
+                <p>The Prime Number Theorem provides the count of primes, but the location of these 'nontrivial zeros' dictates how many fluctuate around the average of prime numbers for that given region. A good way to think about this is that the Riemann hypothesis says that all these zeros lie on a single line (also called the 'critical line'), hinting at some sort of regularity in the distribution of primes when we are dealing with high enough numbers.</p>
+
+                <p>One thing worth mentioning is the distinction between trivial zeros and non-trivial zeros. In the Riemann zeta function, any negative even integer (−2, −4, −6, …) produces a zero — these are easily defined. We are instead interested in the nontrivial zeros which lie in the region 0 ≤ Re(s) ≤ 1.</p>
+
+                <p>Henceforth, if we can find that all nontrivial zeros lie on the critical line, we have proved the Riemann hypothesis. Current mathematical work from scholars across centuries — particularly in the past two decades — had established a lower boundary: at least 41.6% of zeros in this range lie on the critical line. Claude, yesterday, raised that to 67.2%.</p>
+
+                <h2>>> Claude: What it did, and What it didn't</h2>
+
+                <p>Before anything else: Claude didn't solve it. Anthropic themselves stated that <em>"we don't expect that the techniques Claude used will lead to proving the Riemann hypothesis. But its work serves as the latest example of the speed of progress in AI models' mathematical capabilities."</em></p>
+
+                <p>Claude's result, to make this major leap, leaned heavily on techniques from several mathematicians — Baluyot, Goldston, Suriajaya, Turnage-Butterbaugh, and Bombieri were all noted in Claude's own write-up.</p>
+
+                <p>The set-up was initially simple: Claude was given a prompt saying <em>'Take a real stab at the Riemann hypothesis'</em>. It's important to note that it didn't succeed. The prize has a million-dollar bounty and dates back almost two centuries.</p>
+
+                <p>> Claude generated and tried 650 ideas. None of them worked.</p>
+                <p>> Claude was prompted to 'try again' — this time deploying 60 subagents and over 2,400 shell commands, with thousands of numerical checks against each other.</p>
+                <p>> Claude was given encouragement throughout: 'keep going' and 'believe in yourself' — which seemed to overcome some initial scepticism that it could make meaningful progress.</p>
+                <p>> Finally, Claude produced a proof, formalised in Lean and subsequently verified by multiple mathematicians.</p>
+
+                <p>This result surprised Claude itself. But it simply showed what a remarkable moment we are living in. After roughly $1,500 worth of compute, Claude had made a significant leap in the mathematical world.</p>
+
+                <h2>>> What does this mean for mathematical proofs?</h2>
+
+                <p>Well, it's definitely a change. The only time AI had really been invoked in connection with the Riemann Hypothesis before this was in science fiction.</p>
+
+                <p>Over the past few months, AI has seemingly made massive jumps in mathematical capability. Erdős' Unit Distance Conjecture, the Jacobian conjecture, and now a major advance on the Riemann zeta function. The pace is striking.</p>
+
+                <p>Personally, I think we will see a major increase in AI-assisted breakthroughs on open mathematical problems. The most telling detail here is simple: the person who prompted this model was not a mathematician. That points to something deep about what these models are capable of when steered correctly.</p>
+
+                <p>Mathematics doesn't become redundant — it never will. But knowing how to steer these models towards mathematical discoveries might itself become a new and valuable skill. The mathematician of the future may be less the person who grinds through the proof, and more the person who knows what question to ask.</p>
+
+                <div class="article-footer">
+                    <p class="article-footer-note"><span class="prompt">></span> Written by Ravjoth Brar · 11/08/2026</p>
+                    <a href="../blog.html" class="back-link">&larr; Back to Blog</a>
+                </div>
+            </div>
+        </article>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2026 Ravjoth Brar. All rights reserved. <span class="footer-note">Kindly Hosted on GitHub Pages</span></p>
+        </footer>
+    </main>
+
+    <script src="../script.js"></script>
+</body>
+</html>
