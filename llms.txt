@@ -1,0 +1,50 @@
+# Ravjoth Brar — AI Researcher & Student
+
+> Ravjoth Brar is a student AI researcher at Haberdashers' Boys' School, London. He specialises in interpretable AI, RAG systems, LLM fine-tuning, and AI ethics & governance. He is an RAF Arkwright Engineering Scholar, Head Boy (School Captain), and a published researcher.
+
+## About
+
+Ravjoth Brar (also known as Ravjoth Singh Brar) is based in Barnet, London, UK. His research spans the technical and the philosophical: from engineering high-performance RAG systems and fine-tuning LLMs, to publishing work on neural interpretability in epilepsy and the ethics of AI consciousness. He has given a TEDx talk ("Is AI closer to God than humanity?") and co-founded Beri-Labs.
+
+Contact: ravjoth.brar@gmail.com
+LinkedIn: https://www.linkedin.com/in/ravjothbrar/
+GitHub: https://github.com/ravjothbrar
+Zenodo: https://zenodo.org/records/20798155
+
+## Research & Publications
+
+- Neural interpretability in epilepsy — Zenodo preprint: https://zenodo.org/records/20798155
+- "Is AI Closer to God than Humanity?" — 100th article, Haberdashers' Occasional Papers Series: https://www.habselstree.org.uk/boys/wp-content/uploads/sites/2/2026/06/OP-100-Brar-AI-and-God-.pdf
+- Ongoing work on Sikhism as a framework for AI regulation (pending peer-review)
+
+## Blog Articles
+
+- Claude's attempt at the Riemann Hypothesis (11 Aug 2026): https://ravjothbrar.com/blog/claude-riemann-hypothesis.html
+- Could a machine think and feel? (21 Jul 2026): https://ravjothbrar.com/blog/could-machine-think-feel.html
+- Beyond the Industrial Revolution: Why Superhuman AI is a Crisis of Priority (29 Jan 2026): https://ravjothbrar.com/blog/industrial-revolution-ai.html
+- How can we deal with algorithmic bias and opacity? (6 May 2025): https://ravjothbrar.com/blog/algorithmic-bias.html
+- Project DIGITS: NVIDIA Revolutionises AI Development (10 Feb 2025): https://ravjothbrar.com/blog/project-digits.html
+- The Manifold Hypothesis: Deep Learning's Elegant Principle (10 Feb 2025): https://ravjothbrar.com/blog/manifold-hypothesis.html
+- 1984 Today: Unmasking AI's Potential for a Dystopian Future (5 Jan 2025): https://ravjothbrar.com/blog/1984-today.html
+- What is AlphaFold? (18 Aug 2024): https://ravjothbrar.com/blog/alphafold.html
+- The Rome Call for AI (5 Mar 2023): https://ravjothbrar.com/blog/rome-call.html
+- How bias in AI affects society now and in the future (17 Jan 2023): https://ravjothbrar.com/blog/bias-in-ai.html
+
+## Experience
+
+- AI Intern, GFO-X (Jul 2026 – Aug 2026) — built token usage monitoring dashboard with SQLite + Streamlit
+- Cofounder, Beri-Labs (Oct 2025 – Aug 2026)
+- Research Writer, Prismatic Studios (– May 2026)
+- AI Engineer, The Web Kitchen (Feb 2026) — RAG-based portfolio search, agentic SEO framework
+- Summer AI Intern, Blankstate (Jul 2025) — IBF whitepaper, enterprise AI strategy
+- Founding Board Advisor, Action Breaks Silence (2+ years) — non-profit, VAWG
+- TEDx Speaker, TEDx Habs Elstree Youth — "Is AI closer to God than humanity?"
+
+## Awards & Credentials
+
+- RAF-funded Arkwright Engineering Scholarship (2025)
+- Leaf Online Fellow — top 0.5% of applicants (2025)
+- MEI Finalist — top 15% (2025)
+- Industrial Cadet Gold Award (2026), Silver (2025), Bronze (2023)
+- Aske Scholar, Haberdashers' Boys' School
+- Head Boy (School Captain), Haberdashers' Boys' School
