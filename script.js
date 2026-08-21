@@ -684,7 +684,63 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Console message
-    console.log('%c Welcome to my portfolio!', 'color: #7c3aed; font-size: 20px; font-weight: bold;');
-    console.log('%c Thanks for checking out the code.', 'color: #666; font-size: 14px;');
+    // ---- Console Easter Egg ----
+    console.log('%c Welcome to my portfolio! ', 'color: #7c3aed; font-size: 22px; font-weight: bold; background: #f3f0ff; padding: 4px 8px; border-radius: 4px;');
+    console.log('%c Hey — you\'re poking around in the code. I like you already.', 'color: #7c3aed; font-size: 14px;');
+    console.log('%c Built by hand: HTML, CSS, JS — no frameworks, no build step.', 'color: #888; font-size: 13px;');
+    console.log('%c Try the Konami code on the page. ↑ ↑ ↓ ↓ ← → ← → B A', 'color: #10b981; font-size: 13px; font-style: italic;');
+    console.log('%c — Ravjoth', 'color: #7c3aed; font-size: 13px; font-weight: bold;');
+
+    // ---- Konami Code Easter Egg ----
+    const konamiSequence = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+    let konamiIndex = 0;
+    document.addEventListener('keydown', function(e) {
+        if (e.key === konamiSequence[konamiIndex]) {
+            konamiIndex++;
+            if (konamiIndex === konamiSequence.length) {
+                konamiIndex = 0;
+                console.log('%c ⚡ CHEAT CODE ACTIVATED ⚡', 'color: #f59e0b; font-size: 24px; font-weight: bold;');
+                console.log('%c You just entered the Konami code on an AI researcher\'s portfolio.\n You have excellent priorities.', 'color: #7c3aed; font-size: 14px;');
+                console.log('%c No extra lives here — but if you\'re looking to collaborate, ravjoth.brar@gmail.com is the cheat code you actually want.', 'color: #888; font-size: 13px;');
+                // Brief rainbow border flash on the page
+                document.body.style.transition = 'outline 0s';
+                document.body.style.outline = '4px solid #7c3aed';
+                setTimeout(() => { document.body.style.outline = '4px solid #10b981'; }, 150);
+                setTimeout(() => { document.body.style.outline = '4px solid #f59e0b'; }, 300);
+                setTimeout(() => { document.body.style.outline = '4px solid #ef4444'; }, 450);
+                setTimeout(() => { document.body.style.outline = ''; }, 650);
+            }
+        } else {
+            konamiIndex = e.key === konamiSequence[0] ? 1 : 0;
+        }
+    });
+
+    // ---- Name click Easter Egg (click ASCII art name 5× fast) ----
+    const heroName = document.querySelector('.ascii-art');
+    if (heroName) {
+        let nameClicks = 0;
+        let nameTimer = null;
+        heroName.addEventListener('click', function() {
+            nameClicks++;
+            clearTimeout(nameTimer);
+            nameTimer = setTimeout(() => { nameClicks = 0; }, 1500);
+            if (nameClicks >= 5) {
+                nameClicks = 0;
+                console.log('%c 👋 Oh hi — that\'s my name you\'re clicking.', 'color: #7c3aed; font-size: 15px; font-weight: bold;');
+                console.log('%c Current Head Boy at Haberdashers\'. TEDx speaker. AI researcher. Occasional over-thinker.', 'color: #888; font-size: 13px;');
+                console.log('%c If you\'re a recruiter: yes, I\'m looking for internships.', 'color: #10b981; font-size: 13px; font-style: italic;');
+            }
+        });
+    }
+
+    // ---- Text selection Easter Egg ----
+    let selectionFired = false;
+    document.addEventListener('selectionchange', function() {
+        const sel = window.getSelection();
+        if (sel && sel.toString().length > 40 && !selectionFired) {
+            selectionFired = true;
+            console.log('%c Nice highlight. Studying for the exam?', 'color: #888; font-size: 13px; font-style: italic;');
+            setTimeout(() => { selectionFired = false; }, 10000);
+        }
+    });
 });
