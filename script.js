@@ -689,7 +689,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('%c Hey — you\'re poking around in the code. I like you already.', 'color: #7c3aed; font-size: 14px;');
     console.log('%c Built by hand: HTML, CSS, JS — no frameworks, no build step.', 'color: #888; font-size: 13px;');
     console.log('%c Try the Konami code on the page. ↑ ↑ ↓ ↓ ← → ← → B A', 'color: #10b981; font-size: 13px; font-style: italic;');
-    console.log('%c Or type paul.atreides or hello.there here in the console.', 'color: #10b981; font-size: 13px; font-style: italic;');
+    console.log('%c The spice must flow. A certain Jedi greeting also works.', 'color: #888; font-size: 12px; font-style: italic; opacity: 0.7;');
     console.log('%c — Ravjoth', 'color: #7c3aed; font-size: 13px; font-weight: bold;');
 
     // ---- Konami Code Easter Egg ----
@@ -765,6 +765,45 @@ document.addEventListener('DOMContentLoaded', function() {
             get: function() {
                 console.log('%c General Kenobi.', 'color: #4fc3f7; font-size: 20px; font-weight: bold;');
                 console.log('%c You are a bold one — checking the console of an AI researcher\'s portfolio.', 'color: #888; font-size: 13px;');
+                return undefined;
+            },
+            enumerable: true
+        }
+    });
+
+    // Type: claude.code
+    window.claude = Object.defineProperties({}, {
+        code: {
+            get: function() {
+                console.log('%c This entire site was built with Claude Code.', 'color: #7c3aed; font-size: 14px; font-weight: bold;');
+                console.log('%c Every card, every easter egg, every line of CSS — pair-programmed in the terminal.', 'color: #888; font-size: 13px;');
+                console.log('%c It\'s a pretty good editor. I\'d recommend it.', 'color: #888; font-size: 13px; font-style: italic;');
+                return undefined;
+            },
+            enumerable: true
+        }
+    });
+
+    // Type: google.deepmind
+    window.google = Object.defineProperties({}, {
+        deepmind: {
+            get: function() {
+                console.log('%c AlphaGo. 2016. Move 37.', 'color: #4285f4; font-size: 16px; font-weight: bold;');
+                console.log('%c The move no human would play — and the moment I think AI genuinely surprised us.', 'color: #888; font-size: 13px;');
+                console.log('%c The documentary is worth every minute: "AlphaGo" (2017) on YouTube.', 'color: #888; font-size: 13px; font-style: italic;');
+                return undefined;
+            },
+            enumerable: true
+        }
+    });
+
+    // Type: ted.talk
+    window.ted = Object.defineProperties({}, {
+        talk: {
+            get: function() {
+                console.log('%c "Is AI closer to God than humanity?" — Ravjoth Brar, TEDx Habs Elstree Youth', 'color: #e62b1e; font-size: 14px; font-weight: bold;');
+                console.log('%c https://www.youtube.com/watch?v=62h2nNAP2AY', 'color: #888; font-size: 13px;');
+                window.open('https://www.youtube.com/watch?v=62h2nNAP2AY', '_blank');
                 return undefined;
             },
             enumerable: true
