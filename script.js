@@ -687,7 +687,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // ---- Console Easter Egg ----
     console.log('%c Welcome to my portfolio! ', 'color: #7c3aed; font-size: 22px; font-weight: bold; background: #f3f0ff; padding: 4px 8px; border-radius: 4px;');
     console.log('%c Hey — you\'re poking around in the code. I like you already.', 'color: #7c3aed; font-size: 14px;');
-    console.log('%c Built by hand: HTML, CSS, JS — no frameworks, no build step.', 'color: #888; font-size: 13px;');
+    console.log('%c Retro-ASCII meets clean purple UI — concept to deployment at astonishing speed.', 'color: #888; font-size: 13px;');
+    console.log('%c Built with Claude Code. Feedback always welcome: ravjoth.brar@gmail.com', 'color: #888; font-size: 13px;');
     console.log('%c Try the Konami code on the page. ↑ ↑ ↓ ↓ ← → ← → B A', 'color: #10b981; font-size: 13px; font-style: italic;');
     console.log('%c The spice must flow. A certain Jedi greeting also works.', 'color: #888; font-size: 12px; font-style: italic; opacity: 0.7;');
     console.log('%c — Ravjoth', 'color: #7c3aed; font-size: 13px; font-weight: bold;');
