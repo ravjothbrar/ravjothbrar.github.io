@@ -687,8 +687,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ---- Console Easter Egg ----
     console.log('%c Welcome to my portfolio! ', 'color: #7c3aed; font-size: 22px; font-weight: bold; background: #f3f0ff; padding: 4px 8px; border-radius: 4px;');
     console.log('%c Hey — you\'re poking around in the code. I like you already.', 'color: #7c3aed; font-size: 14px;');
-    console.log('%c Retro-ASCII meets clean purple UI — concept to deployment at astonishing speed.', 'color: #888; font-size: 13px;');
-    console.log('%c Built with Claude Code. Feedback always welcome: ravjoth.brar@gmail.com', 'color: #888; font-size: 13px;');
+    console.log('%c A personal portfolio is typically the sort of project that is forever one more edit away from completing.\nThis time, I utilised Claude Code to truly bring the site to life.\nTaking inspiration from more retro-ASCII style websites and blending it with a clean, static, purple UI\nallowed me to move from concept to implementation at astonishing speed.\n\nIf you have a moment, I\'d love for you to take a look! Feedback is always welcome.', 'color: #888; font-size: 13px; line-height: 1.8;');
     console.log('%c Try the Konami code on the page. ↑ ↑ ↓ ↓ ← → ← → B A', 'color: #10b981; font-size: 13px; font-style: italic;');
     console.log('%c The spice must flow. A certain Jedi greeting also works.', 'color: #888; font-size: 12px; font-style: italic; opacity: 0.7;');
     console.log('%c — Ravjoth', 'color: #7c3aed; font-size: 13px; font-weight: bold;');
