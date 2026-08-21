@@ -2240,6 +2240,22 @@ a.value:hover {
     border-top: 1px solid var(--border-color);
 }
 
+.footer-reading {
+    font-size: 0.78rem;
+    color: var(--muted-text);
+    margin-bottom: 10px;
+    opacity: 0.7;
+}
+.footer-reading-label {
+    color: var(--accent-color);
+    margin-right: 6px;
+    font-style: normal;
+}
+.footer-reading em {
+    font-style: italic;
+    color: var(--muted-text);
+}
+
 .footer-note {
     color: var(--accent-color);
     margin-left: 10px;

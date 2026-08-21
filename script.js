@@ -689,6 +689,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('%c Hey — you\'re poking around in the code. I like you already.', 'color: #7c3aed; font-size: 14px;');
     console.log('%c Built by hand: HTML, CSS, JS — no frameworks, no build step.', 'color: #888; font-size: 13px;');
     console.log('%c Try the Konami code on the page. ↑ ↑ ↓ ↓ ← → ← → B A', 'color: #10b981; font-size: 13px; font-style: italic;');
+    console.log('%c Or type paul.atreides or hello.there here in the console.', 'color: #10b981; font-size: 13px; font-style: italic;');
     console.log('%c — Ravjoth', 'color: #7c3aed; font-size: 13px; font-weight: bold;');
 
     // ---- Konami Code Easter Egg ----
@@ -741,6 +742,32 @@ document.addEventListener('DOMContentLoaded', function() {
             selectionFired = true;
             console.log('%c Nice highlight. Studying for the exam?', 'color: #888; font-size: 13px; font-style: italic;');
             setTimeout(() => { selectionFired = false; }, 10000);
+        }
+    });
+
+    // ---- Console variable Easter Eggs ----
+    // Type: paul.atreides
+    window.paul = Object.defineProperties({}, {
+        atreides: {
+            get: function() {
+                console.log('%c LISAN AL GAIB ', 'color: #c8a84b; font-size: 22px; font-weight: bold; background: #1a1000; padding: 6px 12px; letter-spacing: 4px;');
+                console.log('%c The Kwisatz Haderach has entered the portfolio.', 'color: #c8a84b; font-size: 13px; font-style: italic;');
+                console.log('%c "I must not fear. Fear is the mind-killer."', 'color: #888; font-size: 13px;');
+                return undefined;
+            },
+            enumerable: true
+        }
+    });
+
+    // Type: hello.there
+    window.hello = Object.defineProperties({}, {
+        there: {
+            get: function() {
+                console.log('%c General Kenobi.', 'color: #4fc3f7; font-size: 20px; font-weight: bold;');
+                console.log('%c You are a bold one — checking the console of an AI researcher\'s portfolio.', 'color: #888; font-size: 13px;');
+                return undefined;
+            },
+            enumerable: true
         }
     });
 });
