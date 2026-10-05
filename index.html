@@ -97,6 +97,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="styles.css">
+
+    <!-- Agent discovery (HTML equivalent of RFC 8288 Link headers, which GitHub Pages can't set) -->
+    <link rel="alternate" type="text/markdown" href="/llms.txt" title="Markdown summary for agents">
+    <link rel="describedby" type="application/json" href="/.well-known/ai-catalog.json" title="ARD capability manifest">
+    <link rel="service-doc" type="text/markdown" href="/.well-known/agent-skills/ravjothbrar-portfolio/SKILL.md" title="Agent skill for this site">
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml">
 </head>
 <body>
     <!-- Scroll Progress Bar -->
@@ -777,5 +783,6 @@
     </main>
 
     <script src="script.js"></script>
+    <script src="webmcp.js"></script>
 </body>
 </html>
