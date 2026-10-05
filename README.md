@@ -29,29 +29,6 @@ Taking inspiration from more retro-ASCII style websites and blending it with a c
 - **[Blog](https://www.ravjothbrar.com/blog.html)** – a space to streamline AI thoughts, useful practices, and ethical deliberations on recent advancements
 - **[Infinite Wordle](https://www.ravjothbrar.com/infinitewordle/)** – a small side-game, because why not
 
-## From the blog
-
-<table>
-  <tr>
-    <td align="center" width="33%">
-      <a href="https://www.ravjothbrar.com/blog/manifold-hypothesis.html"><img src="blog/images/manifold-hypothesis.png" alt="The Manifold Hypothesis" width="100%"></a><br>
-      <a href="https://www.ravjothbrar.com/blog/manifold-hypothesis.html"><b>The Manifold Hypothesis</b></a>
-    </td>
-    <td align="center" width="33%">
-      <a href="https://www.ravjothbrar.com/blog/alphafold.html"><img src="blog/images/alphafold.png" alt="What is AlphaFold?" width="100%"></a><br>
-      <a href="https://www.ravjothbrar.com/blog/alphafold.html"><b>What is AlphaFold?</b></a>
-    </td>
-    <td align="center" width="33%">
-      <a href="https://www.ravjothbrar.com/blog/industrial-revolution-ai.html"><img src="blog/images/industrial-revolution-ai.png" alt="Beyond the Industrial Revolution" width="100%"></a><br>
-      <a href="https://www.ravjothbrar.com/blog/industrial-revolution-ai.html"><b>Beyond the Industrial Revolution</b></a>
-    </td>
-  </tr>
-</table>
-
-## Built with
-
-Plain HTML, CSS and JavaScript – no frameworks – deployed via GitHub Pages with a custom domain.
-
 ---
 
 <div align="center">

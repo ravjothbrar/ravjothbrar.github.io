@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "ravjothbrar-portfolio",
+      "type": "skill-md",
+      "description": "Find accurate information about Ravjoth Brar (student AI researcher) from ravjothbrar.com: profile, research, publications, blog articles, experience and contact details.",
+      "url": "https://ravjothbrar.com/.well-known/agent-skills/ravjothbrar-portfolio/SKILL.md",
+      "digest": "sha256:cc874d767b16718e2aeb75bf57a45dc230e009b92b2121c5bd0e1e80a7f182ec"
+    }
+  ]
+}

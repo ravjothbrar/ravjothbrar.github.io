@@ -1,0 +1,56 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "name": "Ravjoth Brar",
+    "url": "https://ravjothbrar.com",
+    "description": "Personal portfolio and blog of Ravjoth Brar, a student AI researcher working on interpretable AI, LLM systems and AI ethics."
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:ravjothbrar.com:site:profile",
+      "displayName": "Ravjoth Brar profile summary",
+      "description": "Markdown summary of Ravjoth Brar's research, publications, blog articles, experience and awards.",
+      "type": "text/markdown",
+      "url": "https://ravjothbrar.com/llms.txt",
+      "representativeQueries": [
+        "Who is Ravjoth Brar?",
+        "What research has Ravjoth Brar published?",
+        "What is Ravjoth Brar's experience in AI?"
+      ]
+    },
+    {
+      "identifier": "urn:air:ravjothbrar.com:skills:index",
+      "displayName": "Agent skills index",
+      "description": "Agent Skills discovery index with a skill for navigating ravjothbrar.com.",
+      "type": "application/json",
+      "url": "https://ravjothbrar.com/.well-known/agent-skills/index.json",
+      "representativeQueries": [
+        "How should an agent find information on ravjothbrar.com?",
+        "Which agent skills does ravjothbrar.com publish?"
+      ]
+    },
+    {
+      "identifier": "urn:air:ravjothbrar.com:blog:index",
+      "displayName": "Ravjoth Brar's blog",
+      "description": "Articles on AI, ethics and recent advances in machine learning.",
+      "type": "text/html",
+      "url": "https://ravjothbrar.com/blog.html",
+      "representativeQueries": [
+        "Blog posts by Ravjoth Brar about AI ethics",
+        "Ravjoth Brar article on the Riemann Hypothesis",
+        "Student essays on algorithmic bias"
+      ]
+    },
+    {
+      "identifier": "urn:air:ravjothbrar.com:site:sitemap",
+      "displayName": "Sitemap",
+      "description": "XML sitemap listing every page on ravjothbrar.com.",
+      "type": "application/xml",
+      "url": "https://ravjothbrar.com/sitemap.xml",
+      "representativeQueries": [
+        "List all pages on ravjothbrar.com",
+        "Which pages does ravjothbrar.com have?"
+      ]
+    }
+  ]
+}
