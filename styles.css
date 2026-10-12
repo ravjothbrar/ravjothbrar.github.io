@@ -301,6 +301,22 @@ body {
     font-size: 13px;
 }
 
+/* Featured announcement: twice the default pill size */
+.hero-pill--large {
+    font-size: 24px;
+    gap: 20px;
+    padding: 12px 28px 12px 16px;
+    border-width: 2px;
+    border-color: var(--accent-color);
+}
+.hero-pill--large .hero-pill-badge {
+    font-size: 20px;
+    padding: 4px 16px;
+}
+.hero-pill--large .hero-pill-arrow {
+    font-size: 26px;
+}
+
 /* Scroll Down Indicator */
 .scroll-indicator {
     position: absolute;
@@ -1414,6 +1430,13 @@ a.value:hover {
     color: var(--muted-text);
 }
 
+.card-btn-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
 .card-link-btn--paper:hover {
     background-color: var(--muted-text);
     color: var(--card-bg);
@@ -1493,6 +1516,9 @@ a.value:hover {
 @media (max-width: 768px) {
     .hero-corner-label { display: none; }
     .hero-pill { font-size: 11px; gap: 7px; }
+    .hero-pill--large { font-size: 15px; gap: 10px; padding: 8px 16px 8px 10px; max-width: 100%; }
+    .hero-pill--large .hero-pill-badge { font-size: 12px; padding: 3px 10px; }
+    .hero-pill--large .hero-pill-arrow { font-size: 16px; }
     .about-quote { padding-left: 16px; }
 }
 
@@ -2084,6 +2110,12 @@ a.value:hover {
 
 .pub-accent-purple { background: #7c3aed; }
 .pub-accent-teal   { background: #0d9488; }
+.pub-accent-amber  { background: #b45309; }
+
+.publication-type.pub-type-amber {
+    color: #d97706;
+    border-color: #d97706;
+}
 
 .publication-venue {
     font-size: 15px;

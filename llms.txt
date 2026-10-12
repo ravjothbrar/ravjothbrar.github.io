@@ -15,7 +15,11 @@ Zenodo: https://zenodo.org/records/20798155
 
 - Neural interpretability in epilepsy — Zenodo preprint: https://zenodo.org/records/20798155
 - "Is AI Closer to God than Humanity?" — 100th article, Haberdashers' Occasional Papers Series: https://www.habselstree.org.uk/boys/wp-content/uploads/sites/2/2026/06/OP-100-Brar-AI-and-God-.pdf
-- Ongoing work on Sikhism as a framework for AI regulation (pending peer-review)
+- "Designing AI from a Sikh's Perspective: Using Religion as a Moral Framework to Guide AI Regulation" (pending publication)
+
+## Projects
+
+- Melomane (Oct 2026): an interactive, interpretable map of 50,000+ music tracks built from three embedding models (listening data, audio/lyric features, and a hybrid). Live: https://ravjothbrar.com/melomane/ · Code: https://github.com/ravjothbrar/melomane
 
 ## Blog Articles
 
