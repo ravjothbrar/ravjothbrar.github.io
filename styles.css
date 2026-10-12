@@ -301,20 +301,20 @@ body {
     font-size: 13px;
 }
 
-/* Featured announcement: twice the default pill size */
+/* Featured announcement pill */
 .hero-pill--large {
-    font-size: 24px;
-    gap: 20px;
-    padding: 12px 28px 12px 16px;
+    font-size: 13.2px;
+    gap: 11px;
+    padding: 6.6px 15.4px 6.6px 8.8px;
     border-width: 2px;
     border-color: var(--accent-color);
 }
 .hero-pill--large .hero-pill-badge {
-    font-size: 20px;
-    padding: 4px 16px;
+    font-size: 11px;
+    padding: 2px 9px;
 }
 .hero-pill--large .hero-pill-arrow {
-    font-size: 26px;
+    font-size: 14.3px;
 }
 
 /* Scroll Down Indicator */
@@ -1516,9 +1516,7 @@ a.value:hover {
 @media (max-width: 768px) {
     .hero-corner-label { display: none; }
     .hero-pill { font-size: 11px; gap: 7px; }
-    .hero-pill--large { font-size: 15px; gap: 10px; padding: 8px 16px 8px 10px; max-width: 100%; }
-    .hero-pill--large .hero-pill-badge { font-size: 12px; padding: 3px 10px; }
-    .hero-pill--large .hero-pill-arrow { font-size: 16px; }
+    .hero-pill--large { font-size: 11px; gap: 7px; max-width: 100%; }
     .about-quote { padding-left: 16px; }
 }
 
