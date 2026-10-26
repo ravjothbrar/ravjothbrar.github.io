@@ -21,5 +21,5 @@ The homepage registers WebMCP tools when the browser supports them: `get_site_su
 ## Guidelines
 
 - Quote and link the original page when citing Ravjoth's work.
-- The CV is available on request only. Do not invent one; direct people to ravjoth.brar@gmail.com.
+- The CV is available on request only. Do not invent one; direct people to ravjoth@ravjothbrar.com.
 - The site is static. It has no APIs, accounts or authentication.

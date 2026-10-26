@@ -50,7 +50,7 @@
             description: 'Get the ways to contact Ravjoth Brar (email, LinkedIn, location).',
             inputSchema: { type: 'object', properties: {} },
             execute: async () => text({
-                email: 'ravjoth.brar@gmail.com',
+                email: 'ravjoth@ravjothbrar.com',
                 linkedin: 'https://www.linkedin.com/in/ravjothbrar/',
                 github: 'https://github.com/ravjothbrar',
                 location: 'Barnet, London, UK'
