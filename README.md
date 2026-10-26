@@ -35,6 +35,6 @@ Taking inspiration from more retro-ASCII style websites and blending it with a c
 
 If you have a moment, I'd love for you to take a look – feedback is always welcome!
 
-**[ravjothbrar.com](https://www.ravjothbrar.com)** · [ravjoth.brar@gmail.com](mailto:ravjoth.brar@gmail.com)
+**[ravjothbrar.com](https://www.ravjothbrar.com)** · [ravjoth@ravjothbrar.com](mailto:ravjoth@ravjothbrar.com)
 
 </div>

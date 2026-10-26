@@ -702,7 +702,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 konamiIndex = 0;
                 console.log('%c ⚡ CHEAT CODE ACTIVATED ⚡', 'color: #f59e0b; font-size: 24px; font-weight: bold;');
                 console.log('%c You just entered the Konami code on an AI researcher\'s portfolio.\n You have excellent priorities.', 'color: #7c3aed; font-size: 14px;');
-                console.log('%c No extra lives here — but if you\'re looking to collaborate, ravjoth.brar@gmail.com is the cheat code you actually want.', 'color: #888; font-size: 13px;');
+                console.log('%c No extra lives here — but if you\'re looking to collaborate, ravjoth@ravjothbrar.com is the cheat code you actually want.', 'color: #888; font-size: 13px;');
                 // Brief rainbow border flash on the page
                 document.body.style.transition = 'outline 0s';
                 document.body.style.outline = '4px solid #7c3aed';

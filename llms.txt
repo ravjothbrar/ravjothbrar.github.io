@@ -6,7 +6,7 @@
 
 Ravjoth Brar (also known as Ravjoth Singh Brar) is based in Barnet, London, UK. His research spans the technical and the philosophical: from engineering high-performance RAG systems and fine-tuning LLMs, to publishing work on neural interpretability in epilepsy and the ethics of AI consciousness. He has given a TEDx talk ("Is AI closer to God than humanity?") and co-founded Beri-Labs.
 
-Contact: ravjoth.brar@gmail.com
+Contact: ravjoth@ravjothbrar.com
 LinkedIn: https://www.linkedin.com/in/ravjothbrar/
 GitHub: https://github.com/ravjothbrar
 Zenodo: https://zenodo.org/records/20798155
